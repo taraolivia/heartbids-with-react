@@ -1,10 +1,9 @@
-/** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",   // ✅ Correct path
+    "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}"
   ],
-  theme: {
+    theme: {
     extend: {
       fontFamily: {
         heading: 'Spectral',
