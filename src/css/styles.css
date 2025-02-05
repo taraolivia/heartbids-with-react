@@ -1,5 +1,7 @@
 @import url(_reset.css);
 
+@import "tailwindcss";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
