@@ -1,6 +1,9 @@
 module.exports = {
-  content: ["./index.html", "./auth/**/*.html", "./profile/**/*.html", "./post/**/*.html", "./src/**/*.{js,ts}"],
-  theme: {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}"
+  ],
+    theme: {
     extend: {
       fontFamily: {
         heading: 'Spectral',
