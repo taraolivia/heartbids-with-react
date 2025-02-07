@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
           {/* CTA Button */}
           <div>
             <a
-              href="/browse-listings"
+              href="/listings"
               className="inline-block bg-pink-600 text-white font-semibold text-sm px-6 py-3 rounded-full shadow-lg hover:bg-pink-700 transition"
             >
               Browse Listings

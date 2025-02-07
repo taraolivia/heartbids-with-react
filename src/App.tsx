@@ -8,6 +8,12 @@ import Footer from "./components/Footer";
 import About from "./pages/About";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
+import AuthPrompt from "./components/AuthPrompt";
+import HowItWorks from "./components/HowItWorks";
+import CharitiesCloud from "./components/CharitiesCloud";
+import Testimonials from "./components/Testimonials";
+
+
 
 function App() {
   return (
@@ -22,6 +28,10 @@ function App() {
               <Hero />
               <PopularLots />
               <GeneralInfo />
+              <AuthPrompt />
+              <HowItWorks />
+              <CharitiesCloud />
+              <Testimonials/>
               <Footer />
             </>
           }
