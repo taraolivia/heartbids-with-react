@@ -1,3 +1,4 @@
+
 const GeneralInfo = () => {
     return (
       <section className="bg-gradient-to-b from-gray-100 to-green-100 py-16">
@@ -7,19 +8,7 @@ const GeneralInfo = () => {
           <p className="text-gray-600 mt-4 max-w-3xl mx-auto">
             HeartBids is a platform where every winning bid supports a good cause. Find unique items and make a difference with every auction.
           </p>
-  
-          {/* Buttons */}
-          <div className="flex justify-center space-x-4 mt-8">
-            <button className="bg-red-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-red-600">
-              Browse Listings
-            </button>
-            <button className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-600">
-              Learn More
-            </button>
-            <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600">
-              Become a Seller
-            </button>
-          </div>
+
   
           {/* Statistics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">

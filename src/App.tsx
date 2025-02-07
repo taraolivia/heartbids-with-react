@@ -4,15 +4,17 @@ import Navbar from "./components/NavbarMain";
 import Hero from "./components/Hero";
 import PopularLots from "./components/PopularLots";
 import GeneralInfo from "./components/GeneralInfo";
-import About from "./pages/about";
-
-
+import Footer from "./components/Footer";
+import About from "./pages/About";
+import Login from "./pages/auth/login/Login";
+import Register from "./pages/auth/register/Register";
 
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
+        {/* Home Page */}
         <Route
           path="/"
           element={
@@ -20,10 +22,19 @@ function App() {
               <Hero />
               <PopularLots />
               <GeneralInfo />
+              <Footer />
             </>
           }
         />
-  <Route path="/about" element={<About />} />
+
+        {/* About Page */}
+        <Route path="/about" element={<About />} />
+
+        {/* Login Page */}
+        <Route path="/auth/login" element={<Login />} />
+
+        {/* Register Page */}
+        <Route path="/auth/register" element={<Register />} />
 
       </Routes>
     </Router>
