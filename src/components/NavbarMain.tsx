@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="bg-cream shadow-md w-full">
+    <nav className="bg-white shadow-md w-full fixed z-1000 pt-5 pb-5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Left Menu */}
         <div className="flex space-x-6">
@@ -21,11 +21,10 @@ const Navbar = () => {
         <div className="flex justify-center">
         <Link to="/" className="text-black hover:text-blue-600">
           <img
-            src="https://via.placeholder.com/100x100" // Replace with actual logo
+            src="public\images\logo\HeartBids.png"
             alt="HeartBids Logo"
-            className="h-10 object-contain"
+            className="h-30 mt-5"
           />
-          <p>Home</p>        
         </Link>
         </div>
 

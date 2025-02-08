@@ -12,6 +12,7 @@ import AuthPrompt from "./components/AuthPrompt";
 import HowItWorks from "./components/HowItWorks";
 import CharitiesCloud from "./components/CharitiesCloud";
 import Testimonials from "./components/Testimonials";
+import Listings from "./pages/Listings";
 
 
 
@@ -45,6 +46,9 @@ function App() {
 
         {/* Register Page */}
         <Route path="/auth/register" element={<Register />} />
+
+                {/* All listings Page */}
+                <Route path="/Listings" element={<Listings />} />
 
       </Routes>
     </Router>
