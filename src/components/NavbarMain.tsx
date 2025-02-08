@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="bg-white shadow-md w-full fixed z-1000 pt-5 pb-5">
+    <nav className="bg-white shadow-md w-full fixed z-1000 pt-5 pb-5 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Left Menu */}
         <div className="flex space-x-6">

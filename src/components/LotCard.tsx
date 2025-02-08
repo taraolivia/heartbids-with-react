@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
 
+type Seller = {
+    name: string;
+    email: string;
+    bio?: string;
+    avatar?: {
+        url: string;
+        alt?: string;
+    }
+}
+
 type LotCardProps = {
   image: string;
   title: string;
@@ -13,6 +23,8 @@ type LotCardProps = {
   showDescription?: boolean;
   showTags?: boolean;
   showCreatedUpdated?: boolean;
+  seller?: Seller;
+  showSeller?: boolean;
 };
 
 const LotCard = ({
@@ -28,6 +40,8 @@ const LotCard = ({
   showDescription = false,
   showTags = false,
   showCreatedUpdated = false,
+  seller,
+  showSeller = false,
 }: LotCardProps) => {
   const [timeLeft, setTimeLeft] = useState<string>("Calculating...");
 
@@ -98,6 +112,27 @@ const LotCard = ({
       {/* ✅ Show Bids and Price */}
       <p className="text-gray-600 mt-2">{bids} {bids === 1 ? "bid" : "bids"}</p>
       <p className="text-gray-800 font-bold mt-4">€{price}</p>
+
+      {/* ✅ Show seller info only if enabled */}
+      {showSeller && seller && (
+        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+          <h4 className="text-gray-800 font-semibold">Seller:</h4>
+          <div className="flex items-center gap-2 mt-2">
+            {seller.avatar?.url && (
+              <img
+                src={seller.avatar.url}
+                alt={seller.avatar.alt || seller.name}
+                className="w-10 h-10 rounded-full"
+              />
+            )}
+            <div>
+              <p className="text-gray-900 font-medium">{seller.name}</p>
+              <p className="text-gray-500 text-xs">{seller.email}</p>
+              {seller.bio && <p className="text-gray-600 text-sm">{seller.bio}</p>}
+            </div>
+          </div>
+        </div>
+      )}
 
 
 

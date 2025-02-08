@@ -28,22 +28,19 @@ const Listings = () => {
   useEffect(() => {
     async function fetchListings() {
       try {
-        const response = await fetch("https://api.noroff.dev/api/v1/auction/listings?limit=50"); 
+        const response = await fetch(
+          "https://api.noroff.dev/api/v1/auction/listings?limit=100&_seller=true"
+        );
         if (!response.ok) throw new Error("Failed to fetch listings");
-
+  
         const result = await response.json();
         console.log("API Response:", result);
-
+  
         if (!result || !Array.isArray(result)) {
           throw new Error("Unexpected API response format");
         }
-
-        // Sort by newest first
-        const sortedListings = result.sort(
-          (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
-        );
-
-        setListings(sortedListings);
+  
+        setListings(result);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -56,6 +53,7 @@ const Listings = () => {
     }
     fetchListings();
   }, []);
+  
 
   return (
     <div>

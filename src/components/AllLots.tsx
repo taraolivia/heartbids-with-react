@@ -2,6 +2,16 @@ import { useState } from "react";
 import LotCard from "./LotCard";
 import SortDropdown from "./SortDropdown"; // ✅ Import sorting component
 
+type Seller = {
+  name: string;
+  email: string;
+  bio?: string;
+  avatar?: {
+    url: string;
+    alt?: string;
+  };
+};
+
 type AuctionListing = {
   id: string;
   title: string;
@@ -14,6 +24,7 @@ type AuctionListing = {
   _count: {
     bids: number;
   };
+  seller?: Seller;
 };
 
 type AllLotsProps = {
@@ -95,6 +106,8 @@ const AllLots = ({ listings }: AllLotsProps) => {
   showDescription={false}
   showTags={false}
   showCreatedUpdated={false}
+  seller={lot.seller} 
+  showSeller={true} 
 />
 
             ))}
