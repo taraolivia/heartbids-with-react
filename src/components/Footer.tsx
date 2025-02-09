@@ -1,4 +1,12 @@
-import React from "react";
+import { Link } from "react-router-dom";
+
+const getUserProfile = () => {
+  const storedUser = localStorage.getItem("user");
+  if (!storedUser) return null;
+  return JSON.parse(storedUser);
+};
+
+const user = getUserProfile(); // ✅ Read user profile directly
 
 const Footer: React.FC = () => {
   return (
@@ -78,7 +86,7 @@ const Footer: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="/Listings" className="text-sm text-gray-600 hover:text-gray-900">
+                  <a href="/listings" className="text-sm text-gray-600 hover:text-gray-900">
                     Auction Listings
                   </a>
                 </li>
@@ -107,20 +115,36 @@ const Footer: React.FC = () => {
               </ul>
             </div>
 
-            {/* Account Section */}
+            {/* ✅ Account Section (Profile or Log In/Register) */}
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Account</h3>
               <ul className="mt-4 space-y-2">
-                <li>
-                  <a href="/auth/login/" className="text-sm text-gray-600 hover:text-gray-900">
-                    Log In
-                  </a>
-                </li>
-                <li>
-                  <a href="/auth/register/" className="text-sm text-gray-600 hover:text-gray-900">
-                    Register
-                  </a>
-                </li>
+                {user ? (
+                  <div className="flex flex-col items-center space-y-3">
+                    <img
+                      src={user.avatar?.url || "https://placehold.co/50"}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full"
+                    />
+                    <span className="text-sm text-gray-900 font-semibold">{user.name}</span>
+                    <Link to="/profile" className="text-sm text-blue-600 hover:underline">
+                      View Profile
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    <li>
+                      <a href="/auth/login/" className="text-sm text-gray-600 hover:text-gray-900">
+                        Log In
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/auth/register/" className="text-sm text-gray-600 hover:text-gray-900">
+                        Register
+                      </a>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>

@@ -13,8 +13,8 @@ import HowItWorks from "./components/HowItWorks";
 import CharitiesCloud from "./components/CharitiesCloud";
 import Testimonials from "./components/Testimonials";
 import Listings from "./pages/Listings";
-
-
+import Profile from "./pages/profile/Profile";
+import CreateListingPage from "./pages/listing/create/CreateListing";
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
               <AuthPrompt />
               <HowItWorks />
               <CharitiesCloud />
-              <Testimonials/>
+              <Testimonials />
               <Footer />
             </>
           }
@@ -47,8 +47,13 @@ function App() {
         {/* Register Page */}
         <Route path="/auth/register" element={<Register />} />
 
-                {/* All listings Page */}
-                <Route path="/Listings" element={<Listings />} />
+        {/* All listings Page */}
+        <Route path="/Listings" element={<Listings />} />
+
+        <Route path="/profile" element={<Profile />} />
+
+        <Route path="/listing/create" element={<CreateListingPage />} /> {/* ✅ Add this line */}
+
 
       </Routes>
     </Router>

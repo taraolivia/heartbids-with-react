@@ -1,15 +1,33 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import HandleLogin from "./HandleLogin"; // ✅ Import login function
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // ✅ For redirecting after login
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Replace this with your actual login logic (e.g., API call)
-    console.log("Email:", email);
-    console.log("Password:", password);
+    setError(null); // ✅ Clear previous errors
+  
+    try {
+      await HandleLogin(email, password); // ✅ Calls the login function correctly
+  
+      navigate("/"); // ✅ Redirect after login
+      window.location.reload(); // ✅ Reload to update navbar
+    } catch (err) {
+      // ✅ Typecast 'err' to properly extract the error message
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+    }
   };
+  
+  
 
   return (
     <div className="min-h-screen flex">
@@ -29,6 +47,10 @@ const Login: React.FC = () => {
           Log in to HeartBids to place bids, list items, and choose a charity to
           support with your winning auctions.
         </p>
+
+        {error && (
+          <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           {/* Email Input */}
