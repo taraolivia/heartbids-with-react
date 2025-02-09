@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { UserProvider } from "./pages/profile/UserProvider";
 import Navbar from "./components/NavbarMain";
 import Hero from "./components/Hero";
 import PopularLots from "./components/PopularLots";
@@ -19,49 +20,50 @@ import SingleListing from "./pages/listing/SingleListing";
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        {/* Home Page */}
-        <Route
-          path="/"
-          element={
-            <>
-              <Hero />
-              <PopularLots />
-              <GeneralInfo />
-              <AuthPrompt />
-              <HowItWorks />
-              <CharitiesCloud />
-              <Testimonials />
-              <Footer />
-            </>
-          }
-        />
+    <UserProvider> {/* ✅ Wrap entire app inside UserProvider */}
+      <Router>
+        <Navbar />
+        <Routes>
+          {/* Home Page */}
+          <Route
+            path="/"
+            element={
+              <>
+                <Hero />
+                <PopularLots />
+                <GeneralInfo />
+                <AuthPrompt />
+                <HowItWorks />
+                <CharitiesCloud />
+                <Testimonials />
+                <Footer />
+              </>
+            }
+          />
 
-        {/* About Page */}
-        <Route path="/about" element={<About />} />
+          {/* About Page */}
+          <Route path="/about" element={<About />} />
 
-        {/* Login Page */}
-        <Route path="/auth/login" element={<Login />} />
+          {/* Login Page */}
+          <Route path="/auth/login" element={<Login />} />
 
-        {/* Register Page */}
-        <Route path="/auth/register" element={<Register />} />
+          {/* Register Page */}
+          <Route path="/auth/register" element={<Register />} />
 
-        {/* All listings Page */}
-        <Route path="/Listings" element={<Listings />} />
+          {/* All Listings Page */}
+          <Route path="/Listings" element={<Listings />} />
 
-        <Route path="/profile" element={<Profile />} />
+          {/* Profile Page */}
+          <Route path="/profile" element={<Profile />} />
 
-        <Route path="/listing/create" element={<CreateListingPage />} />
+          {/* Create Listing Page */}
+          <Route path="/listing/create" element={<CreateListingPage />} />
 
-
-        <Route path="/listing/SingleListing/:id" element={<SingleListing />} />
-
-
-
-      </Routes>
-    </Router>
+          {/* Single Listing Page */}
+          <Route path="/listing/:id" element={<SingleListing />} /> {/* ✅ Fixed path */}
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 }
 

@@ -66,7 +66,7 @@ const LotCard = ({ id, image, title, price, bids, closingDate, description, tags
   }, [closingDate]);
 
   return (
-    <Link to={`/listing/SingleListing/${id}`} className="block bg-blue-100 shadow-lg rounded-lg p-4 hover:shadow-xl transition">
+    <Link to={`/listing/${id}`} className="block bg-blue-100 shadow-lg rounded-lg p-4 hover:shadow-xl transition">
       <img
         src={image}
         alt={title}
