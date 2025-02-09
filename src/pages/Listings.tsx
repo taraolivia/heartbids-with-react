@@ -5,6 +5,8 @@ import Footer from "../components/Footer";
 import LatestListings from "../components/LatestListings";
 import MostPopularListings from "../components/MostPopularListings";
 import AllLots from "../components/AllLots";
+import { API_LISTINGS } from "../js/api/constants";
+import { getHeaders } from "../js/api/headers";
 
 type AuctionListing = {
   id: string;
@@ -28,19 +30,21 @@ const Listings = () => {
   useEffect(() => {
     async function fetchListings() {
       try {
-        const response = await fetch(
-          "https://api.noroff.dev/api/v1/auction/listings?limit=100&_seller=true"
-        );
+        const response = await fetch(API_LISTINGS, {
+          method: "GET",
+          headers: getHeaders(),
+        });
+  
         if (!response.ok) throw new Error("Failed to fetch listings");
   
         const result = await response.json();
         console.log("API Response:", result);
   
-        if (!result || !Array.isArray(result)) {
+        if (!result || !Array.isArray(result.data)) {
           throw new Error("Unexpected API response format");
         }
   
-        setListings(result);
+        setListings(result.data); // ✅ Correctly accessing the data array
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -60,7 +64,7 @@ const Listings = () => {
       <Hero />
 
       {/* ✅ Pass listings, loading, and error to the new LatestListings component */}
-      <LatestListings listings={listings} loading={loading} error={error} />
+      <LatestListings loading={loading} error={error} />
 
       {/* ✅ Most Popular Listings */}
       <MostPopularListings listings={listings} />

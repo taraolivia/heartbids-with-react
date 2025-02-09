@@ -1,12 +1,14 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
+import { API_LISTINGS } from "../js/api/constants";
+import { getHeaders } from "../js/api/headers";
 
 type AuctionListing = {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   tags: string[];
-  media: string[];
+  media: { url: string; alt: string }[];
   created: string;
   updated: string;
   endsAt: string;
@@ -16,17 +18,46 @@ type AuctionListing = {
 };
 
 type LatestListingsProps = {
-  listings: AuctionListing[];
   loading: boolean;
   error: string | null;
 };
 
-const LatestListings = ({ listings, loading, error }: LatestListingsProps) => {
+const LatestListings = ({ loading, error }: LatestListingsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [listings, setListings] = useState<AuctionListing[]>([]);
 
-  // ✅ Check scroll position
+  useEffect(() => {
+    async function fetchListings() {
+      try {
+        const response = await fetch(`${API_LISTINGS}?limit=100`, {
+          method: "GET",
+          headers: getHeaders(),
+        });
+        if (!response.ok) throw new Error("Failed to fetch listings");
+
+        const result = await response.json();
+        console.log("API Response:", result);
+
+        if (!result || !Array.isArray(result.data)) {
+          throw new Error("Unexpected API response format");
+        }
+
+        setListings(result.data);
+      } catch (err) {
+        console.error("Error fetching listings:", err);
+      }
+    }
+    fetchListings();
+  }, []);
+
+  useEffect(() => {
+    updateScrollButtons();
+    window.addEventListener("resize", updateScrollButtons);
+    return () => window.removeEventListener("resize", updateScrollButtons);
+  }, [listings]);
+
   const updateScrollButtons = () => {
     if (scrollRef.current) {
       setCanScrollLeft(scrollRef.current.scrollLeft > 0);
@@ -36,29 +67,23 @@ const LatestListings = ({ listings, loading, error }: LatestListingsProps) => {
     }
   };
 
-  useEffect(() => {
-    updateScrollButtons(); // Run on mount
-    window.addEventListener("resize", updateScrollButtons); // Update on resize
-    return () => window.removeEventListener("resize", updateScrollButtons);
-  }, []);
-
   const scrollLeft = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: -400, behavior: "smooth" });
-      setTimeout(updateScrollButtons, 500); // Update button visibility after scroll
+      setTimeout(updateScrollButtons, 500);
     }
   };
 
   const scrollRight = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: 400, behavior: "smooth" });
-      setTimeout(updateScrollButtons, 500); // Update button visibility after scroll
+      setTimeout(updateScrollButtons, 500);
     }
   };
 
-  // ✅ Show only active auctions
-  const filteredListings = listings
-    .filter((item) => new Date(item.endsAt).getTime() > new Date().getTime())
+  const filteredListings = (listings || [])
+    .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
+    .filter((item) => item.endsAt && !isNaN(new Date(item.endsAt).getTime()) && new Date(item.endsAt).getTime() > Date.now())
     .slice(0, 20);
 
   return (
@@ -66,7 +91,6 @@ const LatestListings = ({ listings, loading, error }: LatestListingsProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">Latest Listings</h2>
 
-        {/* ✅ Left Arrow Button (only visible when scrolling is possible) */}
         {canScrollLeft && (
           <button
             onClick={scrollLeft}
@@ -76,7 +100,6 @@ const LatestListings = ({ listings, loading, error }: LatestListingsProps) => {
           </button>
         )}
 
-        {/* ✅ Scrollable Listings */}
         <div
           ref={scrollRef}
           className="flex overflow-x-auto gap-4 pb-4 no-scrollbar scroll-smooth"
@@ -94,7 +117,7 @@ const LatestListings = ({ listings, loading, error }: LatestListingsProps) => {
             filteredListings.map((item) => (
               <div key={item.id} className="min-w-[300px]">
                 <LotCard
-                  image={item.media.length > 0 ? item.media[0] : "https://placehold.co/300x200"}
+                  image={item.media.length > 0 ? item.media[0].url : "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"}
                   title={item.title}
                   price={item._count?.bids || 0}
                   bids={item._count?.bids || 0}
@@ -104,7 +127,6 @@ const LatestListings = ({ listings, loading, error }: LatestListingsProps) => {
             ))}
         </div>
 
-        {/* ✅ Right Arrow Button (only visible when scrolling is possible) */}
         {canScrollRight && (
           <button
             onClick={scrollRight}

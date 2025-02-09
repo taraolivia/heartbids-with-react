@@ -6,7 +6,7 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
         {/* Left Text Section */}
         <div className="md:w-1/2 text-center md:text-left">
-          <h1 className="text-4xl font-bold text-gray-800 leading-tight">An auction platform where winning bids fund a charity of your choice.</h1>
+          <h1 className="text-4xl font-bold text-gray-800 leading-tight pt-20">An auction platform where winning bids fund a charity of your choice.</h1>
           <p className="text-gray-600 mt-4">
             Join with <span className="font-bold text-gray-800">4600+ Bidders</span> and start giving to charity right now.
           </p>
