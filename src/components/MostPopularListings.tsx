@@ -1,30 +1,62 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
+import { Listing } from "../ts/types/listingTypes";
+import { API_LISTINGS } from "../js/api/constants";
+import { getHeaders } from "../js/api/headers";
 
-type AuctionListing = {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  media: { url: string; alt: string }[];
-  created: string;
-  updated: string;
-  endsAt: string;
-  _count: {
-    bids: number;
-  };
-};
-
-type MostPopularListingsProps = {
-  listings: AuctionListing[];
-};
-
-const MostPopularListings = ({ listings }: MostPopularListingsProps) => {
+const MostPopularListings = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // ✅ Check scroll position
+  // ✅ Fetch listings from API
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch(`${API_LISTINGS}?limit=100&_bids=true&_seller=true`, {
+          method: "GET",
+          headers: getHeaders(),
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch popular listings");
+
+        const result = await response.json();
+        console.log("API Response:", result);
+
+        if (!result?.data || !Array.isArray(result.data)) {
+          throw new Error("Unexpected API response format");
+        }
+
+        setListings(result.data);
+      } catch (err) {
+        console.error("Error fetching listings:", err);
+        setError("Failed to load popular listings.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  // ✅ Update scroll buttons
+  useEffect(() => {
+    if (scrollRef.current) {
+      updateScrollButtons();
+      scrollRef.current.addEventListener("scroll", updateScrollButtons);
+    }
+    window.addEventListener("resize", updateScrollButtons);
+    return () => {
+      if (scrollRef.current) {
+        scrollRef.current.removeEventListener("scroll", updateScrollButtons);
+      }
+      window.removeEventListener("resize", updateScrollButtons);
+    };
+  }, [listings]);
+
   const updateScrollButtons = () => {
     if (scrollRef.current) {
       setCanScrollLeft(scrollRef.current.scrollLeft > 0);
@@ -33,12 +65,6 @@ const MostPopularListings = ({ listings }: MostPopularListingsProps) => {
       );
     }
   };
-
-  useEffect(() => {
-    updateScrollButtons();
-    window.addEventListener("resize", updateScrollButtons);
-    return () => window.removeEventListener("resize", updateScrollButtons);
-  }, []);
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -79,21 +105,29 @@ const MostPopularListings = ({ listings }: MostPopularListingsProps) => {
           className="flex overflow-x-auto gap-4 pb-4 no-scrollbar scroll-smooth"
           onScroll={updateScrollButtons}
         >
-          {popularListings.length === 0 && (
+          {loading && <div className="text-center text-gray-600 mt-8">Loading listings...</div>}
+          {error && <div className="text-center bg-red-100 text-red-600 rounded-md p-4 mt-8">{error}</div>}
+          {!loading && !error && popularListings.length === 0 && (
             <div className="text-center text-gray-600 mt-8">No popular listings available.</div>
           )}
 
-          {popularListings.map((item) => (
-            <div key={item.id} className="min-w-[300px]">
-              <LotCard
-                  image={item.media.length > 0 ? item.media[0].url : "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"}
+          {!loading &&
+            !error &&
+            popularListings.map((item) => (
+              <div key={item.id} className="min-w-[300px]">
+                <LotCard
+                  key={item.id}
+                  id={item.id} // ✅ Correctly passing the 'id' of the listing
+                  image={item.media.length > 0 ? item.media[0].url : "https://placehold.co/300"}
                   title={item.title}
-                price={item._count?.bids || 0}
-                bids={item._count?.bids || 0}
-                closingDate={item.endsAt}
-              />
-            </div>
-          ))}
+                  price={Array.isArray(item.bids) && item.bids.length > 0 
+                    ? Math.max(...item.bids.map((bid) => bid.amount).filter(amount => !isNaN(amount) && amount > 0)) 
+                    : 0}
+                  bids={item._count?.bids || 0} // ✅ Number of bids
+                  closingDate={item.endsAt}
+                />
+              </div>
+            ))}
         </div>
 
         {canScrollRight && (
