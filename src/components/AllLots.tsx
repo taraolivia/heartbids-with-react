@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LotCard from "./LotCard";
-import SortDropdown from "./SortDropdown"; // ✅ Import sorting component
+import SortDropdown from "./SortDropdown"; // ✅ Sorting Component
 
 type Seller = {
   name: string;
@@ -17,7 +17,7 @@ type AuctionListing = {
   title: string;
   description: string;
   tags: string[];
-  media: string[];
+  media: { url: string; alt?: string }[];
   created: string;
   updated: string;
   endsAt: string;
@@ -33,37 +33,35 @@ type AllLotsProps = {
 
 const AllLots = ({ listings }: AllLotsProps) => {
   const [includeEnded, setIncludeEnded] = useState(false);
-  const [sortType, setSortType] = useState("newest"); // ✅ Default sorting: Newest
+  const [sortType, setSortType] = useState("newest"); // ✅ Default: Newest
 
   // ✅ Separate active and ended auctions
-  const activeLots = listings.filter((lot) => new Date(lot.endsAt).getTime() > new Date().getTime());
-  const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= new Date().getTime());
+  const activeLots = listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
+  const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Date.now());
 
-  let displayedLots: AuctionListing[] = [];
-
-  if (!includeEnded) {
-    displayedLots = activeLots.slice(0, 30); // ✅ Show at least 30 active auctions (if available)
-  } else {
-    const needed = 30 - activeLots.length;
-    displayedLots = [...activeLots, ...endedLots.slice(0, needed)]; // ✅ Fill with ended auctions if needed
-  }
+  const displayedLots: AuctionListing[] = includeEnded
+    ? [...activeLots, ...endedLots].slice(0, 30) // ✅ Always include ended if checkbox enabled
+    : activeLots.slice(0, 30);
 
   // ✅ Apply sorting based on selected filter
   switch (sortType) {
+    case "newest":
+      displayedLots.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+      break;
+    case "oldest":
+      displayedLots.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
+      break;
     case "mostBids":
       displayedLots.sort((a, b) => b._count.bids - a._count.bids);
       break;
-    case "highestPrice":
-      displayedLots.sort((a, b) => (b._count.bids || 0) - (a._count.bids || 0)); // ✅ Sorting by bids since price isn't in API
-      break;
-    case "lowestPrice":
-      displayedLots.sort((a, b) => (a._count.bids || 0) - (b._count.bids || 0)); // ✅ Sorting by bids as a placeholder for price
+    case "leastBids":
+      displayedLots.sort((a, b) => a._count.bids - b._count.bids);
       break;
     case "endingSoon":
       displayedLots.sort((a, b) => new Date(a.endsAt).getTime() - new Date(b.endsAt).getTime());
       break;
     default:
-      break; // Newest is already in default order
+      break; // ✅ Newest by default
   }
 
   return (
@@ -94,22 +92,22 @@ const AllLots = ({ listings }: AllLotsProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {displayedLots.map((lot) => (
               <LotCard
-  image={lot.media.length > 0 ? lot.media[0] : "https://placehold.co/300x200"}
-  title={lot.title}
-  price={lot._count?.bids || 0}
-  bids={lot._count?.bids || 0}
-  closingDate={lot.endsAt}
-  description={lot.description}
-  tags={lot.tags}
-  created={lot.created}
-  updated={lot.updated}
-  showDescription={false}
-  showTags={false}
-  showCreatedUpdated={false}
-  seller={lot.seller} 
-  showSeller={true} 
-/>
-
+                key={lot.id}
+                image={lot.media.length > 0 ? lot.media[0].url : "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png"}
+                title={lot.title}
+                price={lot._count?.bids || 0}
+                bids={lot._count?.bids || 0}
+                closingDate={lot.endsAt}
+                description={lot.description}
+                tags={lot.tags}
+                created={lot.created}
+                updated={lot.updated}
+                showDescription={false}
+                showTags={false}
+                showCreatedUpdated={false}
+                seller={lot.seller}
+                showSeller={true}
+              />
             ))}
           </div>
         )}
