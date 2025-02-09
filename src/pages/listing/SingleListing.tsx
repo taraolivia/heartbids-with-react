@@ -12,9 +12,8 @@ const SingleListing = () => {
   const [error, setError] = useState<string | null>(null);
   const { placeBid, bidMessage, bidLoading } = useBidding(id!);
   const isAuctionEnded = listing?.endsAt ? new Date(listing.endsAt).getTime() < Date.now() : false;
-  const { user } = useUser(); 
+  const { user } = useUser();
   const [showBio, setShowBio] = useState<boolean>(false);
-
 
   // ✅ Move highestBid ABOVE useState
   const highestBid = listing?.bids && listing.bids.length > 0 ? Math.max(...listing.bids.map((bid) => bid.amount)) : 0;
@@ -113,56 +112,38 @@ const SingleListing = () => {
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg my-8 space-y-4">
       <h1 className="text-3xl font-semibold text-gray-800 mt-30">{listing.title}</h1>
       <div className="flex flex-wrap gap-6 items-start mt-6">
-  {/* ✅ Image on the Left */}
-  {listing.media.length > 0 && (
-    <img
-      src={listing.media[0].url}
-      alt={listing.media[0].alt}
-      className="w-80 h-auto object-cover rounded-md"
-    />
-  )}
+        {/* ✅ Image on the Left */}
+        {listing.media.length > 0 && <img src={listing.media[0].url} alt={listing.media[0].alt} className="w-80 h-auto object-cover rounded-md" />}
 
-  {/* ✅ Description & Seller on the Right */}
-  <div className="flex-1 space-y-4">
-    {/* ✅ Description */}
-    <p className="text-gray-600 text-lg">{listing.description}</p>
+        {/* ✅ Description & Seller on the Right */}
+        <div className="flex-1 space-y-4">
+          {/* ✅ Description */}
+          <p className="text-gray-600 text-lg">{listing.description}</p>
 
-    {/* ✅ Seller Info */}
-    {listing.seller && (
-      <div className="p-4 border rounded-lg shadow-sm bg-gray-100">
-        <div className="flex items-center space-x-4">
-          {/* ✅ Seller Avatar */}
-          <img
-            src={listing.seller.avatar?.url || "https://placehold.co/50"}
-            alt={listing.seller.avatar?.alt || "Seller Avatar"}
-            className="w-12 h-12 rounded-full object-cover"
-          />
+          {/* ✅ Seller Info */}
+          {listing.seller && (
+            <div className="p-4 border rounded-lg shadow-sm bg-gray-100">
+              <div className="flex items-center space-x-4">
+                {/* ✅ Seller Avatar */}
+                <img src={listing.seller.avatar?.url || "https://placehold.co/50"} alt={listing.seller.avatar?.alt || "Seller Avatar"} className="w-12 h-12 rounded-full object-cover" />
 
-          <div>
-            {/* ✅ Seller Name */}
-            <h3 className="text-lg font-semibold text-gray-800">{listing.seller.name}</h3>
+                <div>
+                  {/* ✅ Seller Name */}
+                  <h3 className="text-lg font-semibold text-gray-800">{listing.seller.name}</h3>
 
-            {/* ✅ Toggle Button for Bio */}
-            <button
-              onClick={() => setShowBio((prev) => !prev)}
-              className="text-sm text-blue-600 hover:underline focus:outline-none"
-            >
-              {showBio ? "Hide Bio" : "View Bio"}
-            </button>
-          </div>
+                  {/* ✅ Toggle Button for Bio */}
+                  <button onClick={() => setShowBio((prev) => !prev)} className="text-sm text-blue-600 hover:underline focus:outline-none">
+                    {showBio ? "Hide Bio" : "View Bio"}
+                  </button>
+                </div>
+              </div>
+
+              {/* ✅ Seller Bio (Collapsible) */}
+              {showBio && <p className="mt-3 text-gray-600 border-t pt-3">{listing.seller.bio || "No bio available."}</p>}
+            </div>
+          )}
         </div>
-
-        {/* ✅ Seller Bio (Collapsible) */}
-        {showBio && (
-          <p className="mt-3 text-gray-600 border-t pt-3">
-            {listing.seller.bio || "No bio available."}
-          </p>
-        )}
       </div>
-    )}
-  </div>
-</div>
-
 
       {listing.tags && listing.tags.length > 0 && (
         <div className="mt-4">

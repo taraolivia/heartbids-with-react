@@ -1,35 +1,24 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { LotCardProps } from "../ts/types/listingTypes";
 
-type Seller = {
-  name: string;
-  email: string;
-  bio?: string;
-  avatar?: {
-    url: string;
-    alt?: string;
-  };
-};
-
-type LotCardProps = {
-  id: string;
-  image: string;
-  title: string;
-  price: number;
-  bids: number;
-  closingDate: string;
-  description?: string;
-  tags?: string[];
-  created?: string;
-  updated?: string;
-  showDescription?: boolean;
-  showTags?: boolean;
-  showCreatedUpdated?: boolean;
-  seller?: Seller;
-  showSeller?: boolean;
-};
-
-const LotCard = ({ id, image, title, price, bids, closingDate, description, tags, created, updated, showDescription = false, showTags = false, showCreatedUpdated = false, seller, showSeller = false }: LotCardProps) => {
+const LotCard: React.FC<LotCardProps> = ({ 
+  id, 
+  image, 
+  title, 
+  price, 
+  bids, 
+  closingDate, 
+  description, 
+  tags, 
+  created, 
+  updated, 
+  showDescription, 
+  showTags, 
+  showCreatedUpdated, 
+  seller, 
+  showSeller 
+}) => { 
   const [timeLeft, setTimeLeft] = useState<string>("Calculating...");
 
   useEffect(() => {
