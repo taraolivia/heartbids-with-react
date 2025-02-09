@@ -6,7 +6,7 @@ type AuctionListing = {
   title: string;
   description: string;
   tags: string[];
-  media: string[];
+  media: { url: string; alt: string }[];
   created: string;
   updated: string;
   endsAt: string;
@@ -86,8 +86,8 @@ const MostPopularListings = ({ listings }: MostPopularListingsProps) => {
           {popularListings.map((item) => (
             <div key={item.id} className="min-w-[300px]">
               <LotCard
-                image={item.media.length > 0 ? item.media[0] : "https://placehold.co/300x200"}
-                title={item.title}
+                  image={item.media.length > 0 ? item.media[0].url : "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"}
+                  title={item.title}
                 price={item._count?.bids || 0}
                 bids={item._count?.bids || 0}
                 closingDate={item.endsAt}
