@@ -2,7 +2,12 @@
 @import "tailwindcss";
 
 
+
 @layer base {
+
+
+
+
     :root {
       --text-50: 94.04%, 0.026, 288.32;
       --text-100: 87.78%, 0.054, 287.59;

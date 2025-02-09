@@ -15,6 +15,7 @@ import Testimonials from "./components/Testimonials";
 import Listings from "./pages/Listings";
 import Profile from "./pages/profile/Profile";
 import CreateListingPage from "./pages/listing/create/CreateListing";
+import SingleListing from "./pages/listing/SingleListing";
 
 function App() {
   return (
@@ -52,7 +53,11 @@ function App() {
 
         <Route path="/profile" element={<Profile />} />
 
-        <Route path="/listing/create" element={<CreateListingPage />} /> {/* ✅ Add this line */}
+        <Route path="/listing/create" element={<CreateListingPage />} />
+
+
+        <Route path="/listing/SingleListing/:id" element={<SingleListing />} />
+
 
 
       </Routes>
