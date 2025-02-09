@@ -15,5 +15,10 @@ export type Bid = {
     tags: string[];
     _count: { bids: number };
     bids?: Bid[];
+    seller: {
+      name: string;
+      avatar?: { url: string; alt?: string }; // ✅ Added avatar (optional)
+      bio?: string; // ✅ Added bio (optional)
+    };
   };
   
