@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from "./pages/profile/UserProvider";
 import Navbar from "./components/NavbarMain";
 import Hero from "./components/Hero";
-import PopularLots from "./components/PopularLots";
 import GeneralInfo from "./components/GeneralInfo";
 import Footer from "./components/Footer";
 import About from "./pages/About";
@@ -17,6 +16,7 @@ import Listings from "./pages/Listings";
 import Profile from "./pages/profile/Profile";
 import CreateListingPage from "./pages/listing/create/CreateListing";
 import SingleListing from "./pages/listing/SingleListing";
+import MostPopularListings from "./components/MostPopularListings";
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
             element={
               <>
                 <Hero />
-                <PopularLots />
+                <MostPopularListings />
                 <GeneralInfo />
                 <AuthPrompt />
                 <HowItWorks />
