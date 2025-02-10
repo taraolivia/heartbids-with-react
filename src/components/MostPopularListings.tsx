@@ -12,25 +12,49 @@ const MostPopularListings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ Fetch listings from API
   useEffect(() => {
-    const fetchListings = async () => {
+    const fetchListings = async (): Promise<void> => {
+      const allListings: Listing[] = [];
+      let page = 1;
+      let hasMore = true;
+
       try {
-        const response = await fetch(`${API_LISTINGS}?limit=100&_bids=true&_seller=true`, {
-          method: "GET",
-          headers: getHeaders(),
-        });
+        while (hasMore) {
+          const response = await fetch(`${API_LISTINGS}?_bids=true&_seller=true&page=${page}`, {
+            method: "GET",
+            headers: getHeaders(),
+          });
 
-        if (!response.ok) throw new Error("Failed to fetch popular listings");
+          if (!response.ok) {
+            console.error(`Error fetching page ${page}`);
+            throw new Error("Failed to fetch listings");
+          }
 
-        const result = await response.json();
-        console.log("API Response:", result);
+          const result: { data: Listing[]; meta: { isLastPage: boolean } } = await response.json();
+          console.log(`Page ${page} Response:`, result);
 
-        if (!result?.data || !Array.isArray(result.data)) {
-          throw new Error("Unexpected API response format");
+          allListings.push(...result.data);
+          hasMore = !result.meta.isLastPage;
+          page++;
         }
 
-        setListings(result.data);
+        console.log(`Total Listings Fetched: ${allListings.length}`);
+
+        // ✅ Filter only active listings
+        const activeListings = allListings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
+
+        // ✅ Correct Sorting by Number of Bids
+        const sortedListings = activeListings
+          .sort((a, b) => {
+            const aBidCount = a._count?.bids || 0; // ✅ Use correct count
+            const bBidCount = b._count?.bids || 0;
+            return bBidCount - aBidCount; // ✅ Higher bid count first
+          })
+          .slice(0, 10); // ✅ Keep only the top 10 most popular listings
+
+        console.log("Sorted Top 10 Listings:", sortedListings);
+
+        setListings(sortedListings);
       } catch (err) {
         console.error("Error fetching listings:", err);
         setError("Failed to load popular listings.");
@@ -42,7 +66,6 @@ const MostPopularListings = () => {
     fetchListings();
   }, []);
 
-  // ✅ Update scroll buttons
   useEffect(() => {
     if (scrollRef.current) {
       updateScrollButtons();
@@ -80,12 +103,6 @@ const MostPopularListings = () => {
     }
   };
 
-  // ✅ Sort by most bids and filter out ended auctions
-  const popularListings = listings
-    .filter((item) => new Date(item.endsAt).getTime() > new Date().getTime()) // Only active auctions
-    .sort((a, b) => b._count.bids - a._count.bids) // Most bids first
-    .slice(0, 10); // Top 10 most popular
-
   return (
     <section className="py-16 bg-gray-100 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,23 +124,25 @@ const MostPopularListings = () => {
         >
           {loading && <div className="text-center text-gray-600 mt-8">Loading listings...</div>}
           {error && <div className="text-center bg-red-100 text-red-600 rounded-md p-4 mt-8">{error}</div>}
-          {!loading && !error && popularListings.length === 0 && (
+          {!loading && !error && listings.length === 0 && (
             <div className="text-center text-gray-600 mt-8">No popular listings available.</div>
           )}
 
           {!loading &&
             !error &&
-            popularListings.map((item) => (
+            listings.map((item) => (
               <div key={item.id} className="min-w-[300px]">
                 <LotCard
                   key={item.id}
-                  id={item.id} // ✅ Correctly passing the 'id' of the listing
-                  image={item.media.length > 0 ? item.media[0].url : "https://placehold.co/300"}
+                  id={item.id}
+                  image={item.media?.[0]?.url || "https://placehold.co/300"}
                   title={item.title}
-                  price={Array.isArray(item.bids) && item.bids.length > 0 
-                    ? Math.max(...item.bids.map((bid) => bid.amount).filter(amount => !isNaN(amount) && amount > 0)) 
-                    : 0}
-                  bids={item._count?.bids || 0} // ✅ Number of bids
+                  price={
+                    Array.isArray(item.bids) && item.bids.length > 0
+                      ? Math.max(...item.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0))
+                      : 0
+                  }
+                  bids={item._count?.bids || 0}
                   closingDate={item.endsAt}
                 />
               </div>

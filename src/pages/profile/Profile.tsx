@@ -88,7 +88,7 @@ const Profile: React.FC = () => {
           <div className="bg-gray-50 p-4 rounded-lg shadow-md">
             <p className="text-gray-500">No listings yet. Start selling today!</p>
             <Link
-              to="/create-listing"
+              to="/listing/create/"
               className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
               Create a Listing

@@ -9,43 +9,53 @@ const AllLots = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [includeEnded, setIncludeEnded] = useState(false);
   const [sortType, setSortType] = useState("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPage = 30; // Number of listings per page
+  const [totalPages, setTotalPages] = useState(1); // ✅ FIX: Dynamically update total pages
 
   useEffect(() => {
-    async function fetchListings() {
+    async function fetchAllListings() {
+      const allListings: Listing[] = [];
+      let page = 1;
+      let hasMore = true;
+
       try {
-        const response = await fetch(`${API_LISTINGS}?limit=100&_bids=true`, {
-          method: "GET",
-          headers: getHeaders(),
-        });
+        while (hasMore) {
+          const response = await fetch(`${API_LISTINGS}?_bids=true&_seller=true&page=${page}`, {
+            method: "GET",
+            headers: getHeaders(),
+          });
 
-        if (!response.ok) throw new Error("Failed to fetch listings");
+          if (!response.ok) throw new Error("Failed to fetch listings");
 
-        const result = await response.json();
-        console.log("API Response:", result);
+          const result: { data: Listing[]; meta: { isLastPage: boolean } } = await response.json();
+          console.log(`Page ${page} Response:`, result);
 
-        if (!result?.data || !Array.isArray(result.data)) {
-          throw new Error("Unexpected API response format");
+          allListings.push(...result.data);
+          hasMore = !result.meta.isLastPage;
+          page++;
         }
 
-        setListings(result.data);
+        console.log(`Total Listings Fetched: ${allListings.length}`);
+
+        setListings(allListings);
+        setTotalPages(Math.ceil(allListings.length / perPage)); // ✅ FIX: Calculate total pages dynamically
       } catch (err) {
         console.error("Error fetching listings:", err);
       }
     }
 
-    fetchListings();
+    fetchAllListings();
   }, []);
 
-  // Separate active and ended auctions
+  // ✅ Separate active and ended auctions
   const activeLots = listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
   const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Date.now());
 
-  const displayedLots = includeEnded
-    ? [...activeLots, ...endedLots].slice(0, 30) // Include ended if checkbox enabled
-    : activeLots.slice(0, 30);
+  const combinedLots = includeEnded ? [...activeLots, ...endedLots] : activeLots;
 
-  // Apply sorting
-  const sortedLots = [...displayedLots];
+  // ✅ Apply sorting AFTER fetching all listings
+  const sortedLots = [...combinedLots];
   switch (sortType) {
     case "newest":
       sortedLots.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
@@ -54,49 +64,35 @@ const AllLots = () => {
       sortedLots.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
       break;
     case "mostBids":
-      sortedLots.sort((a, b) => b._count.bids - a._count.bids);
+      sortedLots.sort((a, b) => (b._count?.bids || 0) - (a._count?.bids || 0));
       break;
     case "leastBids":
-      sortedLots.sort((a, b) => a._count.bids - b._count.bids);
+      sortedLots.sort((a, b) => (a._count?.bids || 0) - (b._count?.bids || 0));
       break;
     case "highestPrice":
       sortedLots.sort((a, b) => {
-        const aHighestBid = Array.isArray(a.bids) && a.bids.length > 0
-          ? Math.max(...a.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0))
-          : 0;
-  
-        const bHighestBid = Array.isArray(b.bids) && b.bids.length > 0
-          ? Math.max(...b.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0))
-          : 0;
-  
+        const aHighestBid = Array.isArray(a.bids) && a.bids.length > 0 ? Math.max(...a.bids.map((bid) => bid.amount)) : 0;
+        const bHighestBid = Array.isArray(b.bids) && b.bids.length > 0 ? Math.max(...b.bids.map((bid) => bid.amount)) : 0;
         return bHighestBid - aHighestBid;
       });
       break;
-      case "lowestPrice":
-        sortedLots.sort((a, b) => {
-          const aHighestBid = Array.isArray(a.bids) && a.bids.length > 0
-            ? Math.max(...a.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0))
-            : 0; // Use 0 for listings with no bids
-      
-          const bHighestBid = Array.isArray(b.bids) && b.bids.length > 0
-            ? Math.max(...b.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0))
-            : 0; // Use 0 for listings with no bids
-      
-          return aHighestBid - bHighestBid; // Sort from lowest to highest
-        });
-        break;
-      
-      
-      
-      
-      
+    case "lowestPrice":
+      sortedLots.sort((a, b) => {
+        const aHighestBid = Array.isArray(a.bids) && a.bids.length > 0 ? Math.max(...a.bids.map((bid) => bid.amount)) : 0;
+        const bHighestBid = Array.isArray(b.bids) && b.bids.length > 0 ? Math.max(...b.bids.map((bid) => bid.amount)) : 0;
+        return aHighestBid - bHighestBid;
+      });
+      break;
     case "endingSoon":
       sortedLots.sort((a, b) => new Date(a.endsAt).getTime() - new Date(b.endsAt).getTime());
       break;
     default:
-      break; // Default to "newest"
+      break;
   }
-  
+
+  // ✅ Apply pagination AFTER sorting
+  const startIndex = (currentPage - 1) * perPage;
+  const paginatedLots = sortedLots.slice(startIndex, startIndex + perPage);
 
   return (
     <section className="py-16 bg-white">
@@ -120,19 +116,19 @@ const AllLots = () => {
           </label>
         </div>
 
-        {sortedLots.length === 0 ? (
+        {paginatedLots.length === 0 ? (
           <div className="text-center text-gray-600 mt-8">No lots available.</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {sortedLots.map((lot) => (
+            {paginatedLots.map((lot) => (
               <LotCard
                 key={lot.id}
                 id={lot.id}
-                image={lot.media.length > 0 ? lot.media[0].url : "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"}
+                image={lot.media.length > 0 ? lot.media[0].url : "https://via.placeholder.com/300"}
                 title={lot.title}
                 price={
                   Array.isArray(lot.bids) && lot.bids.length > 0
-                    ? Math.max(...lot.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0))
+                    ? Math.max(...lot.bids.map((bid) => bid.amount))
                     : 0
                 }
                 bids={lot._count?.bids || 0}
@@ -141,6 +137,27 @@ const AllLots = () => {
             ))}
           </div>
         )}
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 mx-1 ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+          >
+            Previous
+          </button>
+
+          <span className="px-4 py-2 mx-1 bg-gray-200">{`Page ${currentPage} of ${totalPages}`}</span>
+
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 mx-1 ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </section>
   );

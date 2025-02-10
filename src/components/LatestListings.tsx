@@ -14,25 +14,22 @@ const LatestListings = ({ loading, error }: LatestListingsProps) => {
   useEffect(() => {
     async function fetchListings() {
       try {
-        const response = await fetch(`${API_LISTINGS}?limit=100&_bids=true&_seller=true`, {
+        const response = await fetch(`${API_LISTINGS}?_bids=true&_seller=true&_active=true&sort=created&order=desc`, {
           method: "GET",
           headers: getHeaders(),
         });
-
+    
         if (!response.ok) throw new Error("Failed to fetch listings");
-
+    
         const result = await response.json();
         console.log("API Response:", result);
-
-        if (!result?.data || !Array.isArray(result.data)) {
-          throw new Error("Unexpected API response format");
-        }
-
-        setListings(result.data);
+    
+        setListings(result.data); // Store the sorted listings
       } catch (err) {
         console.error("Error fetching listings:", err);
       }
     }
+    
     fetchListings();
   }, []);
 

@@ -20,7 +20,7 @@ import MostPopularListings from "./components/MostPopularListings";
 
 function App() {
   return (
-    <UserProvider> {/* ✅ Wrap entire app inside UserProvider */}
+    <UserProvider> 
       <Router>
         <Navbar />
         <Routes>
@@ -60,7 +60,7 @@ function App() {
           <Route path="/listing/create" element={<CreateListingPage />} />
 
           {/* Single Listing Page */}
-          <Route path="/listing/:id" element={<SingleListing />} /> {/* ✅ Fixed path */}
+          <Route path="/listing/:id" element={<SingleListing />} />
         </Routes>
       </Router>
     </UserProvider>

@@ -38,7 +38,8 @@ const CreateListingForm: React.FC = () => {
   };
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, tags: e.target.value.split(",").map((tag) => tag.trim()) });
+    const userTags = e.target.value.split(",").map((tag) => tag.trim());
+    setFormData({ ...formData, tags: userTags });
   };
 
   const handleMediaChange = (index: number, field: "url" | "alt", value: string) => {
@@ -46,7 +47,6 @@ const CreateListingForm: React.FC = () => {
     updatedMedia[index] = { ...updatedMedia[index], [field]: value };
     setFormData({ ...formData, media: updatedMedia });
   };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,12 +59,18 @@ const CreateListingForm: React.FC = () => {
     }
 
     try {
+      // Ensure "HeartBids" is always included in the tags
+      const updatedTags = formData.tags ? [...formData.tags] : [];
+      if (!updatedTags.includes("HeartBids")) {
+        updatedTags.push("HeartBids");
+      }
+
       const response = await fetch(API_LISTINGS, {
         method: "POST",
-        headers: getHeaders(), // ✅ Use imported headers function
-        body: JSON.stringify(formData),
+        headers: getHeaders(),
+        body: JSON.stringify({ ...formData, tags: updatedTags }),
       });
-      
+
       const responseData = await response.json();
       console.log("API Response:", responseData);
 
@@ -144,3 +150,4 @@ const CreateListingForm: React.FC = () => {
 };
 
 export default CreateListingPage;
+
