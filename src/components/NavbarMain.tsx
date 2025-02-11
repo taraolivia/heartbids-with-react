@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import HandleLogout from "../pages/auth/HandleLogout";
-
-
 
 // ✅ Function to retrieve user profile from localStorage
 const getUserProfile = () => {
@@ -13,33 +11,39 @@ const getUserProfile = () => {
 const Navbar = () => {
   const [user, setUser] = useState(getUserProfile());
   const [credits, setCredits] = useState(user?.credits ?? 0); // ✅ Track credits separately
+  const location = useLocation(); // ✅ Get current route
 
   useEffect(() => {
     const handleStorageChange = () => {
       const updatedUser = getUserProfile();
-      console.log("Storage change detected, updating navbar...", updatedUser); // ✅ Debugging log
+      console.log("Storage change detected, updating navbar...", updatedUser);
 
       setUser(updatedUser);
-      setCredits(updatedUser?.credits ?? 0); // ✅ Update credits
+      setCredits(updatedUser?.credits ?? 0);
     };
 
     window.addEventListener("storage", handleStorageChange);
 
-    // ✅ Polling every second to detect changes (React doesn't auto-detect localStorage updates)
     const interval = setInterval(() => {
       const updatedUser = getUserProfile();
       if (JSON.stringify(updatedUser) !== JSON.stringify(user)) {
         console.log("Detected user change, updating navbar...", updatedUser);
         setUser(updatedUser);
-        setCredits(updatedUser?.credits ?? 0); // ✅ Update credits
+        setCredits(updatedUser?.credits ?? 0);
       }
-    }, 500); // Check every half second (adjust if needed)
+    }, 500);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
-      clearInterval(interval); // ✅ Cleanup interval when unmounting
+      clearInterval(interval);
     };
   }, [user]);
+
+  // ✅ Function to determine active link styling
+  const getLinkClass = (path: string) =>
+    location.pathname === path
+      ? "text-blue-600 font-semibold" // Active link styling
+      : "text-black hover:text-blue-600";
 
   return (
     <nav className="bg-white shadow-md w-full fixed z-1000 pt-5 pb-5">
@@ -47,22 +51,22 @@ const Navbar = () => {
         
         {/* Left Menu */}
         <div className="flex space-x-6">
-          <Link to="/listings" className="text-black hover:text-blue-600">
+          <Link to="/listings" className={getLinkClass("/listings")}>
             Listings
           </Link>
-          <Link to="/about" className="text-black hover:text-blue-600">
+          <Link to="/about" className={getLinkClass("/about")}>
             About HeartBids
           </Link>
-          <Link to="/charities" className="text-black hover:text-blue-600">
+          <Link to="/charities" className={getLinkClass("/charities")}>
             Charities
           </Link>
         </div>
 
         {/* Center Logo */}
         <div className="flex justify-center">
-          <Link to="/" className="text-black hover:text-blue-600">
+          <Link to="/" className={getLinkClass("/")}>
             <img
-              src="/images/logo/HeartBids.png"
+              src="/images/logo/HeartBids(1).png"
               alt="HeartBids Logo"
               className="h-30 mt-5"
             />
@@ -79,7 +83,7 @@ const Navbar = () => {
                   alt={user.name}
                   className="w-10 h-10 rounded-full"
                 />
-                <Link to="/profile" className="text-black font-semibold hover:text-blue-600">
+                <Link to="/profile" className={getLinkClass("/profile")}>
                   {user.name}
                 </Link>
               </div>
@@ -104,11 +108,11 @@ const Navbar = () => {
             </div>
           ) : (
             <>
-              <Link to="/auth/login" className="text-black hover:text-blue-600">
+              <Link to="/auth/login" className={getLinkClass("/auth/login")}>
                 Log In
               </Link>
               <Link
-                to="/auth/Register"
+                to="/auth/register"
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
               >
                 Sign up to HeartBids

@@ -21,16 +21,17 @@ export type Listing = {
   media: Array<{ url: string; alt: string }>;
   tags: string[];
   _count: { bids: number };
-  bids?: Bid[]; // ✅ No change here; just ensure it's properly fetched
+  bids?: Bid[];
   seller: {
     name: string;
-    email: string; // ✅ Added email
+    email: string;
     bio?: string;
     avatar?: { url: string; alt?: string };
-    banner?: { url: string; alt?: string }; // ✅ Added banner
-    wins?: string[]; // ✅ Added wins (array of listing IDs)
+    banner?: { url: string; alt?: string };
+    wins?: string[]; // ✅ Ensuring seller's `wins` is an array of listing IDs
   };
 };
+
 
 export type LatestListingsProps = {
   loading: boolean;
@@ -63,4 +64,23 @@ export type LotCardProps = {
   showCreatedUpdated?: boolean;
   seller?: Seller;
   showSeller?: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  showControls?: boolean; // ✅ NEW: Only show buttons when true
 };
+
+
+
+
+export type UserProfile = {
+  name: string;
+  email: string; // ✅ Added email
+  bio?: string;
+  avatar?: { url: string; alt?: string };
+  banner?: { url: string; alt?: string };
+  credits: number;
+  _count?: { listings?: number; wins?: number }; 
+  listings: Listing[];
+};
+
+
