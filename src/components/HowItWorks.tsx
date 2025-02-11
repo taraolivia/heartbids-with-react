@@ -1,26 +1,29 @@
 import React from "react";
 
-interface Step {
-  number: number;
-  title: string;
-  description: string;
-}
-
-const steps: Step[] = [
+const steps = [
   {
     number: 1,
-    title: "Sign up",
-    description: "Sign up for creating your first online store with ease.",
+    title: "Create an Account",
+    description:
+      "Sign up for free and get 1000 credits to start bidding on exciting items.",
   },
   {
     number: 2,
-    title: "Add your products",
-    description: "Add your products to your store and customize.",
+    title: "List Your Items",
+    description:
+      "Have something valuable to auction? Easily create a listing with images and details.",
   },
   {
     number: 3,
-    title: "Sell and earn",
-    description: "Sell and earn as much as you can. Grow fast.",
+    title: "Place Bids & Win",
+    description:
+      "Explore live auctions and place bids on items you love. The highest bidder wins!",
+  },
+  {
+    number: 4,
+    title: "Earn & Spend Credits",
+    description:
+      "Sell your items to earn more credits, and use them to bid on exclusive listings.",
   },
 ];
 
@@ -30,10 +33,10 @@ const HowItWorks: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-800">How it works</h2>
+          <h2 className="text-3xl font-bold text-gray-800">How HeartBids Works</h2>
           <p className="text-gray-600 mt-2">
-            With lots of unique blocks, you can easily build a page without
-            coding. Build your next landing page.
+            Join thousands of bidders and sellers in an easy-to-use auction marketplace.
+            Create listings, place bids, and win unique items today!
           </p>
         </div>
 
@@ -45,7 +48,7 @@ const HowItWorks: React.FC = () => {
               className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center max-w-sm"
             >
               {/* Step Number */}
-              <div className="bg-black text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mb-4">
+              <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mb-4">
                 {step.number}
               </div>
               {/* Step Title */}
