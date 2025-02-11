@@ -124,7 +124,7 @@ const AllLots = () => {
               <LotCard
                 key={lot.id}
                 id={lot.id}
-                image={lot.media.length > 0 ? lot.media[0].url : "https://via.placeholder.com/300"}
+                image={lot.media.length > 0 ? lot.media[0].url : "/images/logo/HeartBids.png"}
                 title={lot.title}
                 price={
                   Array.isArray(lot.bids) && lot.bids.length > 0

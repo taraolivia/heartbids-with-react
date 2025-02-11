@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
           {/* Logo */}
           <div className="mb-6 md:mb-0">
             <img
-              src="/path-to-logo.png"
+              src="/images/logo/HeartBids.png"
               alt="HeartBids Logo"
               className="w-24 mx-auto md:mx-0"
             />

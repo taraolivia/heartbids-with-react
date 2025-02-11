@@ -1,5 +1,5 @@
 import Hero from "../components/Hero";
-import PopularLots from "../components/PopularLots";
+import MostPopularListings from "../components/MostPopularListings";
 import FAQ from "../components/FAQ";
 import GeneralInfo from "../components/GeneralInfo";
 import Footer from "../components/Footer";
@@ -33,7 +33,7 @@ const About = () => {
       </section>
 
       {/* Popular Lots */}
-      <PopularLots />
+      <MostPopularListings />
 
       {/* FAQ Section */}
       <section className="py-16 bg-gray-100">

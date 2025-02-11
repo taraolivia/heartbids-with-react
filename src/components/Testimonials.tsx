@@ -2,7 +2,7 @@ import React from "react";
 
 interface Testimonial {
   name: string;
-  organization: string;
+  cause: string;
   review: string;
   image: string;
 }
@@ -10,24 +10,24 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     name: "Sophia Reed",
-    organization: "ArtBid Charity",
+    cause: "Community Art Programs",
     review:
-      "HeartBids helped us raise over $10,000 for our local art program. The platform is intuitive, and the bidders were incredibly generous!",
-    image: "https://via.placeholder.com/150", // Replace with actual image URL
+      "HeartBids made it so easy to auction my paintings for charity. Seeing my work contribute to an arts education fund was truly rewarding!",
+    image: "https://via.placeholder.com/150", 
   },
   {
     name: "Liam Bennett",
-    organization: "Animal Rescue Co.",
+    cause: "Animal Rescue & Welfare",
     review:
-      "Thanks to HeartBids, we funded 50 rescue operations in just three months. The support has been overwhelming!",
-    image: "https://via.placeholder.com/150", // Replace with actual image URL
+      "By auctioning handcrafted pet accessories, I am raising money to cover vet bills for rescued animals. The process is seamless, and the impact was real!",
+    image: "https://via.placeholder.com/150",
   },
   {
     name: "Ella Harper",
-    organization: "EcoLiving Foundation",
+    cause: "Eco Sustainability Initiatives",
     review:
-      "The HeartBids community is amazing. Every bid directly supports our mission to promote sustainable living practices.",
-    image: "https://via.placeholder.com/150", // Replace with actual image URL
+      "HeartBids connected me with like-minded people who bid on my upcycled furniture. Every sale supports a greener planet!",
+    image: "https://via.placeholder.com/150", 
   },
 ];
 
@@ -37,9 +37,9 @@ const Testimonials: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-12">
-          <p className="text-blue-600 font-semibold">3940+ Happy HeartBids Users</p>
+          <p className="text-blue-600 font-semibold">Join Our Giving Community</p>
           <h2 className="text-3xl font-bold text-gray-800">
-            Don’t just take our word for it
+            See How HeartBids is Changing Lives
           </h2>
         </div>
 
@@ -60,9 +60,9 @@ const Testimonials: React.FC = () => {
               {/* Review */}
               <p className="text-gray-600 mb-4 italic">"{testimonial.review}"</p>
 
-              {/* Name & Organization */}
+              {/* Name & Cause */}
               <div className="text-gray-800 font-semibold">{testimonial.name}</div>
-              <div className="text-blue-600">{testimonial.organization}</div>
+              <div className="text-blue-600">{testimonial.cause}</div>
             </div>
           ))}
         </div>
