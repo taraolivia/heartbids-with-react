@@ -1,22 +1,100 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import getUserProfile from "./getUserProfile";
+import getUserBids from "../../components/getUserBids";
 import HandleLogout from "../auth/HandleLogout";
 import LotCard from "../../components/LotCard";
 import { UserProfile, Bid, Listing } from "../../ts/types/listingTypes";
+import { API_BASE } from "../../js/api/constants";
+import { getHeaders } from "../../js/api/headers";
+
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [listings, setListings] = useState<Listing[]>([]); // ✅ Fix: Proper state management
-
+  const [listings, setListings] = useState<Listing[]>([]); // ✅ Declare listings properly
+  const [bidListings, setBidListings] = useState<(Listing & { userBid: number; highestBid: number })[]>([]); // ✅ Stores associated listings
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const profile = await getUserProfile();
+        if (!profile) throw new Error("Failed to fetch user profile");
+  
         setUser(profile);
-        setListings(profile.listings); // ✅ Fix: Store listings correctly
+  
+        // ✅ Fetch full listing details including bids
+        const fetchFullListingDetails = async (listingId: string) => {
+          try {
+            const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_bids=true&_seller=true`, {
+              method: "GET",
+              headers: getHeaders(),
+            });
+  
+            if (!response.ok) throw new Error(`Failed to fetch listing details for ID: ${listingId}`);
+  
+            const result = await response.json();
+            return result.data;
+          } catch (error) {
+            console.error(`Error fetching listing ${listingId}:`, error);
+            return null;
+          }
+        };
+  
+        // ✅ Fetch and update listings with bid data
+        const loadUserListings = async () => {
+          if (!profile.listings || profile.listings.length === 0) {
+            setListings([]);
+            return;
+          }
+  
+          const detailedListings = await Promise.all(
+            profile.listings.map(async (listing) => {
+              const fullListing = await fetchFullListingDetails(listing.id);
+              return fullListing || listing; // ✅ Use full listing if available, otherwise fallback to basic
+            })
+          );
+  
+          setListings(detailedListings);
+        };
+  
+        await loadUserListings();
+  
+        // ✅ Fetch user's bids separately
+        const userBids: Bid[] = await getUserBids(profile.name);
+        if (!userBids.length) return;
+  
+        // ✅ Store highest bid per listing
+        const listingMap: Record<string, Listing & { userBid: number; highestBid: number }> = {};
+  
+        for (const bid of userBids) {
+          if (!bid.listing?.id) continue;
+  
+          const listingId = bid.listing.id;
+  
+          try {
+            if (!listingMap[listingId]) {
+              const fullListing = await fetchFullListingDetails(listingId);
+              if (!fullListing) continue;
+  
+              listingMap[listingId] = {
+                ...fullListing,
+                userBid: bid.amount, // ✅ Store user's highest bid on this listing
+                highestBid: fullListing.bids?.length
+                  ? Math.max(...fullListing.bids.map((b: Bid) => b.amount)) // ✅ Find highest bid from all users
+                  : 0,
+              };
+            } else {
+              // ✅ If listing already exists, update user's highest bid if it's higher
+              listingMap[listingId].userBid = Math.max(listingMap[listingId].userBid, bid.amount);
+            }
+          } catch (error) {
+            console.error(`Error fetching listing ${listingId}:`, error);
+          }
+        }
+  
+        setBidListings(Object.values(listingMap)); // ✅ Convert map to an array
+  
       } catch (error) {
         console.error("Error fetching profile:", error);
         setError("Failed to load profile.");
@@ -24,29 +102,25 @@ const Profile: React.FC = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProfile();
   }, []);
-
+  
+  
+    
+  
   const handleDelete = (listingId: string) => {
     setListings((prevListings) => prevListings.filter((listing) => listing.id !== listingId));
   };
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading profile...</div>;
-  }
-
-  if (error) {
-    return <div className="min-h-screen flex items-center justify-center text-red-600">{error}</div>;
-  }
-
-  if (!user) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-600">Failed to load profile.</div>;
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading profile...</div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-600">{error}</div>;
+  if (!user) return <div className="min-h-screen flex items-center justify-center text-gray-600">Failed to load profile.</div>;
 
   return (
     <div className="min-h-screen py-4 px-2 w-full">
       <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+        
         {/* ✅ Profile Banner */}
         <div className="relative w-full h-60 md:h-72 bg-gray-200">
           {user.banner?.url && (
@@ -54,7 +128,7 @@ const Profile: React.FC = () => {
           )}
         </div>
 
-        {/* ✅ Profile Header (Avatar + Name + Bio) */}
+        {/* ✅ Profile Header */}
         <div className="relative -mt-16 flex items-center space-x-6 p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
           <img
             src={user.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"}
@@ -63,7 +137,7 @@ const Profile: React.FC = () => {
           />
           <div>
             <h1 className="text-3xl font-bold">{user.name}</h1>
-            <p className="text-gray-600">{user.bio || "No bio available."}</p>
+            {user.bio && <p className="text-gray-600">{user.bio}</p>}
           </div>
         </div>
 
@@ -101,45 +175,74 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* ✅ User Listings */}
-        <div className="px-6 mt-6">
-          <h2 className="text-2xl font-bold text-gray-900">My Listings</h2>
-          <p className="text-gray-600 mb-4">Auctions you have created.</p>
 
-          {listings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {listings.map((listing) => (
-                <LotCard
-                  key={listing.id}
-                  id={listing.id}
-                  image={listing.media?.[0]?.url ?? "https://placehold.co/300x200"}
-                  title={listing.title}
-                  price={listing.bids?.length ? Math.max(...listing.bids.map((bid: Bid) => bid.amount)) : 0}
-                  bids={listing._count?.bids ?? 0}
-                  closingDate={listing.endsAt ?? ""}
-                  description={listing.description ?? ""}
-                  tags={listing.tags}
-                  created={listing.created}
-                  updated={listing.updated}
-                  showDescription={true}
-                  showTags={true}
-                  showCreatedUpdated={true}
-                  seller={user}
-                  showSeller={false}
-                  showControls={true} // ✅ Buttons only appear on Profile page
-                  onDelete={handleDelete} // ✅ Removes listings dynamically
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
-              <p className="text-gray-500">No listings yet. Start selling today!</p>
-              <Link to="/listing/create/" className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                Create a Listing
-              </Link>
-            </div>
-          )}
-        </div>
+{/* ✅ User Listings */}
+<div className="px-6 mt-6">
+  <h2 className="text-2xl font-bold text-gray-900">My Listings</h2>
+  <p className="text-gray-600 mb-4">Auctions you have created.</p>
+
+  {listings.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      {listings.map((lot) => (
+        <LotCard
+  key={lot.id}
+  id={lot.id}
+  image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
+  title={lot.title}
+  price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} // ✅ Fix highest bid
+  bids={lot.bids ? lot.bids.length : 0} // ✅ Fix bid count
+  closingDate={lot.endsAt}
+  showSeller={false}
+  showControls={true}
+  onDelete={handleDelete}
+/>
+
+
+      ))}
+    </div>
+  ) : (
+    <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
+      <p className="text-gray-500">No listings yet. Start selling today!</p>
+    </div>
+  )}
+</div>
+
+
+
+
+
+
+        <div className="px-6 mt-6">
+  <h2 className="text-2xl font-bold text-gray-900">Bids You’ve Placed</h2>
+  <p className="text-gray-600 mb-4">Auctions where you’ve placed bids.</p>
+
+  {bidListings.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {bidListings.map((lot) => (
+        <LotCard
+          key={lot.id}
+          id={lot.id}
+          image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
+          title={lot.title}
+          price={lot.highestBid} // ✅ The highest bid from all users
+          bids={lot.bids?.length ?? 0}
+          closingDate={lot.endsAt ?? ""}
+          userBid={lot.userBid} // ✅ Your highest bid separately
+          showSeller={false}
+          showControls={false}
+        />
+      ))}
+    </div>
+  ) : (
+    <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
+      <p className="text-gray-500">You haven’t placed any bids yet.</p>
+    </div>
+  )}
+</div>
+
+
+
+
       </div>
     </div>
   );

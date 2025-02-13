@@ -12,6 +12,7 @@ const LotCard: React.FC<LotCardProps> = ({
   price,
   bids,
   closingDate,
+  userBid, // ✅ Accept user's highest bid
   description,
   tags,
   created,
@@ -24,20 +25,15 @@ const LotCard: React.FC<LotCardProps> = ({
   showControls = false,
   onDelete, 
 }) => {
-
-
-
   return (
     <div className="bg-blue-100 shadow-lg rounded-lg p-4 hover:shadow-xl transition">
-      {/* ✅ Buttons Container - Flexbox for Even Spacing */}
       {showControls && (
         <div className="flex justify-between mb-2">
           <EditButton listingId={id} />
           <DeleteButton listingId={id} onDelete={onDelete ?? (() => {})} /> 
-          </div>
+        </div>
       )}
 
-      {/* ✅ Entire card remains clickable */}
       <Link to={`/listing/${id}`} className="block">
         <img
           src={image}
@@ -54,8 +50,7 @@ const LotCard: React.FC<LotCardProps> = ({
 
         <AuctionCountdown closingDate={closingDate} />
 
-
-        {showTags && tags && tags.length > 0 && (
+        {showTags && Array.isArray(tags) && tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {tags.map((tag) => (
               <span key={tag} className="bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-1 rounded">
@@ -65,8 +60,16 @@ const LotCard: React.FC<LotCardProps> = ({
           </div>
         )}
 
+        {/* ✅ Show total bids & highest bid */}
         <p className="text-gray-600 mt-2">{bids} {bids === 1 ? "bid" : "bids"}</p>
-        <p className="text-gray-800 font-bold mt-4">€{price}</p>
+        <p className="text-gray-800 font-bold mt-4">Highest Bid: €{price}</p>
+
+        {/* ✅ Show user's highest bid (if they placed one) */}
+        {userBid !== undefined && (
+          <p className="text-blue-600 font-bold mt-1">
+            Your Highest Bid: <strong>€{userBid}</strong>
+          </p>
+        )}
 
         {showSeller && seller && (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
@@ -92,5 +95,6 @@ const LotCard: React.FC<LotCardProps> = ({
     </div>
   );
 };
+
 
 export default LotCard;

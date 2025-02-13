@@ -11,7 +11,7 @@ const AllLots = () => {
   const [sortType, setSortType] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 30; // Number of listings per page
-  const [totalPages, setTotalPages] = useState(1); // ✅ FIX: Dynamically update total pages
+  const [totalPages, setTotalPages] = useState(1); 
 
   useEffect(() => {
     async function fetchAllListings() {
@@ -39,7 +39,7 @@ const AllLots = () => {
         console.log(`Total Listings Fetched: ${allListings.length}`);
 
         setListings(allListings);
-        setTotalPages(Math.ceil(allListings.length / perPage)); // ✅ FIX: Calculate total pages dynamically
+        setTotalPages(Math.ceil(allListings.length / perPage)); 
       } catch (err) {
         console.error("Error fetching listings:", err);
       }

@@ -1,15 +1,17 @@
 export type Bid = {
-  id: string; // ✅ Added unique bid ID
+  id: string;
   amount: number;
+  created: string;
   bidder: {
     name: string;
     email: string;
-    bio?: string; // ✅ Added bio
-    avatar?: { url: string; alt?: string }; // ✅ Added avatar
-    banner?: { url: string; alt?: string }; // ✅ Added banner
+    bio?: string;
+    avatar?: { url: string; alt?: string };
+    banner?: { url: string; alt?: string };
   };
-  created: string;
+  listing?: Listing; // ✅ Use the full `Listing` type
 };
+
 
 export type Listing = {
   id: string;
@@ -52,7 +54,8 @@ export type LotCardProps = {
   id: string;
   image: string;
   title: string;
-  price: number;
+  price: number; // ✅ Highest bid on the listing
+  userBid?: number; // ✅ Your highest bid
   bids: number;
   closingDate: string;
   description?: string;
@@ -66,8 +69,9 @@ export type LotCardProps = {
   showSeller?: boolean;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
-  showControls?: boolean; // ✅ NEW: Only show buttons when true
+  showControls?: boolean;
 };
+
 
 
 
