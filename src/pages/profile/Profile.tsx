@@ -119,7 +119,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="min-h-screen py-4 px-2 w-full">
-      <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden pt-20">
         
         {/* ✅ Profile Banner */}
         <div className="relative w-full h-60 md:h-72 bg-gray-200">
@@ -175,37 +175,43 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-
 {/* ✅ User Listings */}
-<div className="px-6 mt-6">
-  <h2 className="text-2xl font-bold text-gray-900">My Listings</h2>
-  <p className="text-gray-600 mb-4">Auctions you have created.</p>
+<div className="px-6 mt-10">
+  <h2 className="text-3xl font-bold text-gray-800 mb-2">My Listings</h2>
+  <p className="text-gray-600 text-lg mb-6">These are the auctions you've created.</p>
 
   {listings.length > 0 ? (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       {listings.map((lot) => (
-        <LotCard
-  key={lot.id}
-  id={lot.id}
-  image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
-  title={lot.title}
-  price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} // ✅ Fix highest bid
-  bids={lot.bids ? lot.bids.length : 0} // ✅ Fix bid count
-  closingDate={lot.endsAt}
-  showSeller={false}
-  showControls={true}
-  onDelete={handleDelete}
-/>
-
-
+        <div key={lot.id}           className="bg-white rounded-xl shadow-lg p-5 hover:shadow-2xl transition border border-gray-300 min-w-[300px] max-w-[350px] mx-auto"
+>
+          <LotCard
+            id={lot.id}
+            image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
+            title={lot.title}
+            price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} // ✅ Fix highest bid
+            bids={lot.bids ? lot.bids.length : 0} // ✅ Fix bid count
+            closingDate={lot.endsAt}
+            showSeller={false}
+            showControls={true}
+            onDelete={handleDelete}
+          />
+        </div>
       ))}
     </div>
   ) : (
-    <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
-      <p className="text-gray-500">No listings yet. Start selling today!</p>
+    <div className="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+      <p className="text-gray-500 text-lg">No listings yet. Start selling today!</p>
+      <Link
+        to="/listing/create"
+        className="mt-4 inline-block px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
+      >
+        ➕ Create a Listing
+      </Link>
     </div>
   )}
 </div>
+
 
 
 
@@ -217,12 +223,12 @@ const Profile: React.FC = () => {
   <p className="text-gray-600 mb-4">Auctions where you’ve placed bids.</p>
 
   {bidListings.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {bidListings.map((lot) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-auto m-auto">
+    {bidListings.map((lot) => (
         <LotCard
           key={lot.id}
           id={lot.id}
-          image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
+          image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"}
           title={lot.title}
           price={lot.highestBid} // ✅ The highest bid from all users
           bids={lot.bids?.length ?? 0}
