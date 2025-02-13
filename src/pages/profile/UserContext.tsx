@@ -4,6 +4,7 @@ interface User {
   name: string;
   avatar?: { url: string };
   credits: number;
+  email: string;
 }
 
 interface UserContextProps {

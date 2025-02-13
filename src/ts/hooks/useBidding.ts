@@ -51,7 +51,8 @@ export const useBidding = (listingId: string) => {
     setBidMessage(null);
   
     try {
-      // ✅ Fetch latest bid history
+      // ✅ Fetch latest bid history and ENSURE it updates before bidding
+      console.log("Fetching latest bid history before placing a bid...");
       const listingResponse = await fetch(`${API_LISTINGS}/${listingId}?_bids=true`);
       const listingData: { data: Listing } = await listingResponse.json();
   
@@ -59,6 +60,8 @@ export const useBidding = (listingId: string) => {
         setBidMessage("❌ Error fetching latest bid data.");
         return;
       }
+  
+      console.log("Latest listing data fetched:", listingData.data);
   
       const highestBid = listingData.data.bids?.length
         ? Math.max(...listingData.data.bids.map((bid: Bid) => bid.amount))
@@ -75,10 +78,15 @@ export const useBidding = (listingId: string) => {
         ? listingData.data.bids[listingData.data.bids.length - 1].bidder.name
         : null;
   
+      console.log("Last Bidder:", lastBidder);
+      console.log("Current User:", user?.name);
+  
       if (lastBidder === user?.name) {
         setBidMessage("❌ You cannot place two bids in a row.");
         return;
       }
+  
+      console.log("Placing bid...");
   
       const response = await fetch(`${API_LISTINGS}/${listingId}/bids`, {
         method: "POST",
@@ -91,14 +99,14 @@ export const useBidding = (listingId: string) => {
       });
   
       const data = await response.json();
-      console.log("Bid API Response:", data); // ✅ Debugging log
+      console.log("Bid API Response:", data);
   
       if (response.ok) {
         setBidMessage(`✅ Bid placed successfully! Your bid: €${amount}`);
-        await updateUserCredits();
-        return data;
+        await updateUserCredits(); // ✅ Update user credits after bidding
+  
+        return data; // ✅ Return bid data to update the UI
       } else {
-        // ✅ Extract detailed error message
         const errorMessage = data.errors?.[0]?.message || data.message || "❌ An unknown error occurred.";
         setBidMessage(errorMessage);
       }

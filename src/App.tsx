@@ -17,6 +17,7 @@ import Profile from "./pages/profile/Profile";
 import CreateListingPage from "./pages/listing/create/CreateListing";
 import SingleListing from "./pages/listing/SingleListing";
 import MostPopularListings from "./components/MostPopularListings";
+import UserProfilePage from "./pages/profile/OtherUserProfile";
 
 function App() {
   return (
@@ -61,6 +62,10 @@ function App() {
 
           {/* Single Listing Page */}
           <Route path="/listing/:id" element={<SingleListing />} />
+
+          {/* Other Profile Page */}
+          <Route path="/profile/:username" element={<UserProfilePage />} />
+
         </Routes>
       </Router>
     </UserProvider>
