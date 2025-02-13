@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LotCardProps } from "../ts/types/listingTypes";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
+import AuctionCountdown from "./AuctionCountdown";
+
 
 const LotCard: React.FC<LotCardProps> = ({
   id,
@@ -20,34 +21,11 @@ const LotCard: React.FC<LotCardProps> = ({
   showCreatedUpdated,
   seller,
   showSeller,
-  showControls = false, // ✅ Default to false (buttons hidden by default)
-  onDelete, // ✅ Accept `onDelete` function from Profile.tsx
+  showControls = false,
+  onDelete, 
 }) => {
-  const [timeLeft, setTimeLeft] = useState<string>("Calculating...");
 
-  useEffect(() => {
-    const calculateTimeLeft = () => {
-      const endTime = new Date(closingDate).getTime();
-      const now = new Date().getTime();
-      const difference = endTime - now;
 
-      if (difference <= 0) {
-        setTimeLeft("Auction ended");
-        return;
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
-      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
-    };
-
-    calculateTimeLeft();
-    const interval = setInterval(calculateTimeLeft, 60000);
-
-    return () => clearInterval(interval);
-  }, [closingDate]);
 
   return (
     <div className="bg-blue-100 shadow-lg rounded-lg p-4 hover:shadow-xl transition">
@@ -74,9 +52,8 @@ const LotCard: React.FC<LotCardProps> = ({
 
         {showDescription && description && <p className="text-gray-600 mt-2">{description}</p>}
 
-        <p className="text-gray-600 mt-2">
-          <strong>Closing in:</strong> {timeLeft}
-        </p>
+        <AuctionCountdown closingDate={closingDate} />
+
 
         {showTags && tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
