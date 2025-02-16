@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
           }
   
           const detailedListings = await Promise.all(
-            profile.listings.map(async (listing) => {
+            (profile.listings as Listing[]).map(async (listing) => {
               const fullListing = await fetchFullListingDetails(listing.id);
               return fullListing || listing; // ✅ Use full listing if available, otherwise fallback to basic
             })
