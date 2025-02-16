@@ -98,6 +98,10 @@ const CreateListingForm: React.FC = () => {
   
     // ✅ Trim and clean user input
     const cleanedTags = (formData.tags ?? []).map((tag) => tag.trim()).filter((tag) => tag.length > 0);
+
+    if (!cleanedTags.includes("HeartBids")) {
+      cleanedTags.push("HeartBids");
+    }
   
     // ✅ Required fields validation (User-defined mandatory fields)
     if (!formData.title.trim()) {

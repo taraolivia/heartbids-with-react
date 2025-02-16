@@ -185,17 +185,21 @@ const Profile: React.FC = () => {
       {listings.map((lot) => (
         <div key={lot.id}           className="bg-white rounded-xl shadow-lg p-5 hover:shadow-2xl transition border border-gray-300 min-w-[300px] max-w-[350px] mx-auto"
 >
-          <LotCard
-            id={lot.id}
-            image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
-            title={lot.title}
-            price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} // ✅ Fix highest bid
-            bids={lot.bids ? lot.bids.length : 0} // ✅ Fix bid count
-            closingDate={lot.endsAt}
-            showSeller={false}
-            showControls={true}
-            onDelete={handleDelete}
-          />
+<LotCard
+  id={lot.id}
+  image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
+  title={lot.title}
+  price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} // ✅ Fix highest bid
+  bids={lot.bids ? lot.bids.length : 0} // ✅ Fix bid count
+  closingDate={lot.endsAt}
+  tags={lot.tags ?? []} // ✅ Pass tags (default to empty array if undefined)
+  showTags={true} // ✅ Now explicitly enabling tags!
+  showSeller={false}
+  showControls={true}
+  onDelete={handleDelete}
+/>
+
+
         </div>
       ))}
     </div>

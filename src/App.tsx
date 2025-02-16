@@ -18,10 +18,12 @@ import CreateListingPage from "./pages/listing/create/CreateListing";
 import SingleListing from "./pages/listing/SingleListing";
 import MostPopularListings from "./components/MostPopularListings";
 import UserProfilePage from "./pages/profile/OtherUserProfile";
+import { HeartBidsFilterProvider } from "./components/HeartBidsFilterProvider";
 
 function App() {
   return (
     <UserProvider> 
+      <HeartBidsFilterProvider>
       <Router>
         <Navbar />
         <Routes>
@@ -68,6 +70,7 @@ function App() {
 
         </Routes>
       </Router>
+      </HeartBidsFilterProvider>
     </UserProvider>
   );
 }

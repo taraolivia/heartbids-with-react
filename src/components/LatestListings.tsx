@@ -3,6 +3,8 @@ import LotCard from "./LotCard";
 import { API_LISTINGS } from "../js/api/constants";
 import { getHeaders } from "../js/api/headers";
 import { Listing, LatestListingsProps } from "../ts/types/listingTypes";
+import { useHeartBidsFilter } from "./useHeartBidsFilter";
+
 
 const LatestListings = ({ loading, error }: LatestListingsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -68,14 +70,20 @@ const LatestListings = ({ loading, error }: LatestListingsProps) => {
     }
   };
 
+  const { showOnlyHeartBids } = useHeartBidsFilter(); // ✅ Get global filter state
+
   const filteredListings = (listings || [])
-    .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
     .filter((item) => {
       if (!item.endsAt) return false;
       const endTime = new Date(item.endsAt).getTime();
       return !isNaN(endTime) && endTime > Date.now();
     })
+    .filter((item) => {
+      return showOnlyHeartBids ? item.tags?.includes("HeartBids") : true; // ✅ Apply filter condition
+    })
+    .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
     .slice(0, 20);
+  
 
   return (
     <section className="py-16 bg-gray-100 relative">

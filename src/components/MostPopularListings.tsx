@@ -3,6 +3,7 @@ import LotCard from "./LotCard";
 import { Listing } from "../ts/types/listingTypes";
 import { API_LISTINGS } from "../js/api/constants";
 import { getHeaders } from "../js/api/headers";
+import { useHeartBidsFilter } from "./useHeartBidsFilter";
 
 const MostPopularListings = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -11,6 +12,9 @@ const MostPopularListings = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // ✅ Get HeartBids filter state
+  const { showOnlyHeartBids } = useHeartBidsFilter();
 
   useEffect(() => {
     const fetchListings = async (): Promise<void> => {
@@ -40,17 +44,21 @@ const MostPopularListings = () => {
 
         console.log(`Total Listings Fetched: ${allListings.length}`);
 
-        // ✅ Filter only active listings
-        const activeListings = allListings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
+        // ✅ Filter based on active listings and HeartBids toggle
+        let filteredListings = allListings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
+
+        if (showOnlyHeartBids) {
+          filteredListings = filteredListings.filter((lot) => lot.tags?.includes("HeartBids"));
+        }
 
         // ✅ Correct Sorting by Number of Bids
-        const sortedListings = activeListings
+        const sortedListings = filteredListings
           .sort((a, b) => {
-            const aBidCount = a._count?.bids || 0; // ✅ Use correct count
+            const aBidCount = a._count?.bids || 0;
             const bBidCount = b._count?.bids || 0;
-            return bBidCount - aBidCount; // ✅ Higher bid count first
+            return bBidCount - aBidCount;
           })
-          .slice(0, 10); // ✅ Keep only the top 10 most popular listings
+          .slice(0, 10);
 
         console.log("Sorted Top 10 Listings:", sortedListings);
 
@@ -64,7 +72,7 @@ const MostPopularListings = () => {
     };
 
     fetchListings();
-  }, []);
+  }, [showOnlyHeartBids]); // ✅ Refetch when filter state changes
 
   useEffect(() => {
     if (scrollRef.current) {

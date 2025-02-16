@@ -4,6 +4,7 @@ import SortDropdown from "./SortDropdown";
 import { API_LISTINGS } from "../js/api/constants";
 import { getHeaders } from "../js/api/headers";
 import { Listing } from "../ts/types/listingTypes";
+import { useHeartBidsFilter } from "./useHeartBidsFilter";
 
 const AllLots = () => {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -13,44 +14,58 @@ const AllLots = () => {
   const perPage = 30; // Number of listings per page
   const [totalPages, setTotalPages] = useState(1); 
 
+    // ✅ Get the HeartBids filter state
+    const { showOnlyHeartBids } = useHeartBidsFilter();
+
   useEffect(() => {
     async function fetchAllListings() {
       const allListings: Listing[] = [];
       let page = 1;
       let hasMore = true;
-
+  
       try {
         while (hasMore) {
           const response = await fetch(`${API_LISTINGS}?_bids=true&_seller=true&page=${page}`, {
             method: "GET",
             headers: getHeaders(),
           });
-
+  
           if (!response.ok) throw new Error("Failed to fetch listings");
-
+  
           const result: { data: Listing[]; meta: { isLastPage: boolean } } = await response.json();
           console.log(`Page ${page} Response:`, result);
-
+  
           allListings.push(...result.data);
           hasMore = !result.meta.isLastPage;
           page++;
         }
-
+  
         console.log(`Total Listings Fetched: ${allListings.length}`);
-
-        setListings(allListings);
-        setTotalPages(Math.ceil(allListings.length / perPage)); 
+  
+        // ✅ Filter based on toggle
+        let filteredListings = allListings;
+        if (showOnlyHeartBids) {
+          filteredListings = filteredListings.filter((listing) =>
+            listing.tags?.includes("HeartBids")
+          );
+        }
+  
+        setListings(filteredListings);
+        setTotalPages(Math.ceil(filteredListings.length / perPage)); 
       } catch (err) {
         console.error("Error fetching listings:", err);
       }
     }
-
+  
     fetchAllListings();
-  }, []);
+  }, [showOnlyHeartBids]); // ✅ Re-fetch when toggle changes
+  
 
   // ✅ Separate active and ended auctions
-  const activeLots = listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
-  const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Date.now());
+// ✅ Separate active and ended auctions
+const activeLots = listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
+const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Date.now());
+
 
   const combinedLots = includeEnded ? [...activeLots, ...endedLots] : activeLots;
 
