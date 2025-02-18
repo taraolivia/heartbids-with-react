@@ -44,11 +44,11 @@ export type Seller = {
   name: string;
   email: string;
   bio?: string;
-  avatar?: {
-    url: string;
-    alt?: string;
-  };
+  avatar?: { url: string; alt?: string };
+  banner?: { url: string; alt?: string };
+  wins?: string[]; // ✅ Added to match `Listing.seller`
 };
+
 
 export type LotCardProps = {
   id: string;
@@ -78,13 +78,13 @@ export type LotCardProps = {
 
 export type UserProfile = {
   name: string;
-  email: string; // ✅ Added email
+  email: string;
   bio?: string;
   avatar?: { url: string; alt?: string };
   banner?: { url: string; alt?: string };
   credits: number;
-  _count?: { listings?: number; wins?: number }; 
-  listings: Listing[];
+  _count?: { listings?: number; wins?: number };
+  listings?: Listing[]; // ✅ Made optional to avoid issues before data loads
 };
 
 

@@ -4,6 +4,7 @@ import { API_LISTINGS } from "../../js/api/constants";
 import { Listing, Bid } from "../../ts/types/listingTypes";
 import { useBidding } from "../../ts/hooks/useBidding";
 import { useUser } from "../profile/useUser";
+import AuctionCountdown from "../../components/AuctionCountdown";
 
 const SingleListing = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,13 +14,13 @@ const SingleListing = () => {
   const { placeBid, bidMessage, bidLoading } = useBidding(id!);
   const { user } = useUser();
 
-  const storedUser = localStorage.getItem("user"); 
+  const storedUser = localStorage.getItem("user");
   const isLoggedIn = !!storedUser;
 
-  const [showAuthPrompt, setShowAuthPrompt] = useState(false); 
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const handleUserClick = (e: React.MouseEvent) => {
     if (!isLoggedIn) {
-      e.preventDefault(); 
+      e.preventDefault();
       setShowAuthPrompt(true);
     }
   };
@@ -123,24 +124,28 @@ const SingleListing = () => {
           <p className="text-gray-600 text-lg">{listing.description}</p>
 
           {listing.seller && (
-  <div className="p-4 border rounded-lg shadow-sm bg-gray-100">
-    <div className="flex items-center space-x-4">
-      {/* ✅ Profile link wraps avatar + name */}
-      <Link to={`/profile/${listing.seller.name}`} className="flex items-center space-x-3 hover:underline">
-        <img 
-          src={listing.seller.avatar?.url || "https://placehold.co/50"} 
-          alt={listing.seller.avatar?.alt || `${listing.seller.name}'s avatar`} 
-          className="w-12 h-12 rounded-full object-cover" 
-        />
-        <h3 className="text-lg font-semibold text-gray-800">{listing.seller.name}</h3>
-      </Link>
-    </div>
-    {/* ✅ Only show bio if it exists */}
-    {listing.seller.bio && <p className="mt-3 text-gray-600 border-t pt-3">{listing.seller.bio}</p>}
-  </div>
-)}
-
-
+            <div className="p-4 border rounded-lg shadow-sm bg-gray-100">
+              <div className="flex items-center space-x-4">
+                {/* ✅ Profile link wraps avatar + name */}
+                <Link to={`/profile/${listing.seller.name}`} className="flex items-center space-x-3 hover:underline">
+                  <img src={listing.seller.avatar?.url || "https://placehold.co/50"} alt={listing.seller.avatar?.alt || `${listing.seller.name}'s avatar`} className="w-12 h-12 rounded-full object-cover" />
+                  <h3 className="text-lg font-semibold text-gray-800">{listing.seller.name}</h3>
+                </Link>
+              </div>
+              {/* ✅ Only show bio if it exists */}
+              {listing.seller.bio && <p className="mt-3 text-gray-600 border-t pt-3">{listing.seller.bio}</p>}
+            </div>
+          )}
+<p className="text-gray-600 text-lg">
+  {new Date(listing.endsAt) < new Date()
+    ? "This auction has ended"
+    : `This listing ends on: ${new Intl.DateTimeFormat("en-GB", {
+        dateStyle: "short",
+        timeStyle: "short",
+      }).format(new Date(listing.endsAt))}`}
+</p>
+    {/* ✅ Countdown */}
+    <AuctionCountdown closingDate={listing.endsAt} />
         </div>
       </div>
 
@@ -160,27 +165,24 @@ const SingleListing = () => {
 
       {bidsArray.length > 0 && (
         <div className="mt-4">
-<h4 className="text-lg font-semibold text-gray-800">Bidding History:</h4>
-<ul className="mt-2 space-y-2 p-1 bg-blue-100">
-  {bidsArray
-    .slice()
-    .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()) // Sort by newest
-    .map((bid) => (
-      <li key={bid.id} className="flex items-center space-x-2 text-gray-600 text-sm p-2">
-        {/* ✅ Prevent navigation if not logged in */}
-        <Link to={`/profile/${bid.bidder.name}`} className="flex items-center space-x-2 hover:underline" onClick={handleUserClick}>
-          <img src={bid.bidder.avatar?.url || "/default-avatar.png"} alt={bid.bidder.avatar?.alt || `${bid.bidder.name}'s avatar`} className="w-6 h-6 rounded-full object-cover" />
-          <span className="font-semibold text-gray-800">{bid.bidder.name}</span>
-        </Link>
-        <span>bid</span>
-        <span className="font-bold">€{bid.amount}</span> {/* ✅ Added bid amount */}
-        <span className="text-gray-500">
-          on {new Date(bid.created).toLocaleString()} {/* ✅ Added formatted bid time */}
-        </span>
-      </li>
-    ))}
-</ul>
-
+          <h4 className="text-lg font-semibold text-gray-800">Bidding History:</h4>
+          <ul className="mt-2 space-y-2 p-1 bg-blue-100">
+            {bidsArray
+              .slice()
+              .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()) // Sort by newest
+              .map((bid) => (
+                <li key={bid.id} className="flex items-center space-x-2 text-gray-600 text-sm p-2">
+                  {/* ✅ Prevent navigation if not logged in */}
+                  <Link to={`/profile/${bid.bidder.name}`} className="flex items-center space-x-2 hover:underline" onClick={handleUserClick}>
+                    <img src={bid.bidder.avatar?.url || "/default-avatar.png"} alt={bid.bidder.avatar?.alt || `${bid.bidder.name}'s avatar`} className="w-6 h-6 rounded-full object-cover" />
+                    <span className="font-semibold text-gray-800">{bid.bidder.name}</span>
+                  </Link>
+                  <span>bid</span>
+                  <span className="font-bold">€{bid.amount}</span>
+                  <span className="text-gray-500">on {new Date(bid.created).toLocaleString()}</span>
+                </li>
+              ))}
+          </ul>
 
           {/* ✅ Soft Popup */}
           {showAuthPrompt && (
