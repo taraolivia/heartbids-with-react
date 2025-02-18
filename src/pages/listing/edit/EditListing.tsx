@@ -13,19 +13,19 @@ interface Listing {
   endsAt: string;
 }
 
-const CreateListingPage: React.FC = () => {
+const EditListingPage: React.FC<{ listingId: string }> = ({ listingId }) => {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-4">
-      <CreateListingForm />
+      <EditListingForm listingId={listingId} />
     </div>
   );
 };
 
-const CreateListingForm: React.FC = () => {
+const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
   const titleRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const tagsRef = useRef<HTMLInputElement | null>(null);
-  const endsAtRef = useRef<HTMLDivElement | null>(null); // ✅ Use div, NOT DatePicker
+  const endsAtRef = useRef<HTMLDivElement | null>(null);
 
   const [formData, setFormData] = useState<Listing>({
     title: "",
@@ -34,22 +34,54 @@ const CreateListingForm: React.FC = () => {
     media: [{ url: "", alt: "" }],
     endsAt: "",
   });
+
   const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<Record<string, boolean>>({});
-
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Fetch existing listing data
   useEffect(() => {
-    const firstErrorKey = Object.keys(errorField).find((key) => errorField[key]); // ✅ Find first error field
-    if (firstErrorKey) {
-      const field = document.getElementById(firstErrorKey);
-      if (field && "scrollIntoView" in field && "focus" in field) {
-        field.scrollIntoView({ behavior: "smooth", block: "center" });
-        (field as HTMLInputElement | HTMLTextAreaElement).focus();
+    const fetchListing = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${API_LISTINGS}/${listingId}`, {
+          headers: getHeaders(),
+        });
+  
+        if (!response.ok) throw new Error("Failed to fetch listing.");
+        
+        const responseData = await response.json();
+        const data = responseData.data; // ✅ Fix: Extract the correct data object
+  
+        console.log("📢 API Response Data:", data);
+  
+        setFormData({
+          title: data.title || "",
+          description: data.description || "",
+          tags: Array.isArray(data.tags) ? [...data.tags] : [], // ✅ Fix: Spread to avoid mutations
+          media: data.media && data.media.length > 0 ? data.media : [{ url: "", alt: "" }],
+          endsAt: data.endsAt || "",
+        });
+  
+      } catch (error) {
+        console.error("❌ Error fetching listing:", error);
+        setError("Failed to load listing data.");
+      } finally {
+        setLoading(false);
       }
-    }
-  }, [errorField]);
+    };
+  
+    fetchListing();
+  }, [listingId]);
+  
+  
+  // Debug: Log whenever formData updates
+  useEffect(() => {
+    console.log("🔄 FormData Updated:", formData);
+  }, [formData]);
+  
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,8 +106,6 @@ const CreateListingForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form...", formData); // ✅ Debugging step
-
     setError(null);
     setErrorField({});
     setSuccess(false);
@@ -85,22 +115,19 @@ const CreateListingForm: React.FC = () => {
     const newErrorFields: Record<string, boolean> = {};
     const errorMessages: string[] = [];
 
-    // ✅ Trim and clean user input
     const cleanedTags = (formData.tags ?? []).map((tag) => tag.trim()).filter((tag) => tag.length > 0);
-
     if (!cleanedTags.includes("HeartBids")) {
       cleanedTags.push("HeartBids");
     }
 
-    // ✅ Required fields validation (User-defined mandatory fields)
     if (!formData.title.trim()) {
       newErrorFields.title = true;
-      errorMessages.push("A title is required to create a listing.");
+      errorMessages.push("A title is required.");
       if (!firstErrorField) firstErrorField = titleRef.current;
     }
     if (!formData.description?.trim()) {
       newErrorFields.description = true;
-      errorMessages.push("A description is required so others know what you're selling.");
+      errorMessages.push("A description is required.");
       if (!firstErrorField) firstErrorField = descriptionRef.current;
     }
     if (!formData.endsAt) {
@@ -108,137 +135,58 @@ const CreateListingForm: React.FC = () => {
       errorMessages.push("You must select an auction end date.");
       if (!firstErrorField) firstErrorField = endsAtRef.current;
     }
-    if (cleanedTags.length === 0) {
-      newErrorFields.tags = true;
-      errorMessages.push("Please add at least one tag to categorize your listing.");
-      if (!firstErrorField) firstErrorField = tagsRef.current;
-    }
     if (!formData.media?.[0]?.url.trim()) {
       newErrorFields.media = true;
-      errorMessages.push("An image URL is required to post a listing.");
-      if (!firstErrorField) firstErrorField = document.getElementById("mediaUrl0");
+      errorMessages.push("An image URL is required.");
     }
     if (!formData.media?.[0]?.alt.trim()) {
       newErrorFields.media = true;
-      errorMessages.push("Alt text is required for accessibility.");
-      if (!firstErrorField) firstErrorField = document.getElementById("mediaAlt0");
+      errorMessages.push("Alt text is required.");
     }
 
-    // ✅ Add expected API validation errors manually BEFORE posting
-    if (formData.description && formData.description.length > 280) {
-      newErrorFields.description = true;
-      errorMessages.push("The description cannot be longer than 280 characters.");
-    }
-    if (cleanedTags.length > 8) {
-      newErrorFields.tags = true;
-      errorMessages.push("You cannot have more than 8 tags.");
-    }
-
-    // ✅ Show ALL expected errors immediately
     setErrorField(newErrorFields);
     setError(errorMessages.join("\n"));
 
-    // 🚨 STOP if required fields or expected API errors exist
     if (Object.keys(newErrorFields).length > 0) {
-      console.log("❌ Validation failed: User-defined and expected API validation errors.");
       setLoading(false);
-
       if (firstErrorField) {
         firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
         firstErrorField.focus();
       }
-      return; // 🚨 Prevents API request if there are expected errors
+      return;
     }
 
-    console.log("🚀 Sending POST request to API...");
-
-    // ✅ Make API request (If it reaches here, manual validation has passed)
     try {
-      const response = await fetch(API_LISTINGS, {
-        method: "POST",
+      const response = await fetch(`${API_LISTINGS}/${listingId}`, {
+        method: "PUT",
         headers: getHeaders(),
-        body: JSON.stringify({
-          ...formData,
-          tags: cleanedTags, // ✅ Send cleaned tags
-        }),
+        body: JSON.stringify({ ...formData, tags: cleanedTags }),
       });
-
-      console.log("📨 API request was made, waiting for response...");
-      const responseData = await response.json();
-      console.log("✅ API Response:", responseData);
-
+    
       if (!response.ok) {
-        console.log("⚠️ API responded with an error, extracting messages...");
-        const newApiErrorFields: Record<string, boolean> = {};
-        const apiErrorMessages: string[] = [];
-
-        if (responseData.errors && Array.isArray(responseData.errors)) {
-          responseData.errors.forEach((err: { message: string }) => {
-            apiErrorMessages.push(err.message); // ✅ Store all API errors dynamically
-
-            if (err.message.includes("more than 8 tags")) {
-              newApiErrorFields.tags = true;
-            }
-            if (err.message.includes("Title")) {
-              newApiErrorFields.title = true;
-            }
-            if (err.message.includes("Description")) {
-              newApiErrorFields.description = true;
-            }
-            if (err.message.includes("End date")) {
-              newApiErrorFields.endsAt = true;
-            }
-            if (err.message.includes("must be valid URL")) {
-              newApiErrorFields.media = true;
-            }
-          });
-        } else {
-          console.warn("No errors array found in API response.");
-        }
-
-        // ✅ Replace guessed API errors with real ones
-        const finalErrorMessages = [...errorMessages, ...apiErrorMessages];
-
-        setErrorField({ ...newErrorFields, ...newApiErrorFields });
-        setError(finalErrorMessages.join("\n")); // ✅ Show ALL errors together
-
-        console.log("Final Error Messages:", finalErrorMessages);
-
-        const firstErrorKey = Object.keys(newApiErrorFields).find((key) => newApiErrorFields[key]);
-        if (firstErrorKey) {
-          const firstField = document.getElementById(firstErrorKey);
-          if (firstField) {
-            firstField.scrollIntoView({ behavior: "smooth", block: "center" });
-            firstField.focus();
-          }
-        }
-
-        throw new Error(finalErrorMessages.join("\n"));
+        const errorData = await response.json(); // ✅ Try to get API error details
+        console.error("❌ Update failed:", errorData); // ✅ Log detailed error
+    
+        throw new Error(errorData.message || "Failed to update listing.");
       }
-
-      console.log("✅ Listing created successfully!");
+    
       setSuccess(true);
-      setFormData({ title: "", description: "", tags: [], media: [{ url: "", alt: "" }], endsAt: "" });
-    } catch (err: unknown) {
-      console.error("❌ API request failed before reaching the server:", err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred.");
-      }
+    } catch (error) {
+      console.error("❌ Error updating listing:", error); // ✅ Log the actual error
+      setError(error instanceof Error ? error.message : "Unknown error occurred.");
     } finally {
       setLoading(false);
-    }
+    }    
   };
 
   return (
     <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
-      <h1 className="text-3xl font-semibold mb-4 pt-22">Create Listing</h1>
+      <h1 className="text-3xl font-semibold mb-4 pt-22">Edit Listing</h1>
       <div>
         <p>All fields are required to create a listing on HeartBids. This ensures that the buyers know what they are bidding on and creates a safe experience for everyone.</p>
       </div>
       {error && <ErrorMessage message={error} />}
-      {success && <p className="text-green-500">Listing created successfully!</p>}
+      {success && <p className="text-green-500">Listing edited successfully!</p>}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block font-bold text-gray-800 mb-2">
@@ -256,7 +204,7 @@ const CreateListingForm: React.FC = () => {
           <label htmlFor="tags" className="block font-bold text-gray-800 mb-2">
             Tags (comma-separated):
           </label>
-          <input id="tags" ref={tagsRef} type="text" name="tags" onChange={handleTagChange} className={`w-full p-3 border rounded-md ${errorField.tags ? "border-red-500" : "border-gray-300"}`} />
+          <input id="tags" ref={tagsRef} type="text" name="tags" onChange={handleTagChange} value={formData.tags ? formData.tags.join(", ") : ""} className={`w-full p-3 border rounded-md ${errorField.tags ? "border-red-500" : "border-gray-300"}`} />
         </div>
         <div>
           <h3 className="text-lg font-bold mb-2">Media:</h3>
@@ -290,7 +238,7 @@ const CreateListingForm: React.FC = () => {
             Cancel
           </a>
           <button type="submit" disabled={loading} className={`mt-4 p-3 rounded-md font-semibold text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}`}>
-            {loading ? "Creating..." : "Create Listing"}
+            {loading ? "Updating..." : "Update Listing"}
           </button>
         </div>
       </form>
@@ -298,4 +246,4 @@ const CreateListingForm: React.FC = () => {
   );
 };
 
-export default CreateListingPage;
+export default EditListingPage;

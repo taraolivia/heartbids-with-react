@@ -19,57 +19,60 @@ import SingleListing from "./pages/listing/SingleListing";
 import MostPopularListings from "./components/MostPopularListings";
 import UserProfilePage from "./pages/profile/OtherUserProfile";
 import { HeartBidsFilterProvider } from "./components/HeartBidsFilterProvider";
+import EditListingWrapper from "./pages/listing/edit/EditListingWrapper";
 
 function App() {
   return (
-    <UserProvider> 
+    <UserProvider>
       <HeartBidsFilterProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          {/* Home Page */}
-          <Route
-            path="/"
-            element={
-              <>
-                <Hero />
-                <MostPopularListings />
-                <GeneralInfo />
-                <AuthPrompt />
-                <HowItWorks />
-                <CharitiesCloud />
-                <Testimonials />
-                <Footer />
-              </>
-            }
-          />
+        <Router>
+          <Navbar />
+          <Routes>
+            {/* Home Page */}
+            <Route
+              path="/"
+              element={
+                <>
+                  <Hero />
+                  <MostPopularListings />
+                  <GeneralInfo />
+                  <AuthPrompt />
+                  <HowItWorks />
+                  <CharitiesCloud />
+                  <Testimonials />
+                  <Footer />
+                </>
+              }
+            />
 
-          {/* About Page */}
-          <Route path="/about" element={<About />} />
+            {/* About Page */}
+            <Route path="/about" element={<About />} />
 
-          {/* Login Page */}
-          <Route path="/auth/login" element={<Login />} />
+            {/* Login Page */}
+            <Route path="/auth/login" element={<Login />} />
 
-          {/* Register Page */}
-          <Route path="/auth/register" element={<Register />} />
+            {/* Register Page */}
+            <Route path="/auth/register" element={<Register />} />
 
-          {/* All Listings Page */}
-          <Route path="/Listings" element={<Listings />} />
+            {/* All Listings Page */}
+            <Route path="/Listings" element={<Listings />} />
 
-          {/* Profile Page */}
-          <Route path="/profile" element={<Profile />} />
+            {/* Profile Page */}
+            <Route path="/profile" element={<Profile />} />
 
-          {/* Create Listing Page */}
-          <Route path="/listing/create" element={<CreateListingPage />} />
+            {/* Create Listing Page */}
+            <Route path="/listing/create" element={<CreateListingPage />} />
 
-          {/* Single Listing Page */}
-          <Route path="/listing/:id" element={<SingleListing />} />
+            {/* Edit Listing Page - Requires a listing ID */}
+            <Route path="/listing/edit/:id" element={<EditListingWrapper />} />
 
-          {/* Other Profile Page */}
-          <Route path="/profile/:username" element={<UserProfilePage />} />
+            {/* Single Listing Page */}
+            <Route path="/listing/:id" element={<SingleListing />} />
 
-        </Routes>
-      </Router>
+            {/* Other Profile Page */}
+            <Route path="/profile/:username" element={<UserProfilePage />} />
+          </Routes>
+        </Router>
       </HeartBidsFilterProvider>
     </UserProvider>
   );
