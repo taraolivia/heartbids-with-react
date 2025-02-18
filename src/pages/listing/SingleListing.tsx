@@ -35,11 +35,11 @@ const SingleListing = () => {
 
   // ✅ Compute bidding restrictions
   const userCantBidMessage = (() => {
+    if (isAuctionEnded) return "❌ This auction has ended. Bidding is no longer available.";
+    if (listing?.seller?.name === user?.name) return "❌ You cannot bid on your own listing.";
+    if (lastBidder === user?.name) return "❌ You cannot place two bids in a row.";
     if (!user) return "❌ You must be logged in to place a bid.";
     if (user.credits < highestBid + 1) return "❌ You do not have enough credits to place a bid on this listing.";
-    if (listing?.seller?.name === user.name) return "❌ You cannot bid on your own listing.";
-    if (lastBidder === user.name) return "❌ You cannot place two bids in a row.";
-    if (isAuctionEnded) return "❌ This auction has ended. Bidding is no longer available.";
     return null;
   })();
 
