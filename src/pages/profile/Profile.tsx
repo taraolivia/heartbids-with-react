@@ -182,7 +182,7 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
 
   return (
     <div className="min-h-screen py-4 px-2 w-full">
-      <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden pt-20">
+      <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden pt-20">
         {/* ✅ Profile Banner */}
         <div className="relative w-full h-60 md:h-72 bg-gray-200">{user.banner?.url && <img src={user.banner.url} alt={user.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
 
@@ -249,18 +249,18 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
           <p className="text-gray-600 text-lg mb-6">These are the auctions you've created.</p>
 
           {listings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 gap-10">
               {listings.map((lot) => (
                 <div key={lot.id} className="bg-white rounded-xl shadow-lg p-5 hover:shadow-2xl transition border border-gray-300 min-w-[300px] max-w-[350px] mx-auto">
                   <LotCard
                     id={lot.id}
                     image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
                     title={lot.title}
-                    price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} // ✅ Fix highest bid
-                    bids={lot.bids ? lot.bids.length : 0} // ✅ Fix bid count
+                    price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} 
+                    bids={lot.bids ? lot.bids.length : 0}
                     closingDate={lot.endsAt}
-                    tags={lot.tags ?? []} // ✅ Pass tags (default to empty array if undefined)
-                    showTags={true} // ✅ Now explicitly enabling tags!
+                    tags={lot.tags ?? []} 
+                    showTags={true} 
                     showSeller={false}
                     showControls={true}
                     onDelete={handleDelete}
