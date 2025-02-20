@@ -6,7 +6,7 @@ import AuctionCountdown from "./AuctionCountdown";
 
 const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closingDate, userBid, description, tags, created, updated, showDescription, showTags, showCreatedUpdated, seller, showSeller, showControls = false, onDelete }) => {
   return (
-    <div className="bg-blue-100 shadow-lg rounded-xl p-5 hover:shadow-2xl transition-transform transform hover:scale-105 min-w-72 max-w-80">
+    <div className="bg-blue-100 shadow-lg rounded-sm p-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-72 max-w-80 mt-6 mb-6 m-auto flex flex-col ">
       {showControls && (
         <div className="flex justify-between mb-3">
           <EditButton listingId={id} />
@@ -42,11 +42,11 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         {showDescription && description && <p className="text-gray-700 mt-2">{description}</p>}
 
         {showTags && Array.isArray(tags) && tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 my-4">
             {tags
               .filter((tag) => tag.toLowerCase() !== "heartbids") 
               .map((tag) => (
-                <span key={tag} className="bg-gray-300 text-gray-800 text-xs font-semibold px-3 py-1 rounded-full">
+                <span key={tag} className="bg-gray-300 text-gray-800 text-sm font-semibold px-3 py-1 rounded-b-sm">
                   #{tag}
                 </span>
               ))}

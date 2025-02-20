@@ -163,40 +163,44 @@ const Profile: React.FC = () => {
   if (!user) return <div className="min-h-screen flex items-center justify-center text-gray-600">Failed to load profile.</div>;
 
   return (
-    <div className="min-h-screen py-4 px-2 w-full">
-      <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden pt-20">
+    <div className="min-h-screen w-full">
+      <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
         {/* ✅ Profile Banner */}
-        <div className="relative w-full h-60 md:h-72 bg-gray-200">{user.banner?.url && <img src={user.banner.url} alt={user.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
+        <div className="relative w-full h-80 md:h-72 bg-gray-200">{user.banner?.url && <img src={user.banner.url} alt={user.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
 
         {/* ✅ Profile Header */}
-        <div className="relative -mt-16 flex items-center space-x-6 p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
-          <img src={user.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={user.avatar?.alt || "User Avatar"} className="w-24 h-24 rounded-full border-4 border-white shadow-md" />
+        <div className="relative -mt-15 flex items-center p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
+        <div className="max-w-8/10 flex m-auto content-center justify-center gap-10">
+
+          <img src={user.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 h-40 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md" />
           <div>
             <h1 className="text-3xl font-bold">{user.name}</h1>
-            {user.bio && <p className="text-gray-600">{user.bio}</p>}
+            {user.bio && <p className="text-gray-600 max-w-8/10 pt-2">{user.bio}</p>}
           </div>
+          </div>
+
         </div>
 
         {/* ✅ Profile Stats */}
         <div className="grid grid-cols-3 divide-x divide-gray-200 bg-gray-100 text-center p-4">
           <div>
-            <span className="text-xl font-semibold text-gray-900">💰 {user.credits}</span>
-            <p className="text-gray-500">Credits</p>
+            <span className="text-xl font-semibold text-gray-900">🏆 {user._count?.wins || 0}</span>
+            <p className="text-gray-500">Wins</p>
           </div>
           <div>
             <span className="text-xl font-semibold text-gray-900">📦 {user._count?.listings || 0}</span>
             <p className="text-gray-500">Listings</p>
           </div>
           <div>
-            <span className="text-xl font-semibold text-gray-900">🏆 {user._count?.wins || 0}</span>
-            <p className="text-gray-500">Wins</p>
+            <span className="text-xl font-semibold text-gray-900">💰 {user.credits}</span>
+            <p className="text-gray-500">Credits</p>
           </div>
         </div>
 
         {/* ✅ Action Buttons */}
         <div className="mt-6 px-6">
           <div className="bg-gray-100 p-4 rounded-lg flex justify-between shadow-md">
-            <Link to="/profile/edit" className="bg-blue-400 text-black px-4 py-2 rounded-lg hover:bg-blue-200 transition">
+            <Link to="/profile/editprofile" className="bg-blue-400 text-black px-4 py-2 rounded-lg hover:bg-blue-200 transition">
               ✏️ Edit Profile
             </Link>
             <Link to="/listing/create" className="bg-green-400 text-black px-4 py-2 rounded-lg hover:bg-green-200 transition">
@@ -213,7 +217,7 @@ const Profile: React.FC = () => {
           <p className="text-gray-600 mb-4">These are the listings you've won.</p>
 
           {wonListings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-auto m-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {wonListings.map((lot) => (
                 <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
               ))}
@@ -226,14 +230,14 @@ const Profile: React.FC = () => {
         </div>
 
         {/* ✅ User Listings */}
-        <div className="px-6 mt-10">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">My Listings</h2>
+        <div className="px-6 mt-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">📦 Your Listings</h2>
           <p className="text-gray-600 text-lg mb-6">These are the auctions you've created.</p>
 
           {listings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {listings.map((lot) => (
-                <div key={lot.id} className="bg-white rounded-xl shadow-lg p-5 hover:shadow-2xl transition border border-gray-300 min-w-[300px] max-w-[350px] mx-auto">
+                <div key={lot.id}>
                   <LotCard id={lot.id} image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} onDelete={handleDelete} />
                 </div>
               ))}
@@ -249,11 +253,25 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="px-6 mt-6">
-          <h2 className="text-2xl font-bold text-gray-900">Bids You’ve Placed</h2>
+          <h2 className="text-2xl font-bold text-gray-900">💰 Bids You’ve Placed</h2>
           <p className="text-gray-600 mb-4">Auctions where you’ve placed bids.</p>
 
           {/* ✅ Use SortDropdown and TagFilter together */}
-          <SortDropdown selectedSort={selectedSort} onSortChange={setSelectedSort} />
+          <SortDropdown
+            selectedSort={selectedSort}
+            onSortChange={setSelectedSort}
+            bidListings={bidListings} // ✅ Keep userBid & highestBid
+            setSortedListings={(sorted) =>
+              setBidListings(
+                sorted.map((listing) => ({
+                  ...listing,
+                  userBid: listing.userBid ?? 0,
+                  highestBid: listing.highestBid ?? 0,
+                }))
+              )
+            } // ✅ Ensure userBid & highestBid exist
+          />
+
           <TagFilter selectedTags={selectedTags} onTagChange={setSelectedTags} availableTags={availableTags} />
           <EndedAuctionsFilter includeEnded={includeEnded} onToggle={() => setIncludeEnded(!includeEnded)} />
 
@@ -266,9 +284,23 @@ const Profile: React.FC = () => {
 
           {/* ✅ Render Filtered Listings */}
           {filteredBids.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-auto m-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {sortedFilteredBids.map((lot) => (
-                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.highestBid} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt ?? ""} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} userBid={lot.userBid} />
+                <LotCard
+                  key={lot.id}
+                  id={lot.id}
+                  image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"}
+                  title={lot.title}
+                  price={lot.highestBid} // ✅ Uses highestBid
+                  bids={lot.bids?.length ?? 0}
+                  closingDate={lot.endsAt ?? ""}
+                  tags={lot.tags ?? []}
+                  showTags={true}
+                  showSeller={true}
+                  seller={lot.seller ?? "Unknown Seller"}
+                  showControls={false}
+                  userBid={lot.userBid} // ✅ Uses userBid
+                />
               ))}
             </div>
           ) : (

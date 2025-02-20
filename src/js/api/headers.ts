@@ -20,7 +20,6 @@ export function getHeaders({ apiKey = true, authToken = true, contentType = true
     headers.append("Content-Type", "application/json");
   }
 
-  console.log("Headers being sent:", Object.fromEntries(headers.entries())); // ✅ Log headers for debugging
 
   return headers;
 }

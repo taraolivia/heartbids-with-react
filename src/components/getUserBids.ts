@@ -4,7 +4,6 @@ import { getHeaders } from "../js/api/headers";
 const getUserBids = async (username: string) => {
   try {
     const apiUrl = `${API_BASE}/auction/profiles/${username}/bids?_listings=true`;
-    console.log("Fetching bids from:", apiUrl); // ✅ Debugging
 
     const response = await fetch(apiUrl, {
       headers: getHeaders(),

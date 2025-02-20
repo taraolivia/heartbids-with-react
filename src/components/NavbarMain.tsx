@@ -60,12 +60,12 @@ const Navbar = () => {
   const getLinkClass = (path: string) => (location.pathname === path ? "text-blue-600 font-semibold" : "text-black hover:text-blue-600");
 
   return (
-    <nav className="bg-white shadow-md w-full fixed z-50 pt-3 pb-3">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="navbar bg-violet-50 shadow-md w-full fixed z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 z-50">
         {/* ✅ First Row: Logo & Navigation */}
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20 ">
           {/* Left Menu */}
-          <div className="flex space-x-6">
+          <div className="flex space-x-6 flex-1">
             <Link to="/listings" className={getLinkClass("/listings")}>
               Listings
             </Link>
@@ -80,12 +80,12 @@ const Navbar = () => {
           {/* Center Logo */}
           <div className="flex justify-center flex-1">
             <Link to="/" className={getLinkClass("/")}>
-              <img src="/images/logo/HeartBids(1).png" alt="HeartBids Logo" className="h-12" />
+              <img src="/images/logo/HeartBids(1).png" alt="HeartBids Logo" className="h-30 mt-5 z-50" />
             </Link>
           </div>
 
           {/* Right Side - Login or Profile */}
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 flex-1 justify-end">
             {user ? (
               <div className="relative">
                 {/* ✅ Avatar & Dropdown Button */}
@@ -122,9 +122,10 @@ const Navbar = () => {
             )}
           </div>
         </div>
-
-        {/* ✅ Second Row: HeartBids Filter (Centered) */}
-        <div className="flex justify-center mt-2">
+      </div>
+      {/* ✅ Second Row: HeartBids Filter (Centered) */}
+      <div className=" py-5">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-right">
           <HeartBidsFilterToggle />
         </div>
       </div>

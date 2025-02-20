@@ -1,4 +1,5 @@
 import "./App.css";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from "./pages/profile/UserProvider";
 import Navbar from "./components/NavbarMain";
@@ -23,11 +24,28 @@ import EditListingWrapper from "./pages/listing/edit/EditListingWrapper";
 import EditProfile from "./pages/profile/EditProfile";
 
 function App() {
+  const [navHeight, setNavHeight] = useState(0);
+
+  useEffect(() => {
+    const updateNavHeight = () => {
+      const navbar = document.querySelector(".navbar"); 
+      if (navbar) {
+        setNavHeight(navbar.clientHeight);
+      }
+    };
+
+    updateNavHeight(); 
+    window.addEventListener("resize", updateNavHeight); 
+
+    return () => window.removeEventListener("resize", updateNavHeight);
+  }, []);
   return (
     <UserProvider>
       <HeartBidsFilterProvider>
         <Router>
           <Navbar />
+          {/* Dynamic Spacer to prevent overlap */}
+          <div style={{ height: `${navHeight}px` }}></div>
           <Routes>
             {/* Home Page */}
             <Route

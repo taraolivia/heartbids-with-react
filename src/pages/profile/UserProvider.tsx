@@ -29,7 +29,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
   
       const result = await response.json();
-      console.log("Full API Response:", result); // ✅ Log the full response
   
       if (response.ok && result.data) {
         setUser(result.data);

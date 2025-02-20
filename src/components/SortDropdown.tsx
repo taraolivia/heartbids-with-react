@@ -1,44 +1,47 @@
 import React from "react";
-
 import { Listing } from "../ts/types/listingTypes";
 
 interface SortDropdownProps {
   selectedSort: string;
   onSortChange: (sortType: string) => void;
-  bidListings: Listing[]; 
-  setSortedListings: (list: Listing[]) => void; 
+  bidListings: (Listing & { userBid?: number; highestBid?: number })[]; // ✅ Allows optional fields
+  setSortedListings: (list: (Listing & { userBid?: number; highestBid?: number })[]) => void; // ✅ Accepts optional fields
 }
 
-const getHighestBid = (listing: Listing): number => {
-  return listing.bids && listing.bids.length > 0
-    ? Math.max(...listing.bids.map((b) => b.amount))
-    : 0;
-};
 
+const getHighestBid = (listing: Listing & { highestBid?: number }): number => {
+  return listing.highestBid ?? (listing.bids?.length ? Math.max(...listing.bids.map((b) => b.amount)) : 0);
+};
 
 const SortDropdown: React.FC<SortDropdownProps> = ({ selectedSort, onSortChange, bidListings, setSortedListings }) => {
   const handleSortChange = (sortType: string) => {
     onSortChange(sortType);
-
+  
     const sortedList = [...bidListings].sort((a, b) => {
       switch (sortType) {
         case "newest":
           return new Date(b.created).getTime() - new Date(a.created).getTime();
         case "mostBids":
           return (b.bids?.length ?? 0) - (a.bids?.length ?? 0);
-        case "highestPrice":
-          return getHighestBid(b) - getHighestBid(a); 
-        case "lowestPrice":
-          return getHighestBid(a) - getHighestBid(b); 
+          case "highestPrice":
+            return getHighestBid(b) - getHighestBid(a);
+          case "lowestPrice":
+            return getHighestBid(a) - getHighestBid(b);
+          
         case "endingSoon":
           return new Date(a.endsAt).getTime() - new Date(b.endsAt).getTime();
         default:
           return 0;
       }
     });
-    
-    setSortedListings(sortedList);
+  
+    setSortedListings(sortedList.map((listing) => ({
+      ...listing,
+      userBid: listing.userBid ?? 0, // ✅ Ensure userBid exists
+      highestBid: listing.highestBid ?? 0, // ✅ Ensure highestBid exists
+    })));
   };
+  
 
   return (
     <div className="mb-6">
