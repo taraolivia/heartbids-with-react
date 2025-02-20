@@ -17,7 +17,7 @@ const getUserBids = async (username: string) => {
     }
 
     const bids = await response.json();
-    console.log("User Bidding History:", bids);
+
     return bids.data;
   } catch (error) {
     console.error("Error fetching user bids:", error);

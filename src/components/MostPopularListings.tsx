@@ -35,14 +35,14 @@ const MostPopularListings = () => {
           }
 
           const result: { data: Listing[]; meta: { isLastPage: boolean } } = await response.json();
-          console.log(`Page ${page} Response:`, result);
+
 
           allListings.push(...result.data);
           hasMore = !result.meta.isLastPage;
           page++;
         }
 
-        console.log(`Total Listings Fetched: ${allListings.length}`);
+
 
         // ✅ Filter based on active listings and HeartBids toggle
         let filteredListings = allListings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
@@ -60,7 +60,7 @@ const MostPopularListings = () => {
           })
           .slice(0, 10);
 
-        console.log("Sorted Top 10 Listings:", sortedListings);
+
 
         setListings(sortedListings);
       } catch (err) {

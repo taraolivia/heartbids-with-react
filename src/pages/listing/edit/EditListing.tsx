@@ -54,7 +54,7 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
         const responseData = await response.json();
         const data = responseData.data; // ✅ Fix: Extract the correct data object
   
-        console.log("📢 API Response Data:", data);
+
   
         setFormData({
           title: data.title || "",
@@ -78,7 +78,7 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
   
   // Debug: Log whenever formData updates
   useEffect(() => {
-    console.log("🔄 FormData Updated:", formData);
+
   }, [formData]);
   
   

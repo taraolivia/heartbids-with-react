@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import clsx from "clsx"; // ✅ Use clsx for cleaner class handling
+import clsx from "clsx"; 
 
 const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
   const [timeLeft, setTimeLeft] = useState<string>("Calculating...");
@@ -11,21 +11,21 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
       const now = new Date().getTime();
       const difference = endTime - now;
 
-      // ✅ Determine status and apply color classes
+      
       let status = "";
       if (difference <= 0) {
         setTimeLeft("Auction ended");
-        status = "bg-gray-300"; // Ended (gray)
+        status = "bg-gray-300"; 
       } else if (difference < 1000 * 60 * 60 * 24 * 3) {
-        status = "bg-red-100"; // Less than 3 days (red)
+        status = "bg-red-100"; 
       } else if (difference < 1000 * 60 * 60 * 24 * 30) {
-        status = "bg-green-100"; // Less than a month (green)
+        status = "bg-green-100"; 
       } else {
-        status = "bg-blue-200"; // More than a month (blue)
+        status = "bg-blue-200"; 
       }
       setStatusClass(status);
 
-      // ✅ Format the time remaining
+      
       if (difference > 0) {
         const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
         const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));

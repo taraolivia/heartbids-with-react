@@ -9,7 +9,7 @@ const getOtherUserProfile = async (username: string) => {
   }
 
   try {
-    console.log(`Fetching profile for: ${username}`);
+
 
     const response = await fetch(`${API_BASE}/auction/profiles/${username}?_listings=true&_wins=true`, {
       headers: getHeaders(),
@@ -22,7 +22,7 @@ const getOtherUserProfile = async (username: string) => {
     }
 
     const profile = await response.json();
-    console.log("Other User Profile Data:", profile);
+
 
     return profile.data; // ✅ Make sure this returns the correct profile data
   } catch (error) {

@@ -25,16 +25,16 @@ const SingleListing = () => {
     }
   };
 
-  // ✅ Ensure bids array is always defined
+  
   const bidsArray: Bid[] = listing?.bids ? [...listing.bids].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()) : [];
   const highestBid = bidsArray.length > 0 ? Math.max(...bidsArray.map((bid) => bid.amount)) : 0;
   const lastBidder = bidsArray.length > 0 ? bidsArray[bidsArray.length - 1].bidder.name : null;
   const isAuctionEnded = listing?.endsAt ? new Date(listing.endsAt).getTime() < Date.now() : false;
 
-  // ✅ Initialize bidAmount based on highest bid
+  
   const [bidAmount, setBidAmount] = useState<number>(highestBid + 1);
 
-  // ✅ Compute bidding restrictions
+  
   const userCantBidMessage = (() => {
     if (isAuctionEnded) return "❌ This auction has ended. Bidding is no longer available.";
     if (listing?.seller?.name === user?.name) return "❌ You cannot bid on your own listing.";
@@ -44,12 +44,12 @@ const SingleListing = () => {
     return null;
   })();
 
-  // ✅ Ensure bidAmount updates when highestBid changes
+  
   useEffect(() => {
     setBidAmount(highestBid + 1);
   }, [highestBid]);
 
-  // ✅ Fetch Listing Data
+  
   useEffect(() => {
     if (!id) return;
 
@@ -72,7 +72,7 @@ const SingleListing = () => {
     fetchListing();
   }, [id]);
 
-  // ✅ Handle bid placement
+  
   const handlePlaceBid = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -82,7 +82,7 @@ const SingleListing = () => {
       if (bidData) {
         setBidAmount(highestBid + 2);
 
-        // ✅ Optimistic UI update
+        
         setListing((prevListing) => {
           if (!prevListing) return prevListing;
 
@@ -94,12 +94,12 @@ const SingleListing = () => {
               bidder: { name: user.name, email: user.email ?? "" },
               created: new Date().toISOString(),
             },
-          ].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()); // ✅ Ensure sorted
+          ].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()); 
 
           return { ...prevListing, bids: updatedBids };
         });
 
-        // ✅ Fetch latest bid history after placing a bid
+        
         const response = await fetch(`${API_LISTINGS}/${id}?_bids=true&_seller=true`);
         const result = await response.json();
         if (response.ok && result.data) {
@@ -169,7 +169,7 @@ const SingleListing = () => {
           <ul className="mt-2 space-y-2 p-1 bg-blue-100">
             {bidsArray
               .slice()
-              .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()) // Sort by newest
+              .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()) 
               .map((bid) => (
                 <li key={bid.id} className="flex items-center space-x-2 text-gray-600 text-sm p-2">
                   {/* ✅ Prevent navigation if not logged in */}

@@ -33,14 +33,14 @@ const AllLots = () => {
           if (!response.ok) throw new Error("Failed to fetch listings");
   
           const result: { data: Listing[]; meta: { isLastPage: boolean } } = await response.json();
-          console.log(`Page ${page} Response:`, result);
+
   
           allListings.push(...result.data);
           hasMore = !result.meta.isLastPage;
           page++;
         }
   
-        console.log(`Total Listings Fetched: ${allListings.length}`);
+
   
         // ✅ Filter based on toggle
         let filteredListings = allListings;

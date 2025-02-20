@@ -38,7 +38,7 @@ const Listings = () => {
         if (!response.ok) throw new Error("Failed to fetch listings");
   
         const result = await response.json();
-        console.log("API Response:", result);
+
   
         if (!result || !Array.isArray(result.data)) {
           throw new Error("Unexpected API response format");

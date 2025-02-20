@@ -15,49 +15,39 @@ const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [listings, setListings] = useState<Listing[]>([]); // ✅ Declare listings properly
-  const [bidListings, setBidListings] = useState<(Listing & { userBid: number; highestBid: number })[]>([]); // ✅ Stores associated listings
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [bidListings, setBidListings] = useState<(Listing & { userBid: number; highestBid: number })[]>([]);
   const logout = () => {
     HandleLogout();
   };
-    const [wonListings, setWonListings] = useState<Listing[]>([]);
+  const [wonListings, setWonListings] = useState<Listing[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("newest");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const availableTags = bidListings.length
-  ? [...new Set(bidListings.flatMap((lot) => lot.tags ?? []))]
-  : ["Loading..."];
-const [includeEnded, setIncludeEnded] = useState<boolean>(true); 
-const [showOnlyHighestBids, setShowOnlyHighestBids] = useState<boolean>(false);
+  const availableTags = bidListings.length ? [...new Set(bidListings.flatMap((lot) => lot.tags ?? []))] : ["Loading..."];
+  const [includeEnded, setIncludeEnded] = useState<boolean>(true);
+  const [showOnlyHighestBids, setShowOnlyHighestBids] = useState<boolean>(false);
 
+  const filteredBids = bidListings
+    .filter((lot) => selectedTags.length === 0 || lot.tags.some((tag) => selectedTags.includes(tag)))
+    .filter((lot) => includeEnded || new Date(lot.endsAt).getTime() > Date.now())
+    .filter((lot) => !showOnlyHighestBids || lot.userBid === lot.highestBid);
 
-
-const filteredBids = bidListings
-  .filter((lot) => selectedTags.length === 0 || lot.tags.some((tag) => selectedTags.includes(tag)))
-  .filter((lot) => includeEnded || new Date(lot.endsAt).getTime() > Date.now())
-  .filter((lot) => !showOnlyHighestBids || lot.userBid === lot.highestBid); // ✅ Apply filter when checkbox is checked
-
-
-const sortedFilteredBids = [...filteredBids].sort((a, b) => {
-  switch (selectedSort) {
-    case "newest":
-      return new Date(b.created).getTime() - new Date(a.created).getTime();
-    case "mostBids":
-      return (b.bids?.length ?? 0) - (a.bids?.length ?? 0);
-    case "highestPrice":
-      return b.highestBid - a.highestBid;
-    case "lowestPrice":
-      return a.highestBid - b.highestBid;
-    case "endingSoon":
-      return new Date(a.endsAt).getTime() - new Date(b.endsAt).getTime();
-    default:
-      return 0;
-  }
-});
-
-
-
-
-
+  const sortedFilteredBids = [...filteredBids].sort((a, b) => {
+    switch (selectedSort) {
+      case "newest":
+        return new Date(b.created).getTime() - new Date(a.created).getTime();
+      case "mostBids":
+        return (b.bids?.length ?? 0) - (a.bids?.length ?? 0);
+      case "highestPrice":
+        return b.highestBid - a.highestBid;
+      case "lowestPrice":
+        return a.highestBid - b.highestBid;
+      case "endingSoon":
+        return new Date(a.endsAt).getTime() - new Date(b.endsAt).getTime();
+      default:
+        return 0;
+    }
+  });
 
   const fetchUserWins = async (username: string) => {
     try {
@@ -86,11 +76,9 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
 
         setUser(profile);
 
-        // Fetch user wins
         const userWins = await fetchUserWins(profile.name);
         setWonListings(userWins);
 
-        // ✅ Fetch full listing details including bids
         const fetchFullListingDetails = async (listingId: string) => {
           try {
             const response = await fetch(`${API_BASE}/auction/listings/${listingId}?_bids=true&_seller=true`, {
@@ -108,7 +96,6 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
           }
         };
 
-        // ✅ Fetch and update listings with bid data
         const loadUserListings = async () => {
           if (!profile.listings || profile.listings.length === 0) {
             setListings([]);
@@ -118,7 +105,7 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
           const detailedListings = await Promise.all(
             (profile.listings as Listing[]).map(async (listing) => {
               const fullListing = await fetchFullListingDetails(listing.id);
-              return fullListing || listing; // ✅ Use full listing if available, otherwise fallback to basic
+              return fullListing || listing;
             })
           );
 
@@ -127,11 +114,9 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
 
         await loadUserListings();
 
-        // ✅ Fetch user's bids separately
         const userBids: Bid[] = await getUserBids(profile.name);
         if (!userBids.length) return;
 
-        // ✅ Store highest bid per listing
         const listingMap: Record<string, Listing & { userBid: number; highestBid: number }> = {};
 
         for (const bid of userBids) {
@@ -146,13 +131,10 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
 
               listingMap[listingId] = {
                 ...fullListing,
-                userBid: bid.amount, // ✅ Store user's highest bid on this listing
-                highestBid: fullListing.bids?.length
-                  ? Math.max(...fullListing.bids.map((b: Bid) => b.amount)) // ✅ Find highest bid from all users
-                  : 0,
+                userBid: bid.amount,
+                highestBid: fullListing.bids?.length ? Math.max(...fullListing.bids.map((b: Bid) => b.amount)) : 0,
               };
             } else {
-              // ✅ If listing already exists, update user's highest bid if it's higher
               listingMap[listingId].userBid = Math.max(listingMap[listingId].userBid, bid.amount);
             }
           } catch (error) {
@@ -160,7 +142,7 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
           }
         }
 
-        setBidListings(Object.values(listingMap)); // ✅ Convert map to an array
+        setBidListings(Object.values(listingMap));
       } catch (error) {
         console.error("Error fetching profile:", error);
         setError("Failed to load profile.");
@@ -252,19 +234,7 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-3 gap-10">
               {listings.map((lot) => (
                 <div key={lot.id} className="bg-white rounded-xl shadow-lg p-5 hover:shadow-2xl transition border border-gray-300 min-w-[300px] max-w-[350px] mx-auto">
-                  <LotCard
-                    id={lot.id}
-                    image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"}
-                    title={lot.title}
-                    price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} 
-                    bids={lot.bids ? lot.bids.length : 0}
-                    closingDate={lot.endsAt}
-                    tags={lot.tags ?? []} 
-                    showTags={true} 
-                    showSeller={false}
-                    showControls={true}
-                    onDelete={handleDelete}
-                  />
+                  <LotCard id={lot.id} image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} onDelete={handleDelete} />
                 </div>
               ))}
             </div>
@@ -279,58 +249,34 @@ const sortedFilteredBids = [...filteredBids].sort((a, b) => {
         </div>
 
         <div className="px-6 mt-6">
-  <h2 className="text-2xl font-bold text-gray-900">Bids You’ve Placed</h2>
-  <p className="text-gray-600 mb-4">Auctions where you’ve placed bids.</p>
+          <h2 className="text-2xl font-bold text-gray-900">Bids You’ve Placed</h2>
+          <p className="text-gray-600 mb-4">Auctions where you’ve placed bids.</p>
 
-  {/* ✅ Use SortDropdown and TagFilter together */}
-  <SortDropdown selectedSort={selectedSort} onSortChange={setSelectedSort} />
-    <TagFilter selectedTags={selectedTags} onTagChange={setSelectedTags} availableTags={availableTags} />
-    <EndedAuctionsFilter includeEnded={includeEnded} onToggle={() => setIncludeEnded(!includeEnded)} />
+          {/* ✅ Use SortDropdown and TagFilter together */}
+          <SortDropdown selectedSort={selectedSort} onSortChange={setSelectedSort} />
+          <TagFilter selectedTags={selectedTags} onTagChange={setSelectedTags} availableTags={availableTags} />
+          <EndedAuctionsFilter includeEnded={includeEnded} onToggle={() => setIncludeEnded(!includeEnded)} />
 
-<div className="flex items-center gap-2 mt-4">
-  <input
-    type="checkbox"
-    id="highestBidFilter"
-    checked={showOnlyHighestBids}
-    onChange={() => setShowOnlyHighestBids(!showOnlyHighestBids)}
-    className="w-5 h-5 accent-pink-500 cursor-pointer"
-  />
-  <label htmlFor="highestBidFilter" className="text-gray-800 cursor-pointer">
-    Show only listings where I am the highest bidder
-  </label>
-</div>
+          <div className="flex items-center gap-2 mt-4">
+            <input type="checkbox" id="highestBidFilter" checked={showOnlyHighestBids} onChange={() => setShowOnlyHighestBids(!showOnlyHighestBids)} className="w-5 h-5 accent-pink-500 cursor-pointer" />
+            <label htmlFor="highestBidFilter" className="text-gray-800 cursor-pointer">
+              Show only listings where I am the highest bidder
+            </label>
+          </div>
 
-
-
-
-    {/* ✅ Render Filtered Listings */}
-    {filteredBids.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-auto m-auto">
-{sortedFilteredBids.map((lot) => (
-        <LotCard
-          key={lot.id}
-          id={lot.id}
-          image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"}
-          title={lot.title}
-          price={lot.highestBid} // ✅ Uses highest bid
-          bids={lot.bids?.length ?? 0}
-          closingDate={lot.endsAt ?? ""}
-          tags={lot.tags ?? []} // ✅ Pass tags
-          showTags={true}
-          showSeller={true}
-          seller={lot.seller ?? "Unknown Seller"} // ✅ Show seller details
-          showControls={false}
-          userBid={lot.userBid}
-        />
-      ))}
-    </div>
-  ) : (
-    <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
-      <p className="text-gray-500">No matching auctions found.</p>
-    </div>
-  )}
-</div>
-
+          {/* ✅ Render Filtered Listings */}
+          {filteredBids.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-auto m-auto">
+              {sortedFilteredBids.map((lot) => (
+                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.highestBid} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt ?? ""} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} userBid={lot.userBid} />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
+              <p className="text-gray-500">No matching auctions found.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

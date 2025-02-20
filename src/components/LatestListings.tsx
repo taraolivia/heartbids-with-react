@@ -24,7 +24,7 @@ const LatestListings = ({ loading, error }: LatestListingsProps) => {
         if (!response.ok) throw new Error("Failed to fetch listings");
 
         const result = await response.json();
-        console.log("API Response:", result);
+
 
         setListings(result.data); 
       } catch (err) {

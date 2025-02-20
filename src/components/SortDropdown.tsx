@@ -5,8 +5,8 @@ import { Listing } from "../ts/types/listingTypes";
 interface SortDropdownProps {
   selectedSort: string;
   onSortChange: (sortType: string) => void;
-  bidListings: Listing[]; // ✅ Use the correct type instead of `any[]`
-  setSortedListings: (list: Listing[]) => void; // ✅ Ensure sorting function uses `Listing[]`
+  bidListings: Listing[]; 
+  setSortedListings: (list: Listing[]) => void; 
 }
 
 const getHighestBid = (listing: Listing): number => {
@@ -27,9 +27,9 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ selectedSort, onSortChange,
         case "mostBids":
           return (b.bids?.length ?? 0) - (a.bids?.length ?? 0);
         case "highestPrice":
-          return getHighestBid(b) - getHighestBid(a); // ✅ Dynamically calculate highest bid
+          return getHighestBid(b) - getHighestBid(a); 
         case "lowestPrice":
-          return getHighestBid(a) - getHighestBid(b); // ✅ Dynamically calculate lowest bid
+          return getHighestBid(a) - getHighestBid(b); 
         case "endingSoon":
           return new Date(a.endsAt).getTime() - new Date(b.endsAt).getTime();
         default:

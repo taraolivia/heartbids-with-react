@@ -12,7 +12,7 @@ const getUserProfile = async () => {
 
   try {
     const apiUrl = `${API_BASE}/auction/profiles/${name}?_listings=true&_wins=true&_bids=true`;
-    console.log("🌐 Fetching user profile from:", apiUrl);
+
 
     const response = await fetch(apiUrl, {
       headers: getHeaders(),
@@ -26,8 +26,8 @@ const getUserProfile = async () => {
 
     const profile = await response.json();
 
-    console.log("✅ User Profile Response:", profile);
-    console.log("✅ Extracted Name from Profile:", profile?.data?.name);
+
+
 
     return profile.data; // ✅ Return ONLY `profile.data`
     

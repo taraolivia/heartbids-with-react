@@ -20,6 +20,7 @@ import MostPopularListings from "./components/MostPopularListings";
 import UserProfilePage from "./pages/profile/OtherUserProfile";
 import { HeartBidsFilterProvider } from "./components/HeartBidsFilterProvider";
 import EditListingWrapper from "./pages/listing/edit/EditListingWrapper";
+import EditProfile from "./pages/profile/EditProfile";
 
 function App() {
   return (
@@ -59,6 +60,9 @@ function App() {
 
             {/* Profile Page */}
             <Route path="/profile" element={<Profile />} />
+
+            {/* Edit Profile Page */}
+            <Route path="/profile/EditProfile" element={<EditProfile />} />
 
             {/* Create Listing Page */}
             <Route path="/listing/create" element={<CreateListingPage />} />

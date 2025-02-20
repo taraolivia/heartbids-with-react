@@ -140,7 +140,7 @@ const CreateListingForm: React.FC = () => {
 
     // 🚨 STOP if required fields or expected API errors exist
     if (Object.keys(newErrorFields).length > 0) {
-      console.log("❌ Validation failed: User-defined and expected API validation errors.");
+
       setLoading(false);
 
       if (firstErrorField) {
@@ -150,7 +150,7 @@ const CreateListingForm: React.FC = () => {
       return; // 🚨 Prevents API request if there are expected errors
     }
 
-    console.log("🚀 Sending POST request to API...");
+
 
     // ✅ Make API request (If it reaches here, manual validation has passed)
     try {
@@ -163,12 +163,12 @@ const CreateListingForm: React.FC = () => {
         }),
       });
 
-      console.log("📨 API request was made, waiting for response...");
+
       const responseData = await response.json();
-      console.log("✅ API Response:", responseData);
+
 
       if (!response.ok) {
-        console.log("⚠️ API responded with an error, extracting messages...");
+
         const newApiErrorFields: Record<string, boolean> = {};
         const apiErrorMessages: string[] = [];
 
@@ -202,7 +202,7 @@ const CreateListingForm: React.FC = () => {
         setErrorField({ ...newErrorFields, ...newApiErrorFields });
         setError(finalErrorMessages.join("\n")); // ✅ Show ALL errors together
 
-        console.log("Final Error Messages:", finalErrorMessages);
+
 
         const firstErrorKey = Object.keys(newApiErrorFields).find((key) => newApiErrorFields[key]);
         if (firstErrorKey) {
@@ -216,7 +216,7 @@ const CreateListingForm: React.FC = () => {
         throw new Error(finalErrorMessages.join("\n"));
       }
 
-      console.log("✅ Listing created successfully!");
+
       setSuccess(true);
       setFormData({ title: "", description: "", tags: [], media: [{ url: "", alt: "" }], endsAt: "" });
     } catch (err: unknown) {

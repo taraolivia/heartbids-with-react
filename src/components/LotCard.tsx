@@ -44,7 +44,7 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         {showTags && Array.isArray(tags) && tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {tags
-              .filter((tag) => tag.toLowerCase() !== "heartbids") // ✅ Exclude "HeartBids" tag
+              .filter((tag) => tag.toLowerCase() !== "heartbids") 
               .map((tag) => (
                 <span key={tag} className="bg-gray-300 text-gray-800 text-xs font-semibold px-3 py-1 rounded-full">
                   #{tag}

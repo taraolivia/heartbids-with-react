@@ -12,8 +12,8 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
 
   const handleTagChange = (tag: string) => {
     const updatedTags = selectedTags.includes(tag)
-      ? selectedTags.filter((t) => t !== tag) // Remove tag if already selected
-      : [...selectedTags, tag]; // Add tag if not selected
+      ? selectedTags.filter((t) => t !== tag) 
+      : [...selectedTags, tag]; 
 
     onTagChange(updatedTags);
   };
