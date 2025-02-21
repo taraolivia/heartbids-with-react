@@ -57,7 +57,7 @@ export type LotCardProps = {
   price: number; // ✅ Highest bid on the listing
   userBid?: number; // ✅ Your highest bid
   bids: number;
-  closingDate: string;
+  closingDate?: string;
   description?: string;
   tags?: string[];
   created?: string;
@@ -70,6 +70,7 @@ export type LotCardProps = {
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   showControls?: boolean;
+  showClosingDate?: boolean;
 };
 
 

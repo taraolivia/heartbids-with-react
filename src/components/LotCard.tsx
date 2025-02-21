@@ -4,16 +4,9 @@ import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import AuctionCountdown from "./AuctionCountdown";
 
-const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closingDate, userBid, description, tags, created, updated, showDescription, showTags, showCreatedUpdated, seller, showSeller, showControls = false, onDelete }) => {
+const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closingDate, userBid, description, tags, created, updated, showDescription, showTags, showCreatedUpdated, seller, showSeller, showControls, showClosingDate = true, onDelete }) => {
   return (
-    <div className="bg-blue-100 shadow-lg rounded-sm p-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-72 max-w-80 mt-6 mb-6 m-auto flex flex-col ">
-      {showControls && (
-        <div className="flex justify-between mb-3">
-          <EditButton listingId={id} />
-          <DeleteButton listingId={id} onDelete={onDelete ?? (() => {})} />
-        </div>
-      )}
-
+    <div className="bg-blue-100 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-72 mt-6 mb-6 m-auto flex flex-col h-full w-full">
       <Link to={`/listing/${id}`} className="block">
         {/* ✅ Image Styling - Consistent Height & Rounded Corners */}
         <img
@@ -44,9 +37,9 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         {showTags && Array.isArray(tags) && tags.length > 0 && (
           <div className="flex flex-wrap gap-2 my-4">
             {tags
-              .filter((tag) => tag.toLowerCase() !== "heartbids") 
+              .filter((tag) => tag.toLowerCase() !== "heartbids")
               .map((tag) => (
-                <span key={tag} className="bg-gray-300 text-gray-800 text-sm font-semibold px-3 py-1 rounded-b-sm">
+                <span key={tag} className="bg-gray-300 text-gray-800 text-sm font-semibold px-3 py-1 rounded-sm">
                   #{tag}
                 </span>
               ))}
@@ -54,7 +47,8 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         )}
 
         {/* ✅ Countdown */}
-        <AuctionCountdown closingDate={closingDate} />
+{/* ✅ Only render AuctionCountdown if `showClosingDate` is true */}
+{showClosingDate && closingDate && <AuctionCountdown closingDate={closingDate} />}
 
         {/* ✅ Bidding Details - More Readable & Aligned */}
         <p className="text-lg font-bold mt-2">
@@ -73,12 +67,18 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         )}
 
         {showCreatedUpdated && (
-          <div className="text-gray-500 text-xs mt-2">
+          <div className="text-gray-700 text-base mt-2">
             {created && <p>Created: {new Date(created).toLocaleDateString()}</p>}
             {updated && <p>Updated: {new Date(updated).toLocaleDateString()}</p>}
           </div>
         )}
       </Link>
+      {showControls && (
+        <div className="flex justify-between mt-5">
+          <EditButton listingId={id} />
+          <DeleteButton listingId={id} onDelete={onDelete ?? (() => {})} />
+        </div>
+      )}
     </div>
   );
 };

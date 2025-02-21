@@ -86,17 +86,17 @@ const LatestListings = ({ loading, error }: LatestListingsProps) => {
   
 
   return (
-    <section className="py-16 bg-gray-100 relative">
+    <section className="py-10 bg-gray-100 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">Latest Listings</h2>
 
         {canScrollLeft && (
-          <button onClick={scrollLeft} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-5 rounded-full shadow-md hover:bg-gray-700">
+          <button onClick={scrollLeft} className="text-2xl z-50 absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-7 py-4 cursor-pointer rounded-full shadow-md hover:bg-gray-700">
             ❮
           </button>
         )}
 
-        <div ref={scrollRef} className="flex overflow-x-auto gap-4 pb-4 no-scrollbar scroll-smooth" onScroll={updateScrollButtons}>
+        <div ref={scrollRef} className="flex overflow-x-auto gap-10 py-10 no-scrollbar scroll-smooth" onScroll={updateScrollButtons}>
           {loading && <div className="text-center text-gray-600 mt-8">Loading listings...</div>}
           {error && <div className="text-center bg-red-100 text-red-600 rounded-md p-4 mt-8">{error}</div>}
           {!loading && !error && filteredListings.length === 0 && <div className="text-center text-gray-600 mt-8">No listings available at the moment.</div>}
@@ -106,21 +106,13 @@ const LatestListings = ({ loading, error }: LatestListingsProps) => {
             filteredListings.length > 0 &&
             filteredListings.map((item) => (
               <div key={item.id} className="min-w-[300px]">
-                <LotCard
-                  key={item.id}
-                  id={item.id} // Correctly passing the 'id' of the listing
-                  image={item.media.length > 0 ? item.media[0].url : "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"}
-                  title={item.title}
-                  price={Array.isArray(item.bids) && item.bids.length > 0 ? Math.max(...item.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0)) : 0}
-                  bids={item._count?.bids || 0}
-                  closingDate={item.endsAt}
-                />
+                <LotCard key={item.id} id={item.id} image={item.media?.[0]?.url || "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"} title={item.title} price={Array.isArray(item.bids) && item.bids.length > 0 ? Math.max(...item.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0)) : 0} bids={item._count?.bids || 0} closingDate={item.endsAt} tags={item.tags ?? []} showTags={true} showSeller={true} seller={item.seller} />
               </div>
             ))}
         </div>
 
         {canScrollRight && (
-          <button onClick={scrollRight} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-5 rounded-full shadow-md hover:bg-gray-700">
+          <button onClick={scrollRight} className="text-2xl z-50 absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-7 py-4 cursor-pointer rounded-full shadow-md hover:bg-gray-700">
             ❯
           </button>
         )}

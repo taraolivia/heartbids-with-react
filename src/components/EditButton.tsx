@@ -14,7 +14,7 @@ const EditButton: React.FC<EditButtonProps> = ({ listingId }) => {
 
   return (
     <button
-      className="bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-yellow-600"
+      className="bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-yellow-600 cursor-pointer"
       onClick={handleEdit}
     >
       ✏️ Edit

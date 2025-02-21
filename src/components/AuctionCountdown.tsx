@@ -7,25 +7,29 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
+      if (!closingDate) {
+        setTimeLeft("Invalid date");
+        setStatusClass("bg-gray-300");
+        return;
+      }
+
       const endTime = new Date(closingDate).getTime();
       const now = new Date().getTime();
       const difference = endTime - now;
 
-      
       let status = "";
       if (difference <= 0) {
         setTimeLeft("Auction ended");
-        status = "bg-gray-300"; 
+        status = "bg-gray-300";
       } else if (difference < 1000 * 60 * 60 * 24 * 3) {
-        status = "bg-red-100"; 
+        status = "bg-red-100";
       } else if (difference < 1000 * 60 * 60 * 24 * 30) {
-        status = "bg-green-100"; 
+        status = "bg-green-100";
       } else {
-        status = "bg-blue-200"; 
+        status = "bg-blue-200";
       }
       setStatusClass(status);
 
-      
       if (difference > 0) {
         const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
         const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
@@ -47,8 +51,8 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
       }
     };
 
-    calculateTimeLeft();
-    const interval = setInterval(calculateTimeLeft, 60000);
+    calculateTimeLeft(); // ✅ Ensure it updates immediately
+    const interval = setInterval(calculateTimeLeft, 1000); // ✅ Updates every second for final minute
     return () => clearInterval(interval);
   }, [closingDate]);
 

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import getOtherUserProfile from "./GetOtherUserProfile";
 import LotCard from "../../components/LotCard"; // ✅ Keeping the same listing layout
 import { UserProfile, Bid, Listing } from "../../ts/types/listingTypes";
+import Footer from "../../components/Footer";
 
 const UserProfilePage = () => {
   const { username } = useParams<{ username: string }>(); // Get username from URL
@@ -46,68 +47,57 @@ const UserProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen py-4 px-2 w-full pt-25">
-      <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+    <div className="min-h-screen w-full">
+      <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
         {/* ✅ Profile Banner */}
-        <div className="relative w-full h-60 md:h-72 bg-gray-200">
-          {userProfile.banner?.url && (
-            <img src={userProfile.banner.url} alt={userProfile.banner.alt || "User Banner"} className="w-full h-full object-cover" />
-          )}
-        </div>
+        <div className="relative w-full h-80 md:h-72 bg-gray-200">{userProfile.banner?.url && <img src={userProfile.banner.url} alt={userProfile.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
 
         {/* ✅ Profile Header (Avatar + Name + Bio) */}
-        <div className="relative -mt-16 flex items-center space-x-6 p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
-          <img
-            src={userProfile.avatar?.url || "/default-avatar.png"}
-            alt={userProfile.avatar?.alt || "User Avatar"}
-            className="w-24 h-24 rounded-full border-4 border-white shadow-md"
-          />
-          <div>
-            <h1 className="text-3xl font-bold">{userProfile.name}</h1>
-            <p className="text-gray-600">{userProfile.bio || "No bio available."}</p>
+        <div className="relative -mt-15 flex items-center p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
+          <div className="max-w-8/10 flex m-auto content-center justify-center gap-10">
+            <img src={userProfile.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={userProfile.avatar?.alt || "User Avatar"} className="w-40 h-40 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md" />
+
+            <div>
+              <h1 className="text-3xl font-bold">{userProfile.name}</h1>
+              <p className="text-gray-600">{userProfile.bio || ""}</p>
+            </div>
           </div>
         </div>
 
         {/* ✅ Profile Stats */}
         <div className="grid grid-cols-3 divide-x divide-gray-200 bg-gray-100 text-center p-4">
           <div>
-            <span className="text-xl font-semibold text-gray-900">💰 {userProfile.credits}</span>
-            <p className="text-gray-500">Credits</p>
+            <span className="text-xl font-semibold text-gray-900">🏆 {userProfile._count?.wins || 0}</span>
+            <p className="text-gray-500">Wins</p>
           </div>
           <div>
             <span className="text-xl font-semibold text-gray-900">📦 {userProfile._count?.listings || 0}</span>
             <p className="text-gray-500">Listings</p>
           </div>
           <div>
-            <span className="text-xl font-semibold text-gray-900">🏆 {userProfile._count?.wins || 0}</span>
-            <p className="text-gray-500">Wins</p>
+            <span className="text-xl font-semibold text-gray-900">💰 {userProfile.credits}</span>
+            <p className="text-gray-500">Credits</p>
           </div>
         </div>
 
         {/* ✅ User Listings */}
-        <div className="px-6 mt-6">
+        <div className="px-6 my-10">
           <h2 className="text-2xl font-bold text-gray-900">{userProfile.name}'s Listings</h2>
-          <p className="text-gray-600 mb-4">Active auctions from this user.</p>
 
           {listings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {listings.map((listing) => (
                 <LotCard
                   key={listing.id}
                   id={listing.id}
-                  image={listing.media?.[0]?.url ?? "https://placehold.co/300x200"}
+                  image={listing.media?.[0]?.url ?? "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"}
                   title={listing.title}
                   price={listing.bids?.length ? Math.max(...listing.bids.map((bid: Bid) => bid.amount)) : 0}
                   bids={listing._count?.bids ?? 0}
                   closingDate={listing.endsAt ?? ""}
-                  description={listing.description ?? ""}
                   tags={listing.tags}
-                  created={listing.created}
-                  updated={listing.updated}
                   seller={userProfile}
-                  showDescription={true}
                   showTags={true}
-                  showCreatedUpdated={true}
                   showSeller={false} // ✅ Hides the seller info since we are already on the seller's page
                   showControls={false} // ✅ No edit/delete controls
                 />
@@ -115,11 +105,12 @@ const UserProfilePage = () => {
             </div>
           ) : (
             <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
-              <p className="text-gray-500">This user has no active listings.</p>
+              <p className="text-gray-500">This user has not posted any listings.</p>
             </div>
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { getHeaders } from "../../js/api/headers";
 import SortDropdown from "../../components/SortDropdown";
 import TagFilter from "../../components/TagFilter";
 import EndedAuctionsFilter from "../../components/EndedAuctionsFilter";
+import Footer from "../../components/Footer";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -170,15 +171,13 @@ const Profile: React.FC = () => {
 
         {/* ✅ Profile Header */}
         <div className="relative -mt-15 flex items-center p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
-        <div className="max-w-8/10 flex m-auto content-center justify-center gap-10">
-
-          <img src={user.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 h-40 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md" />
-          <div>
-            <h1 className="text-3xl font-bold">{user.name}</h1>
-            {user.bio && <p className="text-gray-600 max-w-8/10 pt-2">{user.bio}</p>}
+          <div className="max-w-8/10 flex m-auto content-center justify-center gap-10">
+            <img src={user.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 h-40 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md" />
+            <div>
+              <h1 className="text-3xl font-bold">{user.name}</h1>
+              {user.bio && <p className="text-gray-600 max-w-8/10 pt-2">{user.bio}</p>}
+            </div>
           </div>
-          </div>
-
         </div>
 
         {/* ✅ Profile Stats */}
@@ -212,6 +211,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
+        {/* ✅ User Won Auctions */}
         <div className="px-6 mt-6">
           <h2 className="text-2xl font-bold text-gray-900">🏆 Auctions You've Won</h2>
           <p className="text-gray-600 mb-4">These are the listings you've won.</p>
@@ -219,7 +219,8 @@ const Profile: React.FC = () => {
           {wonListings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {wonListings.map((lot) => (
-                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
+                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0}   closingDate={lot.endsAt} 
+                showClosingDate={false} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
               ))}
             </div>
           ) : (
@@ -230,15 +231,17 @@ const Profile: React.FC = () => {
         </div>
 
         {/* ✅ User Listings */}
-        <div className="px-6 mt-6">
+        <div className="px-6 my-15">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">📦 Your Listings</h2>
           <p className="text-gray-600 text-lg mb-6">These are the auctions you've created.</p>
 
           {listings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {listings.map((lot) => (
-                <div key={lot.id}>
-                  <LotCard id={lot.id} image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} onDelete={handleDelete} />
+                <div className="w-96" key={lot.id}>
+                  <LotCard  id={lot.id} image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt}   showClosingDate={true}
+ tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} description={lot.description ?? ""}
+ created={lot.created} updated={lot.updated} showDescription={true} showCreatedUpdated={true} onDelete={handleDelete} />
                 </div>
               ))}
             </div>
@@ -299,7 +302,8 @@ const Profile: React.FC = () => {
                   showSeller={true}
                   seller={lot.seller ?? "Unknown Seller"}
                   showControls={false}
-                  userBid={lot.userBid} // ✅ Uses userBid
+                  userBid={lot.userBid} 
+                  showClosingDate={true}
                 />
               ))}
             </div>
@@ -310,6 +314,7 @@ const Profile: React.FC = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

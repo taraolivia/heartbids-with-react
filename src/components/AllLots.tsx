@@ -110,7 +110,7 @@ const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Dat
   const paginatedLots = sortedLots.slice(startIndex, startIndex + perPage);
 
   return (
-    <section className="py-16 bg-white">
+    <section className="px-6 mt-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">All Lots</h2>
 
@@ -134,7 +134,7 @@ const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Dat
         {paginatedLots.length === 0 ? (
           <div className="text-center text-gray-600 mt-8">No lots available.</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
             {paginatedLots.map((lot) => (
               <LotCard
                 key={lot.id}
@@ -148,6 +148,8 @@ const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Dat
                 }
                 bids={lot._count?.bids || 0}
                 closingDate={lot.endsAt}
+                tags={lot.tags ?? []} showTags={true}
+                showSeller={true} seller={lot.seller}
               />
             ))}
           </div>

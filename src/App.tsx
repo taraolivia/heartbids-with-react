@@ -22,20 +22,21 @@ import UserProfilePage from "./pages/profile/OtherUserProfile";
 import { HeartBidsFilterProvider } from "./components/HeartBidsFilterProvider";
 import EditListingWrapper from "./pages/listing/edit/EditListingWrapper";
 import EditProfile from "./pages/profile/EditProfile";
+import Charities from "./pages/Charities";
 
 function App() {
   const [navHeight, setNavHeight] = useState(0);
 
   useEffect(() => {
     const updateNavHeight = () => {
-      const navbar = document.querySelector(".navbar"); 
+      const navbar = document.querySelector(".navbar");
       if (navbar) {
         setNavHeight(navbar.clientHeight);
       }
     };
 
-    updateNavHeight(); 
-    window.addEventListener("resize", updateNavHeight); 
+    updateNavHeight();
+    window.addEventListener("resize", updateNavHeight);
 
     return () => window.removeEventListener("resize", updateNavHeight);
   }, []);
@@ -66,6 +67,9 @@ function App() {
 
             {/* About Page */}
             <Route path="/about" element={<About />} />
+
+            {/* Charities Page */}
+            <Route path="/charities" element={<Charities />} />
 
             {/* Login Page */}
             <Route path="/auth/login" element={<Login />} />

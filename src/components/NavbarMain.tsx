@@ -60,7 +60,7 @@ const Navbar = () => {
   const getLinkClass = (path: string) => (location.pathname === path ? "text-blue-600 font-semibold" : "text-black hover:text-blue-600");
 
   return (
-    <nav className="navbar bg-violet-50 shadow-md w-full fixed z-40">
+    <nav className="navbar bg-violet-50 shadow-md w-full fixed z-40 text-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 z-50">
         {/* ✅ First Row: Logo & Navigation */}
         <div className="flex items-center justify-between h-20 ">
@@ -80,7 +80,7 @@ const Navbar = () => {
           {/* Center Logo */}
           <div className="flex justify-center flex-1">
             <Link to="/" className={getLinkClass("/")}>
-              <img src="/images/logo/HeartBids(1).png" alt="HeartBids Logo" className="h-30 mt-5 z-50" />
+              <img src="/images/logo/HeartBids(1).png" alt="HeartBids Logo" className="h-35 mt-12 z-50" />
             </Link>
           </div>
 
@@ -89,7 +89,7 @@ const Navbar = () => {
             {user ? (
               <div className="relative">
                 {/* ✅ Avatar & Dropdown Button */}
-                <button id="user-dropdown" onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center space-x-2 focus:outline-none">
+                <button id="user-dropdown" onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center space-x-2 focus:outline-none hover:cursor-pointer">
                   <img src={user.avatar?.url || "https://placehold.co/40"} alt={user.name} className="w-10 h-10 rounded-full" />
                   <span className="font-medium">{user.name}</span>
                   <svg className={`w-5 h-5 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,7 +99,7 @@ const Navbar = () => {
 
                 {/* ✅ Dropdown Menu */}
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+                  <div className="absolute right-0 mt-4 w-48 bg-white border-amber-100 rounded-lg shadow-lg">
                     <div className="px-4 py-2 text-gray-700">💰 {credits} Credits</div>
                     <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setDropdownOpen(false)}>
                       View Profile

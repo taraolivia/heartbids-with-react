@@ -38,7 +38,7 @@ interface DeleteButtonProps {
       <>
         {/* Delete Button */}
         <button
-          className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition"
+          className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition cursor-pointer"
           onClick={() => setShowModal(true)}
         >
           🗑 Delete
@@ -46,7 +46,7 @@ interface DeleteButtonProps {
   
         {/* ✅ Delete Confirmation Modal */}
         {showModal && (
-          <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+          <div className="modal fixed inset-0 flex items-center justify-center bg-black/60 z-50">
             <div className="modal-content bg-gray-200 p-6 rounded-lg shadow-lg w-80 text-center">
               <h2 className="text-lg font-semibold text-gray-800">Confirm Deletion</h2>
               <p className="text-gray-600 mt-2">Are you sure you want to delete this listing?</p>
@@ -54,14 +54,14 @@ interface DeleteButtonProps {
               <div className="flex justify-center gap-4 mt-4">
                 <button
                   id="confirmDelete"
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
                   onClick={handleDelete}
                 >
                   Yes, Delete
                 </button>
                 <button
                   id="cancelDelete"
-                  className="bg-gray-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-500 transition"
+                  className="bg-gray-400 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-500 transition cursor-pointer"
                   onClick={() => setShowModal(false)}
                 >
                   Cancel
