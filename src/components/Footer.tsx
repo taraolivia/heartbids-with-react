@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import HandleLogout from "../pages/auth/HandleLogout";
 
 const getUserProfile = () => {
   const storedUser = localStorage.getItem("user");
@@ -16,26 +17,17 @@ const Footer: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
           {/* Logo */}
           <div className="mb-6 md:mb-0">
-            <img
-              src="/images/logo/HeartBids.png"
-              alt="HeartBids Logo"
-              className="w-24 mx-auto md:mx-0"
-            />
+            <img src="/images/logo/HeartBids.png" alt="HeartBids Logo" className="w-40 mx-auto md:mx-0" />
           </div>
 
           {/* Quote */}
           <div className="text-center mb-6 md:mb-0">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Find Unique Auctions & Place Your Bids!
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-900">Find Unique Auctions & Place Your Bids!</h2>
           </div>
 
           {/* CTA Button */}
           <div>
-            <a
-              href="/listings"
-              className="inline-block bg-pink-600 text-white font-semibold text-sm px-6 py-3 rounded-full shadow-lg hover:bg-pink-700 transition"
-            >
+            <a href="/listings" className="inline-block bg-pink-600 text-white font-semibold text-sm px-6 py-3 rounded-full shadow-lg hover:bg-pink-700 transition">
               Browse Listings
             </a>
           </div>
@@ -43,109 +35,99 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Bottom Footer */}
-      <div className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="py-8 m-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 m-auto">
+          <div className="flex flex-row flex-wrap m-auto justify-evenly gap-10">
             {/* About Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">About HeartBids</h3>
-              <p className="text-sm text-gray-600">
-                HeartBids is an auction platform designed to facilitate meaningful
-                contributions to charitable causes. By auctioning items, services, and
-                craftsmanship, users support organizations that rely on
-                community-driven funding.
-              </p>
-              <div className="flex justify-center md:justify-start space-x-4">
-                <a href="#" className="text-gray-500 hover:text-gray-900">
-                  <i className="fab fa-twitter"></i>
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-900">
-                  <i className="fab fa-facebook"></i>
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-900">
-                  <i className="fab fa-instagram"></i>
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-900">
-                  <i className="fab fa-github"></i>
-                </a>
+            <div className="flex flex-col text-left w-1/3 min-w-96">
+              <div className="flex flex-col self-center text-left">
+                <p className="text-base text-gray-600">HeartBids is an auction platform designed to facilitate meaningful contributions to charitable causes. By auctioning items, services, and craftsmanship, users support organizations that rely on community-driven funding.</p>
               </div>
             </div>
 
             {/* Company Section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Company</h3>
-              <ul className="mt-4 space-y-2">
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                    Charities
-                  </a>
-                </li>
-                <li>
-                  <a href="/listings" className="text-sm text-gray-600 hover:text-gray-900">
-                    Auction Listings
-                  </a>
-                </li>
-              </ul>
+            <div className="flex flex-col text-left  min-w-52">
+              <div className="flex flex-col self-center text-left">
+                <h3 className="text-lg font-semibold text-gray-900 text-left">Company</h3>
+                <ul className="mt-4 space-y-2 items-center self-center">
+                  <li>
+                    <Link to="/about" className="text-sm text-gray-600 hover:text-gray-900">
+                      About
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/charities" className="text-sm text-gray-600 hover:text-gray-900">
+                      Charities
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/listings" className="text-sm text-gray-600 hover:text-gray-900">
+                      Auction Listings
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             {/* Help Section */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Help</h3>
-              <ul className="mt-4 space-y-2">
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                    Customer Support
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                    Terms & Conditions
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                    Privacy Policy
-                  </a>
-                </li>
-              </ul>
+            <div className="flex flex-col text-left  min-w-52">
+              <div className="flex flex-col self-center text-left">
+                <h3 className="text-lg font-semibold text-gray-900">Help</h3>
+                <ul className="mt-4 space-y-2">
+                  <li>
+                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                      Customer Support
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                      Terms & Conditions
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                      Privacy Policy
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             {/* ✅ Account Section (Profile or Log In/Register) */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Account</h3>
-              <ul className="mt-4 space-y-2">
-                {user ? (
-                  <div className="flex flex-col items-center space-y-3">
-                    <img
-                      src={user.avatar?.url || "https://placehold.co/50"}
-                      alt={user.name}
-                      className="w-12 h-12 rounded-full"
-                    />
-                    <span className="text-sm text-gray-900 font-semibold">{user.name}</span>
-                    <Link to="/profile" className="text-sm text-blue-600 hover:underline">
-                      View Profile
-                    </Link>
-                  </div>
-                ) : (
-                  <>
-                    <li>
-                      <a href="/auth/login/" className="text-sm text-gray-600 hover:text-gray-900">
-                        Log In
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/auth/register/" className="text-sm text-gray-600 hover:text-gray-900">
-                        Register
-                      </a>
-                    </li>
-                  </>
-                )}
-              </ul>
+            <div className="flex flex-col text-left  min-w-52">
+              <div className="flex flex-col self-center text-left">
+                {" "}
+                <h3 className="text-lg font-semibold text-gray-900">Account</h3>
+                <ul className="mt-4 space-y-2">
+                  {user ? (
+                    <div className="flex flex-col space-y-3">
+                      <div className="flex flex-wrap justify-center align-middle items-center gap-3">
+                      <img src={user.avatar?.url || "https://placehold.co/50"} alt={user.name} className="w-12 h-12 rounded-full" />
+                      <span className="text-sm text-gray-900 font-semibold">{user.name}</span>
+                      </div>
+                      <Link to="/profile" className="text-sm text-blue-600 hover:underline">
+                        View Profile
+                      </Link>
+                      <button onClick={HandleLogout} className="text-sm text-red-600 hover:underline text-left">
+                      Logout
+                    </button>
+                    </div>
+                  ) : (
+                    <>
+                      <li>
+                        <a href="/auth/login/" className="text-sm text-gray-600 hover:text-gray-900">
+                          Log In
+                        </a>
+                      </li>
+                      <li>
+                        <a href="/auth/register/" className="text-sm text-gray-600 hover:text-gray-900">
+                          Register
+                        </a>
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </div>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { Listing, Bid } from "../../ts/types/listingTypes";
 import { useBidding } from "../../ts/hooks/useBidding";
 import { useUser } from "../profile/useUser";
 import AuctionCountdown from "../../components/AuctionCountdown";
+import CopyLinkButton from "../../components/CopyLinkButton";
 
 const SingleListing = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,16 +26,13 @@ const SingleListing = () => {
     }
   };
 
-  
   const bidsArray: Bid[] = listing?.bids ? [...listing.bids].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()) : [];
   const highestBid = bidsArray.length > 0 ? Math.max(...bidsArray.map((bid) => bid.amount)) : 0;
   const lastBidder = bidsArray.length > 0 ? bidsArray[bidsArray.length - 1].bidder.name : null;
   const isAuctionEnded = listing?.endsAt ? new Date(listing.endsAt).getTime() < Date.now() : false;
 
-  
   const [bidAmount, setBidAmount] = useState<number>(highestBid + 1);
 
-  
   const userCantBidMessage = (() => {
     if (isAuctionEnded) return "❌ This auction has ended. Bidding is no longer available.";
     if (listing?.seller?.name === user?.name) return "❌ You cannot bid on your own listing.";
@@ -44,12 +42,10 @@ const SingleListing = () => {
     return null;
   })();
 
-  
   useEffect(() => {
     setBidAmount(highestBid + 1);
   }, [highestBid]);
 
-  
   useEffect(() => {
     if (!id) return;
 
@@ -72,7 +68,6 @@ const SingleListing = () => {
     fetchListing();
   }, [id]);
 
-  
   const handlePlaceBid = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -82,7 +77,6 @@ const SingleListing = () => {
       if (bidData) {
         setBidAmount(highestBid + 2);
 
-        
         setListing((prevListing) => {
           if (!prevListing) return prevListing;
 
@@ -94,12 +88,11 @@ const SingleListing = () => {
               bidder: { name: user.name, email: user.email ?? "" },
               created: new Date().toISOString(),
             },
-          ].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()); 
+          ].sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
 
           return { ...prevListing, bids: updatedBids };
         });
 
-        
         const response = await fetch(`${API_LISTINGS}/${id}?_bids=true&_seller=true`);
         const result = await response.json();
         if (response.ok && result.data) {
@@ -114,7 +107,27 @@ const SingleListing = () => {
   if (!listing) return <div>No listing found</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg  space-y-4 pt-40">
+    <div className="mx-auto py-6 space-y-4">
+      <div className="relative w-full h-60 bg-gray-200 -mt-20 overflow-hidden">
+        {/* ✅ Glass Effect Overlay */}
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-xs"></div>
+
+        {/* ✅ Image (Placed Below the Glass Effect) */}
+        <img
+          src={listing.media?.length > 0 ? listing.media[0].url : "/images/default-banner.jpg"}
+          alt={listing.media?.length > 0 ? listing.media[0].alt : "Default Listing Banner"}
+          className="w-full object-cover h-full"
+          onError={(e) => {
+            if (!e.currentTarget.src.includes("/images/default-banner.jpg")) {
+              e.currentTarget.src = "/images/default-banner.jpg";
+            }
+          }}
+        />
+        {/* ✅ Copy Link Button (Bottom Right) */}
+        <CopyLinkButton url={window.location.href} />
+      </div>
+      <div className="max-w-8/10 m-auto">
+
       <h1 className="text-3xl font-semibold text-gray-800">{listing.title}</h1>
 
       <div className="flex flex-wrap gap-6 items-start mt-6">
@@ -123,12 +136,35 @@ const SingleListing = () => {
         <div className="flex-1 space-y-4">
           <p className="text-gray-600 text-lg">{listing.description}</p>
 
+          {/* ✅ Display All Tags Below the Title */}
+          {Array.isArray(listing.tags) && listing.tags.length > 0 ? (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {listing.tags.map((tag) => (
+                <span key={tag} className="bg-gray-300 text-gray-800 text-sm font-semibold px-3 py-1 rounded-md">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <span className="bg-gray-300 text-gray-800 text-sm font-semibold px-3 py-1 rounded-md mt-2">#</span>
+          )}
+
           {listing.seller && (
             <div className="p-4 border rounded-lg shadow-sm bg-gray-100">
+              <p className="pt-1 pb-4">About the seller</p>
               <div className="flex items-center space-x-4">
                 {/* ✅ Profile link wraps avatar + name */}
                 <Link to={`/profile/${listing.seller.name}`} className="flex items-center space-x-3 hover:underline">
-                  <img src={listing.seller.avatar?.url || "https://placehold.co/50"} alt={listing.seller.avatar?.alt || `${listing.seller.name}'s avatar`} className="w-12 h-12 rounded-full object-cover" />
+                  <img
+                    src={listing.seller.avatar?.url || "/default-avatar.png"}
+                    alt={listing.seller.avatar?.alt || `${listing.seller.name}'s avatar`}
+                    className="w-12 h-12 rounded-full object-cover"
+                    onError={(e) => {
+                      if (!e.currentTarget.src.includes("default-avatar.png")) {
+                        e.currentTarget.src = "/images/default-avatar.png"; // ✅ Ensures fallback only happens once
+                      }
+                    }}
+                  />
                   <h3 className="text-lg font-semibold text-gray-800">{listing.seller.name}</h3>
                 </Link>
               </div>
@@ -136,20 +172,23 @@ const SingleListing = () => {
               {listing.seller.bio && <p className="mt-3 text-gray-600 border-t pt-3">{listing.seller.bio}</p>}
             </div>
           )}
-<p className="text-gray-600 text-lg">
-  {new Date(listing.endsAt) < new Date()
-    ? "This auction has ended"
-    : `This listing ends on: ${new Intl.DateTimeFormat("en-GB", {
-        dateStyle: "short",
-        timeStyle: "short",
-      }).format(new Date(listing.endsAt))}`}
-</p>
-    {/* ✅ Countdown */}
-    <AuctionCountdown closingDate={listing.endsAt} />
+
+          {/* ✅ Countdown */}
+          <AuctionCountdown closingDate={listing.endsAt} />
+          <p className="text-gray-600 text-lg">
+            {new Date(listing.endsAt) < new Date()
+              ? "This auction has ended"
+              : `This listing ends on: ${new Intl.DateTimeFormat("en-GB", {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                }).format(new Date(listing.endsAt))}`}
+          </p>
+          <p className="text-xl font-bold text-gray-900">Current Highest Bid: {highestBid ? `€${highestBid}` : "No bids yet"}</p>
+
         </div>
+        
       </div>
 
-      <p className="text-xl font-bold text-gray-900">Current Highest Bid: {highestBid ? `€${highestBid}` : "No bids yet"}</p>
 
       <form onSubmit={handlePlaceBid} className="p-4 border rounded shadow mt-6">
         <label htmlFor="bidAmount" className="block text-lg font-medium">
@@ -169,7 +208,7 @@ const SingleListing = () => {
           <ul className="mt-2 space-y-2 p-1 bg-blue-100">
             {bidsArray
               .slice()
-              .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()) 
+              .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
               .map((bid) => (
                 <li key={bid.id} className="flex items-center space-x-2 text-gray-600 text-sm p-2">
                   {/* ✅ Prevent navigation if not logged in */}
@@ -202,6 +241,7 @@ const SingleListing = () => {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };
