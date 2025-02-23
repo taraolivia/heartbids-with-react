@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { API_LISTINGS } from "../../js/api/constants";
+import { API_LISTINGS } from "../../ts/constants";
 import { Listing, Bid } from "../../ts/types/listingTypes";
 import { useBidding } from "../../ts/hooks/useBidding";
 import { useUser } from "../profile/useUser";

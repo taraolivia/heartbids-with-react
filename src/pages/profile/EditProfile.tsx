@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import getUserProfile from "./getUserProfile";
-import { API_PROFILE } from "../../js/api/constants";
-import { getHeaders } from "../../js/api/headers";
+import { API_PROFILE } from "../../ts/constants";
+import { getHeaders } from "../../ts/headers";
 
 type ProfileData = {
   bio: string;

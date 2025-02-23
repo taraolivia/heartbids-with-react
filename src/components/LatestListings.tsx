@@ -1,53 +1,30 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
-import { API_LISTINGS } from "../js/api/constants";
-import { getHeaders } from "../js/api/headers";
-import { Listing, LatestListingsProps } from "../ts/types/listingTypes";
+import { LatestListingsProps } from "../ts/types/listingTypes";
 import { useHeartBidsFilter } from "./useHeartBidsFilter";
 
-
-const LatestListings = ({ loading, error }: LatestListingsProps) => {
+const LatestListings: React.FC<LatestListingsProps> = ({ listings = [], loading, error }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const [listings, setListings] = useState<Listing[]>([]); 
-
   useEffect(() => {
-    async function fetchListings() {
-      try {
-        const response = await fetch(`${API_LISTINGS}?_bids=true&_seller=true&_active=true&sort=created&order=desc`, {
-          method: "GET",
-          headers: getHeaders(),
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch listings");
-
-        const result = await response.json();
-
-
-        setListings(result.data); 
-      } catch (err) {
-        console.error("Error fetching listings:", err);
-      }
+    const scrollElement = scrollRef.current;
+  
+    if (scrollElement) {
+      updateScrollButtons();
+      scrollElement.addEventListener("scroll", updateScrollButtons);
     }
-
-    fetchListings();
-  }, []);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      updateScrollButtons(); 
-      scrollRef.current.addEventListener("scroll", updateScrollButtons);
-    }
+    
     window.addEventListener("resize", updateScrollButtons);
+  
     return () => {
-      if (scrollRef.current) {
-        scrollRef.current.removeEventListener("scroll", updateScrollButtons);
+      if (scrollElement) { 
+        scrollElement.removeEventListener("scroll", updateScrollButtons); 
       }
       window.removeEventListener("resize", updateScrollButtons);
     };
-  }, [listings]);
+  }, [listings]); 
 
   const updateScrollButtons = () => {
     if (scrollRef.current) {
@@ -72,18 +49,19 @@ const LatestListings = ({ loading, error }: LatestListingsProps) => {
 
   const { showOnlyHeartBids } = useHeartBidsFilter(); // ✅ Get global filter state
 
-  const filteredListings = (listings || [])
-    .filter((item) => {
+  const filteredListings = Array.isArray(listings)
+    ? listings
+        .filter((item) => {
       if (!item.endsAt) return false;
       const endTime = new Date(item.endsAt).getTime();
       return !isNaN(endTime) && endTime > Date.now();
     })
     .filter((item) => {
-      return showOnlyHeartBids ? item.tags?.includes("HeartBids") : true; // ✅ Apply filter condition
+      return showOnlyHeartBids ? item.tags?.includes("HeartBids") : true;
     })
     .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
-    .slice(0, 20);
-  
+    .slice(0, 20)
+    : [];
 
   return (
     <section className="py-10 bg-gray-100 relative">
@@ -106,7 +84,19 @@ const LatestListings = ({ loading, error }: LatestListingsProps) => {
             filteredListings.length > 0 &&
             filteredListings.map((item) => (
               <div key={item.id} className="min-w-[300px]">
-                <LotCard key={item.id} id={item.id} image={item.media?.[0]?.url || "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"} title={item.title} price={Array.isArray(item.bids) && item.bids.length > 0 ? Math.max(...item.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0)) : 0} bids={item._count?.bids || 0} closingDate={item.endsAt} tags={item.tags ?? []} showTags={true} showSeller={true} seller={item.seller} />
+                <LotCard
+                  key={item.id}
+                  id={item.id}
+                  image={item.media?.[0]?.url || "fallback-image-url.png"}
+                  title={item.title}
+                  price={Array.isArray(item.bids) && item.bids.length > 0 ? Math.max(...item.bids.map((bid) => bid.amount).filter((amount) => !isNaN(amount) && amount > 0)) : 0}
+                  bids={item._count?.bids || 0}
+                  closingDate={item.endsAt}
+                  tags={item.tags ?? []}
+                  showTags={true}
+                  showSeller={true}
+                  seller={item.seller}
+                />
               </div>
             ))}
         </div>

@@ -10,11 +10,11 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
       <Link to={`/listing/${id}`} className="block">
         {/* ✅ Image Styling - Consistent Height & Rounded Corners */}
         <img
-          src={image}
+          src={image || "/images/logo/HeartBids.png"}
           alt={title}
           className="w-full h-72 object-cover rounded-lg border border-gray-300"
           onError={(e) => {
-            e.currentTarget.src = "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png";
+            e.currentTarget.src = "/images/logo/HeartBids.png";
           }}
         />
 

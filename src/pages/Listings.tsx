@@ -5,75 +5,69 @@ import Footer from "../components/Footer";
 import LatestListings from "../components/LatestListings";
 import MostPopularListings from "../components/MostPopularListings";
 import AllLots from "../components/AllLots";
-import { API_LISTINGS } from "../js/api/constants";
-import { getHeaders } from "../js/api/headers";
-
-type AuctionListing = {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  media: string[];
-  created: string;
-  updated: string;
-  endsAt: string;
-  _count: {
-    bids: number;
-  };
-};
+import { API_LISTINGS } from "../ts/constants";
+import { getHeaders } from "../ts/headers";
+import { Listing } from "../ts/types/listingTypes"; // ✅ Import Listing type
 
 const Listings = () => {
-  const [listings, setListings] = useState<AuctionListing[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]); // ✅ Use Listing type
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    async function fetchListings() {
+    async function fetchAllListings() {
+      let allListings: Listing[] = [];
+      let page = 1;
+      let hasMore = true;
+  
       try {
-        const response = await fetch(API_LISTINGS, {
-          method: "GET",
-          headers: getHeaders(),
-        });
+        while (hasMore) {
+          console.log(`Fetching page ${page}...`);
+          const response = await fetch(`${API_LISTINGS}?page=${page}&_bids=true&_seller=true`, {
+            method: "GET",
+            headers: getHeaders(),
+          });
   
-        if (!response.ok) throw new Error("Failed to fetch listings");
+          if (!response.ok) throw new Error("Failed to fetch listings");
   
-        const result = await response.json();
-
+          const result = await response.json();
+          console.log(`Page ${page} results:`, result.data.length);
   
-        if (!result || !Array.isArray(result.data)) {
-          throw new Error("Unexpected API response format");
+          allListings = [...allListings, ...result.data];
+  
+          hasMore = !result.meta.isLastPage;
+          page++;
         }
   
-        setListings(result.data); // ✅ Correctly accessing the data array
+        console.log("🚀 Total listings fetched:", allListings.length);
+        setListings(allListings);
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred.");
-        }
+        console.error("Fetch error:", err);
+        setError(err instanceof Error ? err.message : "Unknown error occurred");
       } finally {
         setLoading(false);
       }
     }
-    fetchListings();
+  
+    fetchAllListings();
   }, []);
+  
   
 
   return (
     <div>
       <Hero />
 
-      {/* ✅ Pass listings, loading, and error to the new LatestListings component */}
-      <LatestListings loading={loading} error={error} />
+      {/* ✅ Pass listings, loading, and error to LatestListings */}
+      <LatestListings listings={listings} loading={loading} error={error} />
 
-      {/* ✅ Most Popular Listings */}
+      {/* ✅ Pass listings to MostPopularListings */}
       <MostPopularListings listings={listings} />
 
-      {/* ✅ All Lots (Grid View) */}
+      {/* ✅ Pass listings to AllLots */}
       <AllLots listings={listings} />
 
       <GeneralInfo />
-
       <Footer />
     </div>
   );

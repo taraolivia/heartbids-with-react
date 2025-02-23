@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 export interface Charity {
     name: string;
     logo: string;

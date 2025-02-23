@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_LISTINGS, API_PROFILE, API_KEY  } from "../../js/api/constants";
+import { API_LISTINGS, API_PROFILE, API_KEY  } from "../constants";
 import { useUser } from "../../pages/profile/useUser";
 import { Listing, Bid } from "../types/listingTypes";
 

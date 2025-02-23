@@ -38,6 +38,7 @@ export type Listing = {
 export type LatestListingsProps = {
   loading: boolean;
   error: string | null;
+  listings: Listing[];
 };
 
 export type Seller = {

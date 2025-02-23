@@ -1,75 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LotCard from "./LotCard";
 import SortDropdown from "./SortDropdown";
-import { API_LISTINGS } from "../js/api/constants";
-import { getHeaders } from "../js/api/headers";
 import { Listing } from "../ts/types/listingTypes";
 import { useHeartBidsFilter } from "./useHeartBidsFilter";
 
-const AllLots = () => {
-  const [listings, setListings] = useState<Listing[]>([]);
+interface AllLotsProps {
+  listings: Listing[]; // ✅ Accept listings as a prop
+}
+
+const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
+
+
   const [includeEnded, setIncludeEnded] = useState(false);
   const [sortType, setSortType] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 30; // Number of listings per page
-  const [totalPages, setTotalPages] = useState(1); 
+  const validListings = Array.isArray(listings) ? listings : []; // ✅ Ensure listings is always an array
 
-    // ✅ Get the HeartBids filter state
-    const { showOnlyHeartBids } = useHeartBidsFilter();
-
-  useEffect(() => {
-    async function fetchAllListings() {
-      const allListings: Listing[] = [];
-      let page = 1;
-      let hasMore = true;
-  
-      try {
-        while (hasMore) {
-          const response = await fetch(`${API_LISTINGS}?_bids=true&_seller=true&page=${page}`, {
-            method: "GET",
-            headers: getHeaders(),
-          });
-  
-          if (!response.ok) throw new Error("Failed to fetch listings");
-  
-          const result: { data: Listing[]; meta: { isLastPage: boolean } } = await response.json();
-
-  
-          allListings.push(...result.data);
-          hasMore = !result.meta.isLastPage;
-          page++;
-        }
+  let filteredListings = includeEnded 
+    ? validListings // ✅ Show all listings if `includeEnded` is checked
+    : validListings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now()); // ✅ Only active listings
   
 
-  
-        // ✅ Filter based on toggle
-        let filteredListings = allListings;
-        if (showOnlyHeartBids) {
-          filteredListings = filteredListings.filter((listing) =>
-            listing.tags?.includes("HeartBids")
-          );
-        }
-  
-        setListings(filteredListings);
-        setTotalPages(Math.ceil(filteredListings.length / perPage)); 
-      } catch (err) {
-        console.error("Error fetching listings:", err);
-      }
-    }
-  
-    fetchAllListings();
-  }, [showOnlyHeartBids]); // ✅ Re-fetch when toggle changes
-  
+    const totalPages = Math.max(1, Math.ceil(filteredListings.length / perPage)); // ✅ Ensure at least 1 page
 
-  // ✅ Separate active and ended auctions
-// ✅ Separate active and ended auctions
-const activeLots = listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
-const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Date.now());
+    console.log("🚀 Total listings received:", listings.length);
+    console.log("✅ Total active listings:", listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now()).length);
+    console.log("⚠️ Total ended listings:", listings.filter((lot) => new Date(lot.endsAt).getTime() <= Date.now()).length);
+    console.log("🔍 Total listings after filtering (based on checkbox):", filteredListings.length);
+    console.log("📄 Total pages available:", totalPages);
+    
 
 
-  const combinedLots = includeEnded ? [...activeLots, ...endedLots] : activeLots;
+  // ✅ Get the HeartBids filter state
+  const { showOnlyHeartBids } = useHeartBidsFilter();
 
-  // ✅ Apply sorting AFTER fetching all listings
+  if (showOnlyHeartBids) {
+    filteredListings = filteredListings.filter((listing) => listing.tags?.includes("HeartBids"));
+  }
+
+  const combinedLots = filteredListings;
+
+
+  // ✅ Apply sorting
   const sortedLots = [...combinedLots];
   switch (sortType) {
     case "newest":
@@ -115,17 +88,11 @@ const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Dat
         <h2 className="text-3xl font-bold text-gray-800 mb-4">All Lots</h2>
 
         {/* Sorting Dropdown */}
-        <SortDropdown selectedSort={sortType} onSortChange={setSortType} />
+        <SortDropdown selectedSort={sortType} onSortChange={setSortType} bidListings={listings} setSortedListings={() => {}} />
 
         {/* Include Ended Checkbox */}
         <div className="flex items-center gap-2 mb-6">
-          <input
-            type="checkbox"
-            id="includeEnded"
-            checked={includeEnded}
-            onChange={() => setIncludeEnded(!includeEnded)}
-            className="w-5 h-5 accent-pink-500 cursor-pointer"
-          />
+          <input type="checkbox" id="includeEnded" checked={includeEnded} onChange={() => setIncludeEnded(!includeEnded)} className="w-5 h-5 accent-pink-500 cursor-pointer" />
           <label htmlFor="includeEnded" className="text-gray-800 cursor-pointer">
             Include ended auctions
           </label>
@@ -136,31 +103,17 @@ const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Dat
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
             {paginatedLots.map((lot) => (
-              <LotCard
-                key={lot.id}
-                id={lot.id}
-                image={lot.media.length > 0 ? lot.media[0].url : "/images/logo/HeartBids.png"}
-                title={lot.title}
-                price={
-                  Array.isArray(lot.bids) && lot.bids.length > 0
-                    ? Math.max(...lot.bids.map((bid) => bid.amount))
-                    : 0
-                }
-                bids={lot._count?.bids || 0}
-                closingDate={lot.endsAt}
-                tags={lot.tags ?? []} showTags={true}
-                showSeller={true} seller={lot.seller}
-              />
+              <LotCard key={lot.id} id={lot.id} image={lot.media.length > 0 ? lot.media[0].url : "/images/logo/HeartBids.png"} title={lot.title} price={Array.isArray(lot.bids) && lot.bids.length > 0 ? Math.max(...lot.bids.map((bid) => bid.amount)) : 0} bids={lot._count?.bids || 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller} />
             ))}
           </div>
         )}
 
         {/* Pagination Controls */}
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center my-10 mt-16">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className={`px-4 py-2 mx-1 ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+            disabled={currentPage === 1 || totalPages === 0} // ✅ Ensure Next button is disabled correctly
+            className={`px-4 py-2 mx-1 ${currentPage === 1 || totalPages === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
           >
             Previous
           </button>
@@ -169,8 +122,8 @@ const endedLots = listings.filter((lot) => new Date(lot.endsAt).getTime() <= Dat
 
           <button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 mx-1 ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+            disabled={currentPage >= totalPages || totalPages === 0} // ✅ Prevent navigating past the last page
+            className={`px-4 py-2 mx-1 ${currentPage >= totalPages || totalPages === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
           >
             Next
           </button>

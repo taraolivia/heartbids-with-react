@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
-import { API_PROFILE, API_KEY } from "../../js/api/constants";
-import { UserContext } from "./UserContext";
-
-
-interface User {
-  name: string;
-  avatar?: { url: string };
-  credits: number;
-}
+import { API_PROFILE, API_KEY } from "../../ts/constants";
+import { UserContext, User } from "./UserContext";
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);

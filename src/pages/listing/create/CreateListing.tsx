@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { API_LISTINGS } from "../../../js/api/constants";
-import { getHeaders } from "../../../js/api/headers";
+import { API_LISTINGS } from "../../../ts/constants";
+import { getHeaders } from "../../../ts/headers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from "../../../components/ErrorMessage";

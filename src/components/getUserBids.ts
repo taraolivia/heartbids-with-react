@@ -1,5 +1,5 @@
-import { API_BASE } from "../js/api/constants";
-import { getHeaders } from "../js/api/headers";
+import { API_BASE } from "../ts/constants";
+import { getHeaders } from "../ts/headers";
 
 const getUserBids = async (username: string) => {
   try {

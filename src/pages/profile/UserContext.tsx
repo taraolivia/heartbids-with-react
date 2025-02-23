@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-interface User {
+export interface User {
   name: string;
   avatar?: { url: string };
   credits: number;
