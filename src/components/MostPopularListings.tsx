@@ -1,34 +1,25 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
-import { Listing } from "../ts/types/listingTypes";
+import { useListings } from "./UseListings";
 import { useHeartBidsFilter } from "./useHeartBidsFilter";
 
-interface MostPopularListingsProps {
-  listings?: Listing[]; // ✅ Make listings optional
-}
-
-const MostPopularListings: React.FC<MostPopularListingsProps> = ({ listings = [] }) => {
+const MostPopularListings: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { listings, loading, error } = useListings(); // ✅ Get listings from context
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-
-  // ✅ Get HeartBids filter state
   const { showOnlyHeartBids } = useHeartBidsFilter();
 
-  // ✅ Filter out expired listings
-  let filteredListings = Array.isArray(listings) ? listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now()) : [];
-
-  // ✅ Apply HeartBids filter if enabled
-  if (showOnlyHeartBids) {
-    filteredListings = filteredListings.filter((lot) => lot.tags?.includes("HeartBids"));
-  }
-
-  // ✅ Sort by the number of bids (most bids first)
-  const sortedListings = filteredListings.sort((a, b) => (b._count?.bids || 0) - (a._count?.bids || 0)).slice(0, 10);
-
+  // ✅ Move useEffect to the top (before any return)
   useEffect(() => {
-    const scrollElement = scrollRef.current;
+    const updateScrollButtons = () => {
+      if (scrollRef.current) {
+        setCanScrollLeft(scrollRef.current.scrollLeft > 0);
+        setCanScrollRight(scrollRef.current.scrollLeft + scrollRef.current.clientWidth < scrollRef.current.scrollWidth);
+      }
+    };
 
+    const scrollElement = scrollRef.current;
     if (scrollElement) {
       updateScrollButtons();
       scrollElement.addEventListener("scroll", updateScrollButtons);
@@ -42,28 +33,23 @@ const MostPopularListings: React.FC<MostPopularListingsProps> = ({ listings = []
       }
       window.removeEventListener("resize", updateScrollButtons);
     };
-  }, [sortedListings]);
+  }, [listings]); // ✅ Depend on listings so effect re-runs when data changes
 
-  const updateScrollButtons = () => {
-    if (scrollRef.current) {
-      setCanScrollLeft(scrollRef.current.scrollLeft > 0);
-      setCanScrollRight(scrollRef.current.scrollLeft + scrollRef.current.clientWidth < scrollRef.current.scrollWidth);
-    }
-  };
+  if (loading) return <p className="text-center text-gray-600">Loading listings...</p>;
+  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
-      setTimeout(updateScrollButtons, 500);
-    }
-  };
+  // ✅ Filter out expired listings
+  let filteredListings = listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
 
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
-      setTimeout(updateScrollButtons, 500);
-    }
-  };
+  // ✅ Apply HeartBids filter if enabled
+  if (showOnlyHeartBids) {
+    filteredListings = filteredListings.filter((lot) => lot.tags?.includes("HeartBids"));
+  }
+
+  // ✅ Sort by number of bids (most bids first)
+  const sortedListings = filteredListings
+    .sort((a, b) => (b._count?.bids || 0) - (a._count?.bids || 0))
+    .slice(0, 10);
 
   return (
     <section className="py-5 bg-gray-100 relative">
@@ -71,23 +57,34 @@ const MostPopularListings: React.FC<MostPopularListingsProps> = ({ listings = []
         <h2 className="text-3xl font-bold text-gray-800">Most Popular Listings</h2>
 
         {canScrollLeft && (
-          <button onClick={scrollLeft} className="text-2xl z-50 absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-7 py-4 cursor-pointer rounded-full shadow-md hover:bg-gray-700">
+          <button onClick={() => scrollRef.current?.scrollBy({ left: -300, behavior: "smooth" })} className="text-2xl z-50 absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-7 py-4 cursor-pointer rounded-full shadow-md hover:bg-gray-700">
             ❮
           </button>
         )}
 
-        <div ref={scrollRef} className="flex overflow-x-auto gap-10 py-10 no-scrollbar scroll-smooth" onScroll={updateScrollButtons}>
+        <div ref={scrollRef} className="flex overflow-x-auto gap-10 py-10 no-scrollbar scroll-smooth">
           {sortedListings.length === 0 && <div className="text-center text-gray-600 mt-8">No popular listings available.</div>}
 
           {sortedListings.map((item) => (
             <div key={item.id} className="min-w-[300px]">
-              <LotCard id={item.id} image={item.media?.[0]?.url || "fallback-image-url.png"} title={item.title} price={item.bids?.length ? Math.max(...item.bids.map((bid) => bid.amount)) : 0} bids={item._count?.bids || 0} closingDate={item.endsAt} tags={item.tags ?? []} showTags={true} showSeller={true} seller={item.seller} />
+              <LotCard
+                id={item.id}
+                image={item.media?.[0]?.url || "fallback-image-url.png"}
+                title={item.title}
+                price={item.bids?.length ? Math.max(...item.bids.map((bid) => bid.amount)) : 0}
+                bids={item._count?.bids || 0}
+                closingDate={item.endsAt}
+                tags={item.tags ?? []}
+                showTags={true}
+                showSeller={true}
+                seller={item.seller}
+              />
             </div>
           ))}
         </div>
 
         {canScrollRight && (
-          <button onClick={scrollRight} className="text-2xl z-50 absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-7 py-4 cursor-pointer rounded-full shadow-md hover:bg-gray-700">
+          <button onClick={() => scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" })} className="text-2xl z-50 absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-7 py-4 cursor-pointer rounded-full shadow-md hover:bg-gray-700">
             ❯
           </button>
         )}

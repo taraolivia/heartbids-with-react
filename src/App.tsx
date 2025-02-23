@@ -23,6 +23,7 @@ import { HeartBidsFilterProvider } from "./components/HeartBidsFilterProvider";
 import EditListingWrapper from "./pages/listing/edit/EditListingWrapper";
 import EditProfile from "./pages/profile/EditProfile";
 import Charities from "./pages/Charities";
+import { ListingsProvider } from "./components/ListingsProvider";
 
 function App() {
   const [navHeight, setNavHeight] = useState(0);
@@ -43,65 +44,68 @@ function App() {
   return (
     <UserProvider>
       <HeartBidsFilterProvider>
-        <Router>
-          <Navbar />
-          {/* Dynamic Spacer to prevent overlap */}
-          <div style={{ height: `${navHeight}px` }}></div>
-          <Routes>
-            {/* Home Page */}
-            <Route
-              path="/"
-              element={
-                <>
-                  <Hero />
-                  <MostPopularListings />
-                  <GeneralInfo />
-                  <AuthPrompt />
-                  <HowItWorks />
-                  <CharitiesCloud />
-                  <Testimonials />
-                  <Footer />
-                </>
-              }
-            />
-
-            {/* About Page */}
-            <Route path="/about" element={<About />} />
-
-            {/* Charities Page */}
-            <Route path="/charities" element={<Charities />} />
-
-            {/* Login Page */}
-            <Route path="/auth/login" element={<Login />} />
-
-            {/* Register Page */}
-            <Route path="/auth/register" element={<Register />} />
-
-            {/* All Listings Page */}
-            <Route path="/Listings" element={<Listings />} />
-
-            {/* Profile Page */}
-            <Route path="/profile" element={<Profile />} />
-
-            {/* Edit Profile Page */}
-            <Route path="/profile/EditProfile" element={<EditProfile />} />
-
-            {/* Create Listing Page */}
-            <Route path="/listing/create" element={<CreateListingPage />} />
-
-            {/* Edit Listing Page - Requires a listing ID */}
-            <Route path="/listing/edit/:id" element={<EditListingWrapper />} />
-
-            {/* Single Listing Page */}
-            <Route path="/listing/:id" element={<SingleListing />} />
-
-            {/* Other Profile Page */}
-            <Route path="/profile/:username" element={<UserProfilePage />} />
-          </Routes>
-        </Router>
+        <ListingsProvider> 
+          <Router>
+            <Navbar />
+            {/* Dynamic Spacer to prevent overlap */}
+            <div style={{ height: `${navHeight}px` }}></div>
+            <Routes>
+              {/* Home Page */}
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Hero />
+                    <MostPopularListings />
+                    <GeneralInfo />
+                    <AuthPrompt />
+                    <HowItWorks />
+                    <CharitiesCloud />
+                    <Testimonials />
+                    <Footer />
+                  </>
+                }
+              />
+  
+              {/* About Page */}
+              <Route path="/about" element={<About />} />
+  
+              {/* Charities Page */}
+              <Route path="/charities" element={<Charities />} />
+  
+              {/* Login Page */}
+              <Route path="/auth/login" element={<Login />} />
+  
+              {/* Register Page */}
+              <Route path="/auth/register" element={<Register />} />
+  
+              {/* All Listings Page */}
+              <Route path="/Listings" element={<Listings />} />
+  
+              {/* Profile Page */}
+              <Route path="/profile" element={<Profile />} />
+  
+              {/* Edit Profile Page */}
+              <Route path="/profile/EditProfile" element={<EditProfile />} />
+  
+              {/* Create Listing Page */}
+              <Route path="/listing/create" element={<CreateListingPage />} />
+  
+              {/* Edit Listing Page - Requires a listing ID */}
+              <Route path="/listing/edit/:id" element={<EditListingWrapper />} />
+  
+              {/* Single Listing Page */}
+              <Route path="/listing/:id" element={<SingleListing />} />
+  
+              {/* Other Profile Page */}
+              <Route path="/profile/:username" element={<UserProfilePage />} />
+            </Routes>
+          </Router>
+        </ListingsProvider> 
       </HeartBidsFilterProvider>
     </UserProvider>
   );
+  
 }
 
 export default App;

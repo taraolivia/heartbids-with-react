@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import getUserProfile from "./getUserProfile";
 import getUserBids from "../../components/getUserBids";
@@ -11,6 +11,8 @@ import SortDropdown from "../../components/SortDropdown";
 import TagFilter from "../../components/TagFilter";
 import EndedAuctionsFilter from "../../components/EndedAuctionsFilter";
 import Footer from "../../components/Footer";
+import SearchBar from "../../components/SearchBar";
+import { useHeartBidsFilter } from "../../components/useHeartBidsFilter";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -24,14 +26,35 @@ const Profile: React.FC = () => {
   const [wonListings, setWonListings] = useState<Listing[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("newest");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const availableTags = bidListings.length ? [...new Set(bidListings.flatMap((lot) => lot.tags ?? []))] : ["Loading..."];
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const { showOnlyHeartBids } = useHeartBidsFilter();
+  const filteredWonListings = wonListings.filter((lot) => !showOnlyHeartBids || lot.tags?.includes("HeartBids")); // ✅ Apply HeartBids filtering
+
+  const availableTags = useMemo(() => {
+    const tagSet = new Set<string>();
+
+    bidListings.forEach((lot) => {
+      lot.tags?.forEach((tag) => {
+        tagSet.add(tag.toLowerCase()); // ✅ Normalize to lowercase
+      });
+    });
+
+    return Array.from(tagSet)
+      .map((tag) => tag.charAt(0).toUpperCase() + tag.slice(1)) // ✅ Capitalize first letter
+      .sort((a, b) => a.localeCompare(b)); // ✅ Sort alphabetically
+  }, [bidListings]); // ✅ Updates when bidListings change
   const [includeEnded, setIncludeEnded] = useState<boolean>(true);
   const [showOnlyHighestBids, setShowOnlyHighestBids] = useState<boolean>(false);
 
+  // ✅ Apply all filters including HeartBids filter
   const filteredBids = bidListings
-    .filter((lot) => selectedTags.length === 0 || lot.tags.some((tag) => selectedTags.includes(tag)))
+    .filter((lot) => searchQuery.length === 0 || lot.title.toLowerCase().includes(searchQuery.toLowerCase()) || (lot.description && lot.description.toLowerCase().includes(searchQuery.toLowerCase())))
+    .filter(
+      (lot) => selectedTags.length === 0 || lot.tags?.some((tag) => selectedTags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())) // ✅ Case-insensitive match
+    )
     .filter((lot) => includeEnded || new Date(lot.endsAt).getTime() > Date.now())
-    .filter((lot) => !showOnlyHighestBids || lot.userBid === lot.highestBid);
+    .filter((lot) => !showOnlyHighestBids || lot.userBid === lot.highestBid)
+    .filter((lot) => !showOnlyHeartBids || lot.tags?.includes("HeartBids"));
 
   const sortedFilteredBids = [...filteredBids].sort((a, b) => {
     switch (selectedSort) {
@@ -172,7 +195,7 @@ const Profile: React.FC = () => {
         {/* ✅ Profile Header */}
         <div className="relative -mt-15 flex items-center p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
           <div className="max-w-8/10 flex m-auto content-center justify-center gap-10">
-            <img src={user.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 h-40 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md" />
+            <img src={user.avatar?.url || "/default-avatar.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 h-40 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md" onError={(e) => (e.currentTarget.src = "/default-avatar.png")} />
             <div>
               <h1 className="text-3xl font-bold">{user.name}</h1>
               {user.bio && <p className="text-gray-600 max-w-8/10 pt-2">{user.bio}</p>}
@@ -183,7 +206,7 @@ const Profile: React.FC = () => {
         {/* ✅ Profile Stats */}
         <div className="grid grid-cols-3 divide-x divide-gray-200 bg-gray-100 text-center p-4">
           <div>
-            <span className="text-xl font-semibold text-gray-900">🏆 {user._count?.wins || 0}</span>
+            <span className="text-xl font-semibold text-gray-900">🏆 {filteredWonListings.length || 0}</span>
             <p className="text-gray-500">Wins</p>
           </div>
           <div>
@@ -216,16 +239,15 @@ const Profile: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900">🏆 Auctions You've Won</h2>
           <p className="text-gray-600 mb-4">These are the listings you've won.</p>
 
-          {wonListings.length > 0 ? (
+          {filteredWonListings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
-              {wonListings.map((lot) => (
-                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0}   closingDate={lot.endsAt} 
-                showClosingDate={false} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
+              {filteredWonListings.map((lot) => (
+                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt} showClosingDate={false} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
               ))}
             </div>
           ) : (
-            <div className="bg-gray-50 p-4 rounded-lg shadow-md text-center">
-              <p className="text-gray-500">You haven’t won any auctions yet.</p>
+            <div>
+              <p className="text-gray-500">You haven't won any auctions yet.</p>
             </div>
           )}
         </div>
@@ -239,9 +261,7 @@ const Profile: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {listings.map((lot) => (
                 <div className="w-96" key={lot.id}>
-                  <LotCard  id={lot.id} image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt}   showClosingDate={true}
- tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} description={lot.description ?? ""}
- created={lot.created} updated={lot.updated} showDescription={true} showCreatedUpdated={true} onDelete={handleDelete} />
+                  <LotCard id={lot.id} image={lot.media?.[0]?.url ?? "https://placehold.co/300x200"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt} showClosingDate={true} tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} description={lot.description ?? ""} created={lot.created} updated={lot.updated} showDescription={true} showCreatedUpdated={true} onDelete={handleDelete} />
                 </div>
               ))}
             </div>
@@ -259,6 +279,8 @@ const Profile: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900">💰 Bids You’ve Placed</h2>
           <p className="text-gray-600 mb-4">Auctions where you’ve placed bids.</p>
 
+          <SearchBar onSearch={setSearchQuery} />
+
           {/* ✅ Use SortDropdown and TagFilter together */}
           <SortDropdown
             selectedSort={selectedSort}
@@ -275,7 +297,11 @@ const Profile: React.FC = () => {
             } // ✅ Ensure userBid & highestBid exist
           />
 
-          <TagFilter selectedTags={selectedTags} onTagChange={setSelectedTags} availableTags={availableTags} />
+          <TagFilter
+            selectedTags={selectedTags}
+            onTagChange={setSelectedTags}
+            availableTags={availableTags} // ✅ Now properly generated from `bidListings`
+          />
           <EndedAuctionsFilter includeEnded={includeEnded} onToggle={() => setIncludeEnded(!includeEnded)} />
 
           <div className="flex items-center gap-2 mt-4">
@@ -302,7 +328,7 @@ const Profile: React.FC = () => {
                   showSeller={true}
                   seller={lot.seller ?? "Unknown Seller"}
                   showControls={false}
-                  userBid={lot.userBid} 
+                  userBid={lot.userBid}
                   showClosingDate={true}
                 />
               ))}

@@ -6,14 +6,36 @@ interface TagFilterProps {
   availableTags: string[];
 }
 
+// ✅ Function to capitalize only the first letter of a tag
+const capitalize = (tag: string) => tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase();
+
 const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availableTags }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // ✅ Normalize tags: Merge similar tags while preserving correct capitalization
+  const tagMap = new Map<string, string>(); // lowercase -> Capitalized version
+  availableTags.forEach((tag) => {
+    const lowerTag = tag.toLowerCase();
+    const capitalizedTag = capitalize(lowerTag);
+
+    // ✅ Ensure we store all versions but always display the capitalized one
+    if (!tagMap.has(lowerTag)) {
+      tagMap.set(lowerTag, capitalizedTag);
+    }
+  });
+
+  // ✅ Convert to a sorted array
+  const normalizedTags = Array.from(tagMap.values()).sort((a, b) => a.localeCompare(b));
+
+  // ✅ Handle tag selection
   const handleTagChange = (tag: string) => {
-    const updatedTags = selectedTags.includes(tag)
-      ? selectedTags.filter((t) => t !== tag) 
-      : [...selectedTags, tag]; 
+    const lowerTag = tag.toLowerCase();
+    const capitalizedTag = tagMap.get(lowerTag) || tag; // Ensure correct capitalization
+
+    const updatedTags = selectedTags.includes(capitalizedTag)
+      ? selectedTags.filter((t) => t.toLowerCase() !== lowerTag) // Remove case-insensitively
+      : [...selectedTags, capitalizedTag];
 
     onTagChange(updatedTags);
   };
@@ -43,7 +65,6 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
     <div className="relative mb-6">
       <label className="block text-gray-800 font-semibold mb-2">Filter by Tags:</label>
 
-      {/* Dropdown Toggle Button */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -53,39 +74,37 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
         <span className="ml-2">▼</span>
       </button>
 
-      {/* Dropdown Menu */}
       {isOpen && (
         <div
           ref={dropdownRef}
           className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg"
         >
           <div className="p-2 max-h-48 overflow-y-auto">
-            {availableTags.map((tag) => (
+            {normalizedTags.map((tag) => (
               <label
                 key={tag}
                 className="flex items-center space-x-2 p-2 hover:bg-gray-100 cursor-pointer"
               >
                 <input
                   type="checkbox"
-                  checked={selectedTags.includes(tag)}
+                  checked={selectedTags.some((selected) => selected.toLowerCase() === tag.toLowerCase())} // ✅ Case-insensitive match
                   onChange={() => handleTagChange(tag)}
                   className="form-checkbox text-pink-500"
                 />
-                <span className="text-gray-800">{tag}</span>
+                <span className="text-gray-800">{tag}</span> {/* ✅ Always capitalized */}
               </label>
             ))}
           </div>
         </div>
       )}
 
-      {/* "Clear All" Button (Below Dropdown) */}
       {selectedTags.length > 0 && (
         <div className="mt-3 text-right">
           <button
             onClick={handleClearAll}
             className="text-red-500 text-sm font-semibold hover:text-red-700"
           >
-            Clear All
+            Clear Tags
           </button>
         </div>
       )}

@@ -1,49 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LotCard from "./LotCard";
 import SortDropdown from "./SortDropdown";
 import { Listing } from "../ts/types/listingTypes";
 import { useHeartBidsFilter } from "./useHeartBidsFilter";
+import SearchBar from "./SearchBar";
 
 interface AllLotsProps {
-  listings: Listing[]; // ✅ Accept listings as a prop
+  listings: Listing[];
 }
 
 const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
-
-
   const [includeEnded, setIncludeEnded] = useState(false);
   const [sortType, setSortType] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 30; // Number of listings per page
-  const validListings = Array.isArray(listings) ? listings : []; // ✅ Ensure listings is always an array
+  const perPage = 30;
 
-  let filteredListings = includeEnded 
-    ? validListings // ✅ Show all listings if `includeEnded` is checked
-    : validListings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now()); // ✅ Only active listings
-  
+  const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
+  const [searchQuery, setSearchQuery] = useState("");
 
-    const totalPages = Math.max(1, Math.ceil(filteredListings.length / perPage)); // ✅ Ensure at least 1 page
-
-    console.log("🚀 Total listings received:", listings.length);
-    console.log("✅ Total active listings:", listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now()).length);
-    console.log("⚠️ Total ended listings:", listings.filter((lot) => new Date(lot.endsAt).getTime() <= Date.now()).length);
-    console.log("🔍 Total listings after filtering (based on checkbox):", filteredListings.length);
-    console.log("📄 Total pages available:", totalPages);
-    
-
-
-  // ✅ Get the HeartBids filter state
   const { showOnlyHeartBids } = useHeartBidsFilter();
 
-  if (showOnlyHeartBids) {
-    filteredListings = filteredListings.filter((listing) => listing.tags?.includes("HeartBids"));
-  }
+  // ✅ Update filtered listings whenever filters or search change
+  useEffect(() => {
+    let updatedListings = includeEnded
+      ? listings // ✅ Show all listings if "Include Ended" is checked
+      : listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now()); // ✅ Only active listings
 
-  const combinedLots = filteredListings;
+    // ✅ Apply HeartBids filter
+    if (showOnlyHeartBids) {
+      updatedListings = updatedListings.filter((listing) => listing.tags?.includes("HeartBids"));
+    }
 
+    // ✅ Apply Search
+    if (searchQuery.trim()) {
+      updatedListings = updatedListings.filter((listing) => listing.title.toLowerCase().includes(searchQuery.toLowerCase()) || (listing.description && listing.description.toLowerCase().includes(searchQuery.toLowerCase())));
+    }
 
-  // ✅ Apply sorting
-  const sortedLots = [...combinedLots];
+    setFilteredListings(updatedListings);
+    setCurrentPage(1); // ✅ Reset pagination when filters or search change
+  }, [includeEnded, showOnlyHeartBids, searchQuery, listings]);
+
+  // ✅ Search handler updates the searchQuery state
+  const handleSearch = (query: string) => {
+    setSearchQuery(query); // ✅ Triggers `useEffect` to filter correctly
+  };
+
+  // ✅ Sorting after filtering
+  const sortedLots = [...filteredListings];
   switch (sortType) {
     case "newest":
       sortedLots.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
@@ -78,7 +81,8 @@ const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
       break;
   }
 
-  // ✅ Apply pagination AFTER sorting
+  // ✅ Pagination AFTER filtering & sorting
+  const totalPages = Math.max(1, Math.ceil(sortedLots.length / perPage));
   const startIndex = (currentPage - 1) * perPage;
   const paginatedLots = sortedLots.slice(startIndex, startIndex + perPage);
 
@@ -98,6 +102,12 @@ const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
           </label>
         </div>
 
+        {/* Search Component */}
+        <SearchBar onSearch={handleSearch} />
+
+        {/* ✅ Results count */}
+        <p className="text-gray-600 text-sm mb-4">{filteredListings.length} results</p>
+
         {paginatedLots.length === 0 ? (
           <div className="text-center text-gray-600 mt-8">No lots available.</div>
         ) : (
@@ -108,26 +118,39 @@ const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
           </div>
         )}
 
-        {/* Pagination Controls */}
-        <div className="flex justify-center my-10 mt-16">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1 || totalPages === 0} // ✅ Ensure Next button is disabled correctly
-            className={`px-4 py-2 mx-1 ${currentPage === 1 || totalPages === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
-          >
-            Previous
-          </button>
+       {/* ✅ Hide pagination if only 1 page */}
+{totalPages > 1 && (
+  <div className="flex justify-center items-center gap-4 my-10 mt-16">
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className={`px-4 py-2 rounded-lg transition ${
+        currentPage === 1
+          ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+          : "bg-blue-600 text-white hover:bg-blue-700"
+      }`}
+    >
+      Previous
+    </button>
 
-          <span className="px-4 py-2 mx-1 bg-gray-200">{`Page ${currentPage} of ${totalPages}`}</span>
+    <span className="text-gray-800 font-medium">
+      Page {currentPage} of {totalPages}
+    </span>
 
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage >= totalPages || totalPages === 0} // ✅ Prevent navigating past the last page
-            className={`px-4 py-2 mx-1 ${currentPage >= totalPages || totalPages === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}`}
-          >
-            Next
-          </button>
-        </div>
+    <button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage >= totalPages}
+      className={`px-4 py-2 rounded-lg transition ${
+        currentPage >= totalPages
+          ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+          : "bg-blue-600 text-white hover:bg-blue-700"
+      }`}
+    >
+      Next
+    </button>
+  </div>
+)}
+
       </div>
     </section>
   );

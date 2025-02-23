@@ -50,12 +50,32 @@ const UserProfilePage = () => {
     <div className="min-h-screen w-full">
       <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
         {/* ✅ Profile Banner */}
-        <div className="relative w-full h-80 md:h-72 bg-gray-200">{userProfile.banner?.url && <img src={userProfile.banner.url} alt={userProfile.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
+        <div className="relative w-full h-80 md:h-72 bg-gray-200">
+          <img
+            src={userProfile.banner?.url || "/images/default-banner.jpg"}
+            alt={userProfile.banner?.alt || "User Banner"}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              if (e.currentTarget.src !== "/images/default-banner.jpg") {
+                e.currentTarget.src = "/images/default-banner.jpg"; // ✅ Prevents infinite loop
+              }
+            }}
+          />
+        </div>
 
         {/* ✅ Profile Header (Avatar + Name + Bio) */}
         <div className="relative -mt-15 flex items-center p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
           <div className="max-w-8/10 flex m-auto content-center justify-center gap-10">
-            <img src={userProfile.avatar?.url || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"} alt={userProfile.avatar?.alt || "User Avatar"} className="w-40 h-40 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md" />
+            <img
+              src={userProfile.avatar?.url ? userProfile.avatar.url : "/default-avatar.png"}
+              alt={userProfile.avatar?.alt || "User Avatar"}
+              className="w-30 h-30 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-50 lg:h-50 aspect-square rounded-full object-cover p-1 -mt-15 border-4 border-white shadow-md"
+              onError={(e) => {
+                if (e.currentTarget.src !== window.location.origin + "/default-avatar.png") {
+                  e.currentTarget.src = "/images/default-avatar.png"; // ✅ Prevents infinite loop & ensures fallback
+                }
+              }}
+            />
 
             <div>
               <h1 className="text-3xl font-bold">{userProfile.name}</h1>
