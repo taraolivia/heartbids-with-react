@@ -61,7 +61,7 @@ const Navbar = () => {
 
   return (
     <div className="group w-full fixed z-40">
-      <nav className="navbar bg-violet-50 shadow-md w-full fixed z-40 text-lg transition-colors duration-300 group">
+      <nav className="navbar bg-secondary-600 shadow-md w-full fixed z-40 text-lg transition-colors duration-300 group">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 z-50">
           <div className="flex items-center justify-between h-20 relative z-50">
             {" "}
@@ -124,7 +124,7 @@ const Navbar = () => {
           </div>
         </div>
         {/* ✅ Second Row: HeartBids Filter (Glass Effect) */}
-        <div className="py-3 absolute w-full top-24 left-0 bg-white/60 backdrop-blur-xs transition duration-300 group-hover:bg-violet-50 z-0">
+        <div className="py-3 absolute w-full top-24 left-0 bg-bg-50 backdrop-blur-xs transition duration-300 group-hover:bg-bg-950 z-0">
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-right">
             <HeartBidsFilterToggle />
           </div>
