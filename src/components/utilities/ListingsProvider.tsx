@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { API_LISTINGS } from "../ts/constants";
-import { getHeaders } from "../ts/headers";
+import { API_LISTINGS } from "../../ts/constants";
+import { getHeaders } from "../../ts/headers";
 import { ListingsContext } from "./ListingsContext"; // ✅ Import only the context
-import { Listing } from "../ts/types/listingTypes";
+import { Listing } from "../../ts/types/listingTypes";
 
 export const ListingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [listings, setListings] = useState<Listing[]>([]);

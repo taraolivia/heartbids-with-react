@@ -4,8 +4,9 @@ import { API_LISTINGS } from "../../ts/constants";
 import { Listing, Bid } from "../../ts/types/listingTypes";
 import { useBidding } from "../../ts/hooks/useBidding";
 import { useUser } from "../profile/useUser";
-import AuctionCountdown from "../../components/AuctionCountdown";
-import CopyLinkButton from "../../components/CopyLinkButton";
+import AuctionCountdown from "../../components/ui/AuctionCountdown";
+import CopyLinkButton from "../../components/ui/CopyLinkButton";
+import Footer from "../../components/layout/Footer";
 
 const SingleListing = () => {
   const { id } = useParams<{ id: string }>();
@@ -126,12 +127,15 @@ const SingleListing = () => {
         {/* ✅ Copy Link Button (Bottom Right) */}
         <CopyLinkButton url={window.location.href} />
       </div>
-      <div className="max-w-8/10 m-auto">
+      <div className="w-8/10 m-auto max-w-6xl">
 
       <h1 className="text-3xl font-semibold text-gray-800">{listing.title}</h1>
 
-      <div className="flex flex-wrap gap-6 items-start mt-6">
-        {listing.media.length > 0 && <img src={listing.media[0].url} alt={listing.media[0].alt} className="w-80 h-auto object-cover rounded-md" />}
+      <div className="flex flex-wrap gap-6 items-start mt-6 ">
+        <div className="flex flex-1">
+
+        {listing.media.length > 0 && <img src={listing.media[0].url} alt={listing.media[0].alt} className="h-auto object-cover rounded-md" />}
+        </div>
 
         <div className="flex-1 space-y-4">
           <p className="text-gray-600 text-lg">{listing.description}</p>
@@ -242,6 +246,8 @@ const SingleListing = () => {
         </div>
       )}
       </div>
+      <Footer />
+
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import HandleLogout from "../pages/auth/HandleLogout";
+import HandleLogout from "../utilities/HandleLogout";
 
 const getUserProfile = () => {
   const storedUser = localStorage.getItem("user");

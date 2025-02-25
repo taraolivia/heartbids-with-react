@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import getUserProfile from "./getUserProfile";
-import getUserBids from "../../components/getUserBids";
-import HandleLogout from "../auth/HandleLogout";
-import LotCard from "../../components/LotCard";
+import getUserProfile from "../../components/utilities/getUserProfile";
+import getUserBids from "../../components/utilities/getUserBids";
+import HandleLogout from "../../components/utilities/HandleLogout";
+import LotCard from "../../components/lots/LotCard";
 import { UserProfile, Bid, Listing } from "../../ts/types/listingTypes";
 import { API_BASE } from "../../ts/constants";
 import { getHeaders } from "../../ts/headers";
-import SortDropdown from "../../components/SortDropdown";
-import TagFilter from "../../components/TagFilter";
-import EndedAuctionsFilter from "../../components/EndedAuctionsFilter";
-import Footer from "../../components/Footer";
-import SearchBar from "../../components/SearchBar";
-import { useHeartBidsFilter } from "../../components/useHeartBidsFilter";
+import SortDropdown from "../../components/ui/SortDropdown";
+import TagFilter from "../../components/ui/TagFilter";
+import EndedAuctionsFilter from "../../components/ui/EndedAuctionsFilter";
+import Footer from "../../components/layout/Footer";
+import SearchBar from "../../components/ui/SearchBar";
+import { useHeartBidsFilter } from "../../components/utilities/useHeartBidsFilter";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import getUserProfile from "./getUserProfile";
+import getUserProfile from "../../components/utilities/getUserProfile";
 import { API_PROFILE } from "../../ts/constants";
 import { getHeaders } from "../../ts/headers";
 

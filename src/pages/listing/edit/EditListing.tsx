@@ -3,7 +3,7 @@ import { API_LISTINGS } from "../../../ts/constants";
 import { getHeaders } from "../../../ts/headers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ErrorMessage from "../../../components/ErrorMessage";
+import ErrorMessage from "../../../components/ui/ErrorMessage";
 
 interface Listing {
   title: string;
@@ -15,7 +15,7 @@ interface Listing {
 
 const EditListingPage: React.FC<{ listingId: string }> = ({ listingId }) => {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-4">
+    <div className="min-h-screen flex flex-col justify-center items-center p-4">
       <EditListingForm listingId={listingId} />
     </div>
   );
@@ -48,14 +48,12 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
         const response = await fetch(`${API_LISTINGS}/${listingId}`, {
           headers: getHeaders(),
         });
-  
+
         if (!response.ok) throw new Error("Failed to fetch listing.");
-        
+
         const responseData = await response.json();
         const data = responseData.data; // ✅ Fix: Extract the correct data object
-  
 
-  
         setFormData({
           title: data.title || "",
           description: data.description || "",
@@ -63,7 +61,6 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
           media: data.media && data.media.length > 0 ? data.media : [{ url: "", alt: "" }],
           endsAt: data.endsAt || "",
         });
-  
       } catch (error) {
         console.error("❌ Error fetching listing:", error);
         setError("Failed to load listing data.");
@@ -71,17 +68,11 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
         setLoading(false);
       }
     };
-  
+
     fetchListing();
   }, [listingId]);
-  
-  
-  // Debug: Log whenever formData updates
-  useEffect(() => {
 
-  }, [formData]);
-  
-  
+  useEffect(() => {}, [formData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -162,21 +153,21 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
         headers: getHeaders(),
         body: JSON.stringify({ ...formData, tags: cleanedTags }),
       });
-    
+
       if (!response.ok) {
         const errorData = await response.json(); // ✅ Try to get API error details
         console.error("❌ Update failed:", errorData); // ✅ Log detailed error
-    
+
         throw new Error(errorData.message || "Failed to update listing.");
       }
-    
+
       setSuccess(true);
     } catch (error) {
       console.error("❌ Error updating listing:", error); // ✅ Log the actual error
       setError(error instanceof Error ? error.message : "Unknown error occurred.");
     } finally {
       setLoading(false);
-    }    
+    }
   };
 
   return (
@@ -237,7 +228,7 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
           <a href="/profile" className="px-4 py-2 text-white bg-gray-800 rounded-md hover:bg-gray-900">
             Cancel
           </a>
-          <button type="submit" disabled={loading} className={`mt-4 p-3 rounded-md font-semibold text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}`}>
+          <button type="submit" disabled={loading} className={`mt-4 p-3 rounded-md font-semibold text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-secondary-500 hover:bg-secondary-600 cursor-pointer"}`}>
             {loading ? "Updating..." : "Update Listing"}
           </button>
         </div>

@@ -1,8 +1,8 @@
-import Hero from "../components/Hero";
-import MostPopularListings from "../components/MostPopularListings";
-import FAQ from "../components/FAQ";
-import GeneralInfo from "../components/GeneralInfo";
-import Footer from "../components/Footer";
+import Hero from "../components/layout/Hero";
+import MostPopularListings from "../components/lots/MostPopularListings";
+import FAQ from "../components/layout/FAQ";
+import GeneralInfo from "../components/layout/GeneralInfo";
+import Footer from "../components/layout/Footer";
 
 const About = () => {
   return (

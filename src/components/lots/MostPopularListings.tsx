@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
-import { useListings } from "./UseListings";
-import { useHeartBidsFilter } from "./useHeartBidsFilter";
+import { useListings } from "../utilities/UseListings";
+import { useHeartBidsFilter } from "../utilities/useHeartBidsFilter";
 
 const MostPopularListings: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);

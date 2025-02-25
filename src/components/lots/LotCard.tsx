@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { LotCardProps } from "../ts/types/listingTypes";
-import EditButton from "./EditButton";
-import DeleteButton from "./DeleteButton";
-import AuctionCountdown from "./AuctionCountdown";
+import { LotCardProps } from "../../ts/types/listingTypes";
+import EditButton from "../ui/EditButton";
+import DeleteButton from "../ui/DeleteButton";
+import AuctionCountdown from "../ui/AuctionCountdown";
 
 const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closingDate, userBid, description, tags, created, updated, showDescription, showTags, showCreatedUpdated, seller, showSeller, showControls, showClosingDate = true, onDelete }) => {
   return (
-    <div className="bg-primary-200 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-72 mt-6 m-auto flex flex-col h-full w-full">
+    <div className="bg-secondary-50 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-72 mt-6 m-auto flex flex-col h-full w-full">
       <Link to={`/listing/${id}`} className="block">
         <img
           src={image || "/images/logo/HeartBids.png"}

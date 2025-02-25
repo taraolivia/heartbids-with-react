@@ -3,7 +3,7 @@ import { API_LISTINGS } from "../../../ts/constants";
 import { getHeaders } from "../../../ts/headers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ErrorMessage from "../../../components/ErrorMessage";
+import ErrorMessage from "../../../components/ui/ErrorMessage";
 
 interface Listing {
   title: string;

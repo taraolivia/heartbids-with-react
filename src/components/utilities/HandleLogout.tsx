@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../profile/UserContext";
+import { UserContext } from "./UserContext";
 
 const HandleLogout = () => {
   const navigate = useNavigate();
