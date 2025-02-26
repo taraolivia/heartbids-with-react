@@ -1,5 +1,5 @@
-import { API_BASE } from "../../ts/constants";
-import { getHeaders } from "../../ts/headers";
+import { API_BASE } from "../../config/constants";
+import { getHeaders } from "../../config/headers";
 
 
 const getOtherUserProfile = async (username: string) => {

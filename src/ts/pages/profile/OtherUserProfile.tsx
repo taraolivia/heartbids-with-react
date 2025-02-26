@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getOtherUserProfile from "../../components/utilities/GetOtherUserProfile";
 import LotCard from "../../components/lots/LotCard"; // ✅ Keeping the same listing layout
-import { UserProfile, Bid, Listing } from "../../ts/types/listingTypes";
+import { UserProfile, Bid, Listing } from "../../types/listingTypes";
 import Footer from "../../components/layout/Footer";
 
 const UserProfilePage = () => {

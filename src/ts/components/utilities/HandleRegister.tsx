@@ -1,4 +1,4 @@
-import { API_BASE } from "../../../ts/constants";
+import { API_BASE } from "../../config/constants";
 
 const HandleRegister = async (formData: {
   name: string;

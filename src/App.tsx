@@ -1,29 +1,29 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { UserProvider } from "./pages/profile/UserProvider";
-import Navbar from "./components/layout/NavbarMain";
-import Hero from "./components/layout/Hero";
-import GeneralInfo from "./components/layout/GeneralInfo";
-import Footer from "./components/layout/Footer";
-import About from "./pages/About";
-import Login from "./pages/auth/login/Login";
-import Register from "./pages/auth/register/Register";
-import AuthPrompt from "./components/AuthPrompt";
-import HowItWorks from "./components/layout/HowItWorks";
-import CharitiesCloud from "./components/layout/CharitiesCloud";
-import Testimonials from "./components/layout/Testimonials";
-import Listings from "./pages/Listings";
-import Profile from "./pages/profile/Profile";
-import CreateListingPage from "./pages/listing/create/CreateListing";
-import SingleListing from "./pages/listing/SingleListing";
-import MostPopularListings from "./components/lots/MostPopularListings";
-import UserProfilePage from "./pages/profile/OtherUserProfile";
-import { HeartBidsFilterProvider } from "./components/utilities/HeartBidsFilterProvider";
-import EditListingWrapper from "./pages/listing/edit/EditListingWrapper";
-import EditProfile from "./pages/profile/EditProfile";
-import Charities from "./pages/Charities";
-import { ListingsProvider } from "./components/utilities/ListingsProvider";
+import { UserProvider } from "./ts/components/utilities/UserProvider";
+import Navbar from "./ts/components/layout/NavbarMain";
+import Hero from "./ts/components/layout/Hero";
+import GeneralInfo from "./ts/components/layout/GeneralInfo";
+import Footer from "./ts/components/layout/Footer";
+import About from "./ts/pages/About";
+import Login from "./ts/pages/auth/Login";
+import Register from "./ts/pages/auth/Register";
+import AuthPrompt from "./ts/components/layout/AuthPrompt";
+import HowItWorks from "./ts/components/layout/HowItWorks";
+import CharitiesCloud from "./ts/components/layout/CharitiesCloud";
+import Testimonials from "./ts/components/layout/Testimonials";
+import Listings from "./ts/pages/Listings";
+import Profile from "./ts/pages/profile/Profile";
+import CreateListingPage from "./ts/pages/listing/create/CreateListing";
+import SingleListing from "./ts/pages/listing/SingleListing";
+import MostPopularListings from "./ts/components/lots/MostPopularListings";
+import UserProfilePage from "./ts/pages/profile/OtherUserProfile";
+import { HeartBidsFilterProvider } from "./ts/components/utilities/HeartBidsFilterProvider";
+import EditListingWrapper from "./ts/components/utilities/EditListingWrapper";
+import EditProfile from "./ts/pages/profile/EditProfile";
+import Charities from "./ts/pages/Charities";
+import { ListingsProvider } from "./ts/components/utilities/ListingsProvider";
 
 function App() {
   const [navHeight, setNavHeight] = useState(0);
@@ -44,7 +44,7 @@ function App() {
   return (
     <UserProvider>
       <HeartBidsFilterProvider>
-        <ListingsProvider> 
+        <ListingsProvider>
           <Router>
             <Navbar />
             {/* Dynamic Spacer to prevent overlap */}
@@ -66,46 +66,45 @@ function App() {
                   </>
                 }
               />
-  
+
               {/* About Page */}
               <Route path="/about" element={<About />} />
-  
+
               {/* Charities Page */}
               <Route path="/charities" element={<Charities />} />
-  
+
               {/* Login Page */}
               <Route path="/auth/login" element={<Login />} />
-  
+
               {/* Register Page */}
               <Route path="/auth/register" element={<Register />} />
-  
+
               {/* All Listings Page */}
               <Route path="/Listings" element={<Listings />} />
-  
+
               {/* Profile Page */}
               <Route path="/profile" element={<Profile />} />
-  
+
               {/* Edit Profile Page */}
               <Route path="/profile/EditProfile" element={<EditProfile />} />
-  
+
               {/* Create Listing Page */}
               <Route path="/listing/create" element={<CreateListingPage />} />
-  
+
               {/* Edit Listing Page - Requires a listing ID */}
               <Route path="/listing/edit/:id" element={<EditListingWrapper />} />
-  
+
               {/* Single Listing Page */}
               <Route path="/listing/:id" element={<SingleListing />} />
-  
+
               {/* Other Profile Page */}
               <Route path="/profile/:username" element={<UserProfilePage />} />
             </Routes>
           </Router>
-        </ListingsProvider> 
+        </ListingsProvider>
       </HeartBidsFilterProvider>
     </UserProvider>
   );
-  
 }
 
 export default App;

@@ -1,8 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { API_LISTINGS } from "../../ts/constants";
-import { Listing, Bid } from "../../ts/types/listingTypes";
-import { useBidding } from "../../ts/hooks/useBidding";
+import { API_LISTINGS } from "../../config/constants";
+import { Listing, Bid } from "../../types/listingTypes";
+import { useBidding } from "../../hooks/useBidding";
 import { useUser } from "../profile/useUser";
 import AuctionCountdown from "../../components/ui/AuctionCountdown";
 import CopyLinkButton from "../../components/ui/CopyLinkButton";

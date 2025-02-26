@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
-import { LatestListingsProps } from "../../ts/types/listingTypes";
+import { LatestListingsProps } from "../../types/listingTypes";
 import { useHeartBidsFilter } from "../utilities/useHeartBidsFilter";
 
 const LatestListings: React.FC<LatestListingsProps> = ({ listings = [], loading, error }) => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import LotCard from "./LotCard";
 import SortDropdown from "../SortDropdown";
-import { Listing } from "../../ts/types/listingTypes";
+import { Listing } from "../../types/listingTypes";
 import { useHeartBidsFilter } from "../utilities/useHeartBidsFilter";
 import SearchBar from "../ui/SearchBar";
 

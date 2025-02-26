@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LotCardProps } from "../../ts/types/listingTypes";
+import { LotCardProps } from "../../types/listingTypes";
 import EditButton from "../ui/EditButton";
 import DeleteButton from "../ui/DeleteButton";
 import AuctionCountdown from "../ui/AuctionCountdown";
