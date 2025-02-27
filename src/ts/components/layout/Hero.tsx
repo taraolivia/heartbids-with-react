@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-<section className=" bg-gradient-to-b from-background-50 to-primary-200 h-screen pt-30">
-  <div className=" h-full mx-auto sm:px-0 lg:px-0 flex flex-col lg:flex-row">
+<section className="bg-gradient-to-b from-background-50 to-primary-200 pt-30  xl:h-screen">
+<div className=" h-full mx-auto sm:px-0 lg:px-0 flex flex-col lg:flex-row">
     
     {/* Left Text Section */}
-    <div className="lg:w-1/2 max-h-3/4 flex flex-col md:px-10 text-center px-5 align-center items-center lg:items-start lg:text-left justify-evenly m-auto h-full lg:max-w-150">
-      <h1 className="text-4xl font-bold text-gray-800 leading-tight">
+    <div className="lg:w-1/3 max-h-3/4 flex flex-col md:px-10 text-center px-5 align-center items-center lg:items-start lg:text-left justify-evenly m-auto h-full lg:max-w-150">
+      <h1 className="font-serif text-5xl font-bold text-gray-800 leading-tight">
         An auction platform where winning bids fund a charity of your choice.
       </h1>
       <div className="flex gap-3 items-center align-center justify-center mt-5 mb-8"> 
@@ -32,7 +32,7 @@ const Hero = () => {
     </div>
 
     {/* Right Image Section (Stacked & Contained) */}
-    <div className="lg:w-1/2 md:w-full lg:relative lg:overflow-visible flex h-full overflow-hidden items-end justify-center">
+    <div className="lg:w-1/2 md:w-full max-w-5xl lg:relative lg:overflow-visible flex h-full overflow-hidden items-end justify-center">
       
       {/* Flower Gift (Main Left) */}
       <img 
@@ -45,7 +45,7 @@ const Hero = () => {
       <img 
         src="/images/hero/custom-map.png" 
         alt="Custom Map" 
-        className="lg:w-1/4 h-auto shadow-md lg:absolute bottom-0 left-0 z-50 md:relative md:w-1/6"
+        className="lg:w-1/4 h-auto shadow-md lg:absolute bottom-0 left-0 z-40 md:relative md:w-1/6"
       />
 
       {/* Dog Painting (Main Right) */}

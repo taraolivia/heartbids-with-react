@@ -61,8 +61,8 @@ const Navbar = () => {
   const getLinkClass = (path: string) => (location.pathname === path ? "text-blue-600 font-semibold" : "text-black hover:text-blue-600");
 
   return (
-    <div className="group w-full fixed z-40">
-      <nav className="navbar bg-background-50 shadow-md w-full fixed z-40 text-lg transition-colors duration-300">
+    <div className="group w-full fixed z-50 ">
+      <nav className="navbar font-serif bg-background-50 shadow-md w-full fixed z-40 text-lg transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 z-50">
           <div className="flex items-center justify-between h-25 relative z-50">
 
@@ -84,7 +84,7 @@ const Navbar = () => {
             {/* ✅ Center Logo (Always visible) */}
             <div className="flex justify-center relative z-50 flex-1 w-full">
               <Link to="/" className={getLinkClass("/")}>
-              <img src="/public/HeartBids.png" 
+              <img src="/HeartBids.png" 
      alt="HeartBids Logo" 
      className="h-25 md:h-40 md:mt-18 z-50 relative" />
               </Link>

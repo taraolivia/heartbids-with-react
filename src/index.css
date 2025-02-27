@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-@import "tailwindcss";
+@import "@fontsource/inter/index.css";
+@import "@fontsource/spectral/index.css";
+
 
 html {
   @apply bg-background-50 text-text-900;
@@ -9,6 +11,11 @@ html {
 body {
   @apply text-text-900;
 }
+
+h1 {
+  @apply font-serif;
+}
+
 
 button,
 link,
