@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { API_LISTINGS } from "../../config/constants";
 import { Listing, Bid } from "../../types/listingTypes";
 import { useBidding } from "../../hooks/useBidding";
-import { useUser } from "../profile/useUser";
+import { useUser } from "../../utilities/useUser";
 import AuctionCountdown from "../../components/ui/AuctionCountdown";
 import CopyLinkButton from "../../components/ui/CopyLinkButton";
 import Footer from "../../components/layout/Footer";

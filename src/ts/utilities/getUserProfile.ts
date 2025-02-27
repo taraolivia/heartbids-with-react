@@ -1,5 +1,5 @@
-import { API_BASE } from "../../config/constants";
-import { getHeaders } from "../../config/headers";
+import { API_BASE } from "../config/constants";
+import { getHeaders } from "../config/headers";
 
 const getUserProfile = async () => {
   const storedUser = localStorage.getItem("user");

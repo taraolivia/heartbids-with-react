@@ -1,7 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { UserProvider } from "./ts/components/utilities/UserProvider";
+import { UserProvider } from "./ts/utilities/UserProvider";
 import Navbar from "./ts/components/layout/NavbarMain";
 import Hero from "./ts/components/layout/Hero";
 import GeneralInfo from "./ts/components/layout/GeneralInfo";
@@ -19,11 +19,11 @@ import CreateListingPage from "./ts/pages/listing/create/CreateListing";
 import SingleListing from "./ts/pages/listing/SingleListing";
 import MostPopularListings from "./ts/components/lots/MostPopularListings";
 import UserProfilePage from "./ts/pages/profile/OtherUserProfile";
-import { HeartBidsFilterProvider } from "./ts/components/utilities/HeartBidsFilterProvider";
-import EditListingWrapper from "./ts/components/utilities/EditListingWrapper";
+import { HeartBidsFilterProvider } from "./ts/utilities/HeartBidsFilterProvider";
+import EditListingWrapper from "./ts/utilities/EditListingWrapper";
 import EditProfile from "./ts/pages/profile/EditProfile";
 import Charities from "./ts/pages/Charities";
-import { ListingsProvider } from "./ts/components/utilities/ListingsProvider";
+import { ListingsProvider } from "./ts/utilities/ListingsProvider";
 
 function App() {
   const [navHeight, setNavHeight] = useState(0);

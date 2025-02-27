@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { API_LISTINGS } from "../ts/constants";
-import { getHeaders } from "../ts/headers";
+import { API_LISTINGS } from "../../config/constants";
+import { getHeaders } from "../../config/headers";
+
 interface DeleteButtonProps {
     listingId: string;
     onDelete: (id: string) => void; // ✅ Pass deletion function

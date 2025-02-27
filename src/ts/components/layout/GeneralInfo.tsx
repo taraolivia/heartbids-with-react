@@ -1,7 +1,7 @@
 
 const GeneralInfo = () => {
     return (
-      <section className="bg-gradient-to-b from-gray-100 to-green-100 py-16">
+      <section className="bg-gradient-to-b from-background-50 to-primary-300 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Heading and Description */}
           <h2 className="text-3xl font-bold text-gray-800">About HeartBids</h2>

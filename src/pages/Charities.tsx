@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import AllCharities, { Charity } from "../utilities/AllCharities";
-import FeaturedCharity from "../components/layout/FeaturedCharity";
-import Hero from "../components/layout/Hero";
-import Footer from "../components/layout/Footer";
-import GeneralInfo from "../components/layout/GeneralInfo";
-import MostPopularListings from "../components/lots/MostPopularListings";
-import FAQ from "../components/layout/FAQ";
+import AllCharities, { Charity } from "../ts/utilities/AllCharities";
+import FeaturedCharity from "../ts/components/layout/FeaturedCharity";
+import Hero from "../ts/components/layout/Hero";
+import Footer from "../ts/components/layout/Footer";
+import GeneralInfo from "../ts/components/layout/GeneralInfo";
+import MostPopularListings from "../ts/components/lots/MostPopularListings";
+import FAQ from "../ts/components/layout/FAQ";
 
 const Charities: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);

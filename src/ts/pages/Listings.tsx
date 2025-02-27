@@ -1,4 +1,4 @@
-import { useListings } from "../components/utilities/UseListings";
+import { useListings } from "../../ts/utilities/UseListings";
 
 import Hero from "../components/layout/Hero";
 import GeneralInfo from "../components/layout/GeneralInfo";

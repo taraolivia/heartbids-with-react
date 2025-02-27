@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import EditListingPage from "./EditListing";
+import EditListingPage from "../pages/listing/edit/EditListing";
 
 const EditListingWrapper: React.FC = () => {
   const { id } = useParams<{ id: string }>();

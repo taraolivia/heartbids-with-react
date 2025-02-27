@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AllCharities, { Charity } from "./AllCharities";
+import AllCharities, { Charity } from "../../utilities/AllCharities";
 
 const featuredCharities = AllCharities.filter((charity) =>
   ["Little Sparks", "Hopeful Hearts", "WildGuard"].includes(charity.name)

@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
-import { useListings } from "../utilities/UseListings";
-import { useHeartBidsFilter } from "../utilities/useHeartBidsFilter";
+import { useListings } from "../../utilities/UseListings";
+import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 
 const MostPopularListings: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -52,7 +52,7 @@ const MostPopularListings: React.FC = () => {
     .slice(0, 10);
 
   return (
-    <section className="py-5 bg-gray-100 relative">
+    <section className="py-5 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-800">Most Popular Listings</h2>
 
@@ -66,7 +66,7 @@ const MostPopularListings: React.FC = () => {
           {sortedListings.length === 0 && <div className="text-center text-gray-600 mt-8">No popular listings available.</div>}
 
           {sortedListings.map((item) => (
-            <div key={item.id} className="min-w-[300px]">
+            <div key={item.id}>
               <LotCard
                 id={item.id}
                 image={item.media?.[0]?.url || "fallback-image-url.png"}

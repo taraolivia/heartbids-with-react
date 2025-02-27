@@ -14,7 +14,7 @@ const testimonials: Testimonial[] = [
     cause: "Canvas Collective – Art for All",
     review:
       "HeartBids made it so easy to auction my paintings for charity. Seeing my work contribute to an arts education fund was truly rewarding!",
-    image: "https://via.placeholder.com/150",
+    image: "https://images.pexels.com/photos/3482526/pexels-photo-3482526.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     charityLogo: "/images/charities/icons8-paint-96.png",
   },
   {
@@ -22,7 +22,7 @@ const testimonials: Testimonial[] = [
     cause: "Paw Haven – Animal Rescue",
     review:
       "By auctioning handcrafted pet accessories, I am raising money to cover vet bills for rescued animals. The process is seamless, and the impact was real!",
-    image: "https://via.placeholder.com/150",
+    image: "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     charityLogo: "/images/charities/icons8-cat-caregivers-96.png",
   },
   {
@@ -30,7 +30,7 @@ const testimonials: Testimonial[] = [
     cause: "Verdant Earth – Eco Sustainability",
     review:
       "HeartBids connected me with like-minded people who bid on my upcycled furniture. Every sale supports a greener planet!",
-    image: "https://via.placeholder.com/150",
+    image: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     charityLogo: "/images/charities/icons8-green-earth-96.png",
   },
   {
@@ -38,7 +38,7 @@ const testimonials: Testimonial[] = [
     cause: "Hopeful Hearts – Children’s Hospitals",
     review:
       "Donating my woodworking pieces helped raise funds for children in hospitals. HeartBids made giving back so easy!",
-    image: "https://via.placeholder.com/150",
+    image: "https://images.pexels.com/photos/316680/pexels-photo-316680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     charityLogo: "/images/charities/icons8-health-96.png",
   },
   {
@@ -46,7 +46,7 @@ const testimonials: Testimonial[] = [
     cause: "Golden Years – Elderly Care",
     review:
       "Seeing my handmade quilts bring warmth to elders through HeartBids has been an unforgettable experience!",
-    image: "https://via.placeholder.com/150",
+    image: "https://images.pexels.com/photos/2109998/pexels-photo-2109998.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     charityLogo: "/images/charities/icons8-elder-96.png",
   },
   {
@@ -54,7 +54,7 @@ const testimonials: Testimonial[] = [
     cause: "Beetle Brigade – Insect Conservation",
     review:
       "HeartBids allowed me to auction rare insect photography, supporting pollinator preservation projects!",
-    image: "https://via.placeholder.com/150",
+    image: "https://images.pexels.com/photos/2091327/pexels-photo-2091327.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     charityLogo: "/images/charities/icons8-insect-96.png",
   },
 ];
@@ -84,7 +84,7 @@ const Testimonials: React.FC = () => {
               <img
                 src={testimonial.image}
                 alt={testimonial.name}
-                className="w-20 h-20 rounded-full border-2 border-gray-300 mb-4 shadow-md"
+                className="w-20 h-20 rounded-full object-cover object-center border-2 border-gray-300 mb-4 shadow-md"
               />
 
               {/* Review */}

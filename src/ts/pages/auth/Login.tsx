@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HandleLogin from "./HandleLogin"; // ✅ Import login function
+import HandleLogin from "../../utilities/HandleLogin";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");

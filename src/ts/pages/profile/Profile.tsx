@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import getUserProfile from "../../components/utilities/getUserProfile";
-import getUserBids from "../../components/utilities/getUserBids";
-import HandleLogout from "../../components/utilities/HandleLogout";
+import getUserProfile from "../../utilities/getUserProfile";
+import getUserBids from "../../utilities/getUserBids";
+import HandleLogout from "../../utilities/HandleLogout";
 import LotCard from "../../components/lots/LotCard";
 import { UserProfile, Bid, Listing } from "../../types/listingTypes";
 import { API_BASE } from "../../config/constants";
@@ -12,7 +12,7 @@ import TagFilter from "../../components/ui/TagFilter";
 import EndedAuctionsFilter from "../../components/ui/EndedAuctionsFilter";
 import Footer from "../../components/layout/Footer";
 import SearchBar from "../../components/ui/SearchBar";
-import { useHeartBidsFilter } from "../../components/utilities/useHeartBidsFilter";
+import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -320,7 +320,7 @@ const Profile: React.FC = () => {
                   id={lot.id}
                   image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"}
                   title={lot.title}
-                  price={lot.highestBid} // ✅ Uses highestBid
+                  price={lot.highestBid}
                   bids={lot.bids?.length ?? 0}
                   closingDate={lot.endsAt ?? ""}
                   tags={lot.tags ?? []}

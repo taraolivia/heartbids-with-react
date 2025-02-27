@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HandleRegister from "./HandleRegister";
-import HandleLogin from "../login/HandleLogin";
+import HandleRegister from "../../utilities/HandleRegister";
+import HandleLogin from "../../utilities/HandleLogin";
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({

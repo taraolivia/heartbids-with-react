@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import LotCard from "./LotCard";
 import { LatestListingsProps } from "../../types/listingTypes";
-import { useHeartBidsFilter } from "../utilities/useHeartBidsFilter";
+import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 
 const LatestListings: React.FC<LatestListingsProps> = ({ listings = [], loading, error }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ const LatestListings: React.FC<LatestListingsProps> = ({ listings = [], loading,
     }
   };
 
-  const { showOnlyHeartBids } = useHeartBidsFilter(); // ✅ Get global filter state
+  const { showOnlyHeartBids } = useHeartBidsFilter(); 
 
   const filteredListings = Array.isArray(listings)
     ? listings
@@ -64,7 +64,7 @@ const LatestListings: React.FC<LatestListingsProps> = ({ listings = [], loading,
     : [];
 
   return (
-    <section className="py-10 bg-gray-100 relative">
+    <section className="py-10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">Latest Listings</h2>
 
@@ -83,7 +83,7 @@ const LatestListings: React.FC<LatestListingsProps> = ({ listings = [], loading,
             !error &&
             filteredListings.length > 0 &&
             filteredListings.map((item) => (
-              <div key={item.id} className="min-w-[300px]">
+              <div key={item.id}>
                 <LotCard
                   key={item.id}
                   id={item.id}

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useUser } from "../pages/profile/useUser";
+import { useUser } from "../../utilities/useUser";
 
 interface AuthPromptProps {
   loginPath?: string;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { API_PROFILE, API_KEY } from "../../config/constants";
+import { API_PROFILE, API_KEY } from "../config/constants";
 import { UserContext, User } from "./UserContext";
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

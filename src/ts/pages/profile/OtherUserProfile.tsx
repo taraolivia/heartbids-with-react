@@ -1,38 +1,58 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import getOtherUserProfile from "../../components/utilities/GetOtherUserProfile";
-import LotCard from "../../components/lots/LotCard"; // ✅ Keeping the same listing layout
-import { UserProfile, Bid, Listing } from "../../types/listingTypes";
+import getOtherUserProfile from "../../utilities/GetOtherUserProfile";
+import LotCard from "../../components/lots/LotCard"; 
+import { UserProfile, Listing } from "../../types/listingTypes";
 import Footer from "../../components/layout/Footer";
+import { API_BASE } from "../../config/constants";
+import { getHeaders } from "../../config/headers";
 
 const UserProfilePage = () => {
-  const { username } = useParams<{ username: string }>(); // Get username from URL
+  const { username } = useParams<{ username: string }>();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
+  
 
   useEffect(() => {
-    if (username) {
-      setLoading(true);
-      getOtherUserProfile(username)
-        .then((data) => {
-          if (!data) {
-            setError("User not found");
-            setLoading(false);
-            return;
-          }
-          setUserProfile(data);
-          setListings(data.listings || []);
+    if (!username) return;
+  
+    setLoading(true);
+    getOtherUserProfile(username)
+      .then(async (data) => {
+        if (!data) {
+          setError("User not found");
           setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching user profile:", err);
-          setError("Failed to load profile");
-          setLoading(false);
-        });
-    }
+          return;
+        }
+        setUserProfile(data);
+  
+        const detailedListings = await Promise.all(
+          (data.listings as Listing[] || []).map(async (listing: Listing) => {
+            const response = await fetch(`${API_BASE}/auction/listings/${listing.id}?_bids=true&_seller=true`, {
+              method: "GET",
+              headers: getHeaders(),
+            });
+        
+            if (!response.ok) return listing;
+        
+            const result = await response.json();
+            return result.data as Listing;
+          })
+        );
+        
+  
+        setListings(detailedListings);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching user profile:", err);
+        setError("Failed to load profile");
+        setLoading(false);
+      });
   }, [username]);
+  
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading profile...</div>;
@@ -107,20 +127,21 @@ const UserProfilePage = () => {
           {listings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {listings.map((listing) => (
-                <LotCard
-                  key={listing.id}
-                  id={listing.id}
-                  image={listing.media?.[0]?.url ?? "https://media-hosting.imagekit.io//6ed86c1b39c84cff/HeartBids%20(2).png?Expires=1833634300&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=DXzKjKB9EBskp3Bvq-3FtMxhTtUHE2KAukzJMqO5LbXgl8FP60SfJ~0O6McJzoOI4pemUMFl24KopwqxhMfW43C9ZLP18whF774erFlx-k3YgWa5rfL3S-vPps0KlrpfcqiZS3KBesfBFlENrQscU03jUHEEH4m8BE5BpOm8P6w-~9GcCsJ20C2zEYzluPExOP9W-q9w2QQ9X8GGuXxcrgaY568UXeteS9XSYQGnHe1I7LdLwdTqFlN59BBQrlXqTU~glSXVFBiJgcUHg3B61xF3k-aOw9M-Dt5edaqmjTlRkFSiAkknFLmEvUjreiupxnWaMFx6pmm~sham2D0PcA__"}
-                  title={listing.title}
-                  price={listing.bids?.length ? Math.max(...listing.bids.map((bid: Bid) => bid.amount)) : 0}
-                  bids={listing._count?.bids ?? 0}
-                  closingDate={listing.endsAt ?? ""}
-                  tags={listing.tags}
-                  seller={userProfile}
-                  showTags={true}
-                  showSeller={false} // ✅ Hides the seller info since we are already on the seller's page
-                  showControls={false} // ✅ No edit/delete controls
-                />
+               <LotCard
+               key={listing.id}
+               id={listing.id}
+               image={listing.media?.[0]?.url ?? "/default-image.png"}
+               title={listing.title}
+               price={listing.bids && listing.bids.length > 0 ? Math.max(...listing.bids.map((b) => b.amount)) : 0}
+               bids={listing.bids ? listing.bids.length : 0}
+               closingDate={listing.endsAt ?? ""}
+               tags={listing.tags ?? []}
+               seller={userProfile}
+               showTags={true}
+               showSeller={false}
+               showControls={false} 
+             />
+             
               ))}
             </div>
           ) : (

@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Listing } from "../ts/types/listingTypes";
+import { Listing } from "../types/listingTypes";
 
 interface ListingsContextType {
   listings: Listing[];

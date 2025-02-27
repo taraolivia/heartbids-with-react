@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import LotCard from "./LotCard";
-import SortDropdown from "../SortDropdown";
+import SortDropdown from "../ui/SortDropdown";
 import { Listing } from "../../types/listingTypes";
-import { useHeartBidsFilter } from "../utilities/useHeartBidsFilter";
+import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 import SearchBar from "../ui/SearchBar";
 
 interface AllLotsProps {
@@ -96,7 +96,7 @@ const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
 
         {/* Include Ended Checkbox */}
         <div className="flex items-center gap-2 mb-6">
-          <input type="checkbox" id="includeEnded" checked={includeEnded} onChange={() => setIncludeEnded(!includeEnded)} className="w-5 h-5 accent-pink-500 cursor-pointer" />
+          <input type="checkbox" id="includeEnded" checked={includeEnded} onChange={() => setIncludeEnded(!includeEnded)} className="w-5 h-5 accent-500 cursor-pointer" />
           <label htmlFor="includeEnded" className="text-gray-800 cursor-pointer">
             Include ended auctions
           </label>
@@ -113,7 +113,7 @@ const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
             {paginatedLots.map((lot) => (
-              <LotCard key={lot.id} id={lot.id} image={lot.media.length > 0 ? lot.media[0].url : "/images/logo/HeartBids.png"} title={lot.title} price={Array.isArray(lot.bids) && lot.bids.length > 0 ? Math.max(...lot.bids.map((bid) => bid.amount)) : 0} bids={lot._count?.bids || 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller} />
+              <LotCard key={lot.id} id={lot.id} image={lot.media.length > 0 ? lot.media[0].url : "/public/HeartBids.png"} title={lot.title} price={Array.isArray(lot.bids) && lot.bids.length > 0 ? Math.max(...lot.bids.map((bid) => bid.amount)) : 0} bids={lot._count?.bids || 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller} />
             ))}
           </div>
         )}
