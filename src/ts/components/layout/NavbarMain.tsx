@@ -63,7 +63,7 @@ const Navbar = () => {
   return (
     <div className="group w-full fixed z-50 ">
       <nav className="navbar font-serif bg-background-50 shadow-md w-full fixed z-40 text-lg transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 z-50">
           <div className="flex items-center justify-between h-25 relative z-50">
 
             {/* ✅ Mobile Menu Button (Hidden on lg+) */}
@@ -121,10 +121,14 @@ const Navbar = () => {
                 </div>
               ) : (
                 <>
+                <div className="flex flex-wrap items-center gap-3 text-sm">
+
                   <Link to="/auth/login" className={getLinkClass("/auth/login")}>Log In</Link>
-                  <Link to="/auth/register" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                    Sign up to HeartBids
+                  <Link to="/auth/register" className="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600">
+                    Sign up
                   </Link>
+                  </div>
+
                 </>
               )}
             </div>
@@ -144,7 +148,7 @@ const Navbar = () => {
         )}
 
         {/* ✅ HeartBids Filter (Hidden on md and below) */}
-        <div className="py-4 absolute w-full top-24 left-0 bg-background-50/20 backdrop-blur-xs transition duration-300 group-hover:bg-background-50 z-0 hidden md:flex">
+        <div className="pb-4 pt-8 absolute w-full top-24 left-0 bg-background-50/20 backdrop-blur-xs transition duration-300 group-hover:bg-background-50 z-0 hidden md:flex">
   <div className="max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex justify-start">
     <HeartBidsFilterToggle />
   </div>

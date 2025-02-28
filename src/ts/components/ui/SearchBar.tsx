@@ -23,29 +23,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <div className="flex gap-2 mb-4 relative">
+    <div className="flex gap-3 items-center">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={handleKeyDown} // ✅ Trigger search on Enter
+        onKeyDown={handleKeyDown}
         placeholder="Search listings..."
-        className="border border-gray-300 rounded-lg px-4 py-2 w-1/2"
+        className="border border-gray-300 rounded-lg px-4 py-2 min-w-fit bg-white"
       />
+      <button onClick={handleSearch} className="bg-secondary-500 text-white px-4 py-2 rounded-lg hover:bg-secondary-600 cursor-pointer">
+        Search
+      </button>{" "}
       {query && (
-        <button
-          onClick={handleClear}
-          className="absolute right-14 top-2.5 text-gray-500 hover:text-black text-sm cursor-pointer"
-        >
+        <button onClick={handleClear} className=" text-gray-700 hover:text-black text-sm cursor-pointer w-fit">
           ❌ Clear search
         </button>
       )}
-      <button
-        onClick={handleSearch}
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
-      >
-        Search
-      </button>
     </div>
   );
 };

@@ -32,7 +32,7 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Section: Image */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-b from-green-200 to-green-50 items-center justify-center">
+      <div className="hidden md:flex w-1/2 bg-gradient-to-t from-primary-300 to-background-50 items-center justify-center">
         <img
           src="/path-to-image.jpg"
           alt="Yarn and Knitting Needles"
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
       </div>
 
       {/* Right Section: Login Form */}
-      <div className="w-full md:w-1/2 bg-white flex flex-col justify-center px-8 md:px-16 lg:px-24">
+      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24">
         <h1 className="text-4xl font-bold text-green-900">Welcome back</h1>
         <p className="mt-4 text-gray-600">
           Log in to HeartBids to place bids, list items, and choose a charity to

@@ -63,16 +63,31 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
 
   return (
     <div className="relative mb-6">
-      <label className="block text-gray-800 font-semibold mb-2">Filter by Tags:</label>
+      <label className="block text-gray-800 font-semibold mb-2"></label>
+
+<div className="flex gap-5 items-end flex-wrap">
 
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-2 border border-gray-300 rounded-md bg-white text-left focus:ring-2 focus:ring-pink-500 flex justify-between items-center"
+        className="w-1/3 min-w-fit p-2 border border-gray-300 rounded-md bg-white max-width-1/2 text-left focus:ring-2 focus:ring-pink-500 flex justify-between items-center"
       >
         <span>{formatToggleText()}</span>
         <span className="ml-2">▼</span>
       </button>
+      {selectedTags.length > 0 && (
+        <div className="mt-3 text-left">
+          <button
+            onClick={handleClearAll}
+            className="text-red-500 text-sm font-semibold hover:text-red-700"
+          >
+            Clear Tags
+          </button>
+        </div>
+      )}
+</div>
+
+
 
       {isOpen && (
         <div
@@ -87,27 +102,18 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
               >
                 <input
                   type="checkbox"
-                  checked={selectedTags.some((selected) => selected.toLowerCase() === tag.toLowerCase())} // ✅ Case-insensitive match
+                  checked={selectedTags.some((selected) => selected.toLowerCase() === tag.toLowerCase())}
                   onChange={() => handleTagChange(tag)}
                   className="form-checkbox text-pink-500"
                 />
-                <span className="text-gray-800">{tag}</span> {/* ✅ Always capitalized */}
+                <span className="text-gray-800">{tag}</span>
               </label>
             ))}
           </div>
         </div>
       )}
 
-      {selectedTags.length > 0 && (
-        <div className="mt-3 text-right">
-          <button
-            onClick={handleClearAll}
-            className="text-red-500 text-sm font-semibold hover:text-red-700"
-          >
-            Clear Tags
-          </button>
-        </div>
-      )}
+
     </div>
   );
 };

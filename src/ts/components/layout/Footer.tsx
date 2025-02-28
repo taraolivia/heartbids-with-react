@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 m-auto">
           <div className="flex flex-row flex-wrap m-auto justify-evenly gap-10">
             {/* About Section */}
-            <div className="flex flex-col text-left w-1/3 min-w-96">
+            <div className="flex flex-col text-left lg:w-1/3 lg:min-w-96 ">
               <div className="flex flex-col self-center text-left">
                 <p className="text-base text-gray-600">HeartBids is an auction platform designed to facilitate meaningful contributions to charitable causes. By auctioning items, services, and craftsmanship, users support organizations that rely on community-driven funding.</p>
               </div>

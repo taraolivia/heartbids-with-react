@@ -1,12 +1,11 @@
-import React from "react";
 import { useHeartBidsFilter } from "./useHeartBidsFilter";
 
 export const HeartBidsFilterToggle: React.FC = () => {
   const { showOnlyHeartBids, toggleFilter } = useHeartBidsFilter(); // ✅ Use global filter state
 
   return (
-    <div className="flex justify-left items-center max-w-xl bg-background-50/40 p-1 rounded-lg w-fit space-x-3 text-text-900">      
-      <span className={`font-medium ${showOnlyHeartBids ? "text-text-600" : "text-text-800"}`}>
+    <div className="flex text-sm justify-left items-center max-w-xl bg-background-50/40 p-1 rounded-lg w-fit space-x-3 text-text-900">      
+      <span className={` ${showOnlyHeartBids ? "text-text-600" : "text-text-800"}`}>
         HeartBids Only
       </span>
 
@@ -27,7 +26,7 @@ export const HeartBidsFilterToggle: React.FC = () => {
         </div>
       </label>
       {/* ✅ Label for 'All Listings' */}
-      <span className={`font-medium ${!showOnlyHeartBids ? "text-text-800" : "text-text-600"}`}>
+      <span className={` ${!showOnlyHeartBids ? "text-text-800" : "text-text-600"}`}>
         All Listings
       </span>
 
