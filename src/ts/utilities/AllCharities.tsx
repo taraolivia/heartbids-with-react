@@ -8,12 +8,12 @@ export interface Charity {
 }
 
 export const AllCharities: Charity[] = [
-    {
-        name: "WildGuard",
-        logo: "/images/charities/wildguard.png",
-        description: "Protecting wildlife and restoring natural habitats.",
-        categories: ["Animal Welfare", "Nature & Earth"],
-    },
+       {
+        name: "Nourish Now",
+        logo: "/images/charities/icons8-vegan-food-96.png",
+        description: "Providing meals and food assistance to those in need.",
+        categories: ["Humanitarian Aid", "Healthcare"],
+    }, 
     {
         name: "Paw Haven",
         logo: "/images/charities/icons8-cat-caregivers-96.png",
@@ -38,23 +38,12 @@ export const AllCharities: Charity[] = [
         description: "Fighting climate change through reforestation projects.",
         categories: ["Nature & Earth", "Sustainability"],
     },
-    {
-        name: "Nourish Now",
-        logo: "/images/charities/icons8-vegan-food-96.png",
-        description: "Providing meals and food assistance to those in need.",
-        categories: ["Humanitarian Aid", "Healthcare"],
-    },
+
     {
         name: "Carbonia",
         logo: "/images/charities/icons8-manufacturing-96.png",
         description: "Developing sustainable solutions for carbon reduction.",
         categories: ["Nature & Earth", "Climate Action"],
-    },
-    {
-        name: "MamaCare",
-        logo: "/images/charities/icons8-mother-96.png",
-        description: "Ensuring maternal healthcare and postnatal support.",
-        categories: ["Healthcare", "Children & Family"],
     },
     {
         name: "Hopeful Hearts",
@@ -92,17 +81,29 @@ export const AllCharities: Charity[] = [
         description: "Providing access to essential medical treatments worldwide.",
         categories: ["Healthcare", "Humanitarian Aid"],
     },
-    {
-        name: "Teddy Bear Trust",
-        logo: "/images/charities/icons8-teddy-96.png",
-        description: "Bringing comfort to children in crisis through toys and care.",
-        categories: ["Children & Family", "Humanitarian Aid"],
-    },
+
     {
         name: "Atom",
         logo: "/images/charities/icons8-atom-96.png",
         description: "Funding scientific research and innovation for a better future.",
         categories: ["Science & Innovation", "Education"],
+    },
+    {
+        name: "WildGuard",
+        logo: "/images/charities/wildguard.png",
+        description: "Protecting wildlife and restoring natural habitats.",
+        categories: ["Animal Welfare", "Nature & Earth"],
+    },
+    {        name: "MamaCare",
+        logo: "/images/charities/icons8-mother-96.png",
+        description: "Ensuring maternal healthcare and postnatal support.",
+        categories: ["Healthcare", "Children & Family"],
+    },
+    {
+        name: "Teddy Bear Trust",
+        logo: "/images/charities/icons8-teddy-96.png",
+        description: "Bringing comfort to children in crisis through toys and care.",
+        categories: ["Children & Family", "Humanitarian Aid"],
     }
 ];
 

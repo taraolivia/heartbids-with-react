@@ -11,19 +11,20 @@ const HandleLogout = () => {
     return;
   }
 
-  const { setUser } = userContext; // ✅ Get setUser from context
+  const { setUser } = userContext;
 
   const logout = () => {
-    localStorage.removeItem("user");
-    setUser(null); // ✅ Reset user globally
-    navigate("/"); // ✅ Redirect to home
+    localStorage.removeItem("user"); // ✅ Keep this
+
+    setUser(null);
+    navigate("/");
 
     setTimeout(() => {
-      window.location.reload(); // ✅ Ensures full refresh
+      window.location.reload();
     }, 100);
   };
 
-  return logout; // ✅ Returns function that can be used anywhere
+  return logout;
 };
 
 export default HandleLogout;

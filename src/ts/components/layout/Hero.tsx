@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 const Hero = () => {
   return (
 <section className="bg-gradient-to-b from-background-50 to-primary-200 pt-30  xl:h-screen">
-<div className=" h-full mx-auto sm:px-0 lg:px-0 flex flex-col lg:flex-row">
+<div className=" h-full mx-auto sm:px-0 lg:px-0 flex flex-col lg:flex-wrap">
     
     {/* Left Text Section */}
-    <div className="lg:w-1/3 max-h-3/4 flex flex-col md:px-10 text-center px-5 align-center items-center lg:items-start lg:text-left justify-evenly m-auto h-full lg:max-w-150">
+    <div className="xl:w-1/3 max-h-3/4 flex flex-col md:px-10 text-center px-5 align-center items-center lg:items-start lg:text-left justify-evenly m-auto h-full lg:max-w-150">
       <h1 className="font-serif text-5xl font-bold text-gray-800 leading-tight">
         An auction platform where winning bids fund a charity of your choice.
       </h1>
@@ -32,34 +32,34 @@ const Hero = () => {
     </div>
 
     {/* Right Image Section (Stacked & Contained) */}
-    <div className="lg:w-1/2 md:w-full max-w-5xl lg:relative lg:overflow-visible flex h-full overflow-hidden items-end justify-center">
+    <div className="xl:w-1/2 w-full xl:max-w-5xl xl:relative xl:overflow-visible flex h-full overflow-hidden items-end justify-center m-auto">
       
       {/* Flower Gift (Main Left) */}
       <img 
         src="/images/hero/flower-gift.png" 
         alt="Gift Wrapping" 
-        className="lg:w-2/5 h-auto shadow-lg lg:absolute lg:bottom-0 lg:left-10 z-30 md:relative md:w-1/4"
+        className="xl:w-2/5 h-auto shadow-lg xl:absolute xl:bottom-0 xl:left-10 z-30 lg:relative lg:w-1/4"
       />
 
       {/* Map (Overlapping Bottom Left) */}
       <img 
         src="/images/hero/custom-map.png" 
         alt="Custom Map" 
-        className="lg:w-1/4 h-auto shadow-md lg:absolute bottom-0 left-0 z-40 md:relative md:w-1/6"
+        className="xl:w-1/4 h-auto shadow-md xl:absolute bottom-0 xl:left-0 z-40 lg:relative lg:w-1/6"
       />
 
       {/* Dog Painting (Main Right) */}
       <img 
         src="/images/hero/dog-painting.png" 
         alt="Dog Painting" 
-        className="lg:w-9/10 max-w-2xl max-h-full h-auto shadow-lg lg:absolute lg:-top-30 right-0 md:relative md:w-1/4"
+        className="xl:w-9/10 xl:max-w-2xl max-w-xs max-h-full h-auto shadow-lg xl:absolute xl:-top-30 right-0 lg:relative lg:w-1/4"
       />
 
       {/* Runner Image (Overlapping Bottom Right) */}
       <img 
         src="/images/hero/runner.png" 
         alt="Runner" 
-        className="lg:w-3/5 h-auto shadow-md lg:absolute bottom-0 right-0 z-40 md:relative md:w-2/4"
+        className="xl:w-3/5 h-auto shadow-md xl:absolute bottom-0 right-0 z-40 lg:relative lg:w-2/4"
       />
       
     </div>

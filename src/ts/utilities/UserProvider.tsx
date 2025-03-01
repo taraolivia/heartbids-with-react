@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { API_PROFILE, API_KEY } from "../config/constants";
 import { UserContext, User } from "./UserContext";
+import { Charity } from "../utilities/AllCharities";
+  
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig"; // ✅ Correct relative path
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+
 
   const fetchUser = async () => {
     const token = localStorage.getItem("accessToken");
@@ -11,10 +16,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
     if (!token || !storedUser) return;
   
-    const { name } = JSON.parse(storedUser);
+    const localUser: User | null = JSON.parse(storedUser);
+    if (!localUser) {
+      console.warn("No stored user found, skipping fetch.");
+      return;
+    }
   
     try {
-      const response = await fetch(`${API_PROFILE}/${name}`, {
+      const response = await fetch(`${API_PROFILE}/${localUser.name}`, {
         headers: {
           "X-Noroff-API-Key": API_KEY,
           Authorization: `Bearer ${token}`,
@@ -24,15 +33,21 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const result = await response.json();
   
       if (response.ok && result.data) {
-        setUser(result.data);
-        localStorage.setItem("user", JSON.stringify(result.data));
-      } else if (result.statusCode === 404) {
-        console.warn(`User '${name}' not found.`);
-        setUser(null);
-        localStorage.removeItem("user"); // ✅ Remove invalid user data from localStorage
+        const userRef = doc(db, "users", localUser.email);
+        const docSnap = await getDoc(userRef);
+        const selectedCharity = docSnap.exists() ? docSnap.data().selectedCharity : null;
+  
+        const mergedUser: User = {
+          ...result.data,
+          selectedCharity, // ✅ Keep in memory, but not store in localStorage
+        };
+  
+        setUser(mergedUser);
+        localStorage.setItem("user", JSON.stringify(result.data)); // ✅ Only store API user data, NOT `selectedCharity`
       } else {
         console.error("Profile fetch error:", result.errors?.[0]?.message || "Unknown error");
         setUser(null);
+        localStorage.removeItem("user");
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -41,19 +56,34 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   
   
+  
+  const updateCharity = async (charity: Charity) => {
+    if (!user) return;
+    
+    setUser({ ...user, selectedCharity: charity });
+  
+    try {
+      const userRef = doc(db, "users", user.email);
+      await setDoc(userRef, { selectedCharity: charity }, { merge: true }); 
+    } catch (error) {
+      console.error("Error saving selected charity to Firestore:", error);
+    }
+  };
+  
+  
 
+  // ✅ Keep the latest stored user when the provider mounts
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
     fetchUser();
-
-    const handleStorageChange = () => {
-      fetchUser().catch(console.error);
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
   }, []);
 
-  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, setUser, updateCharity }}>
+      {children}
+    </UserContext.Provider>
+  );
 };

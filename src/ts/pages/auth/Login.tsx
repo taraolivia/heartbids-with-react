@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HandleLogin from "../../utilities/HandleLogin";
 
@@ -30,13 +30,15 @@ const Login: React.FC = () => {
   
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex bg-gradient-to-t from-primary-300 to-background-50">
+      <div className="max-w-7xl flex flex-wrap-reverse m-auto">
+
       {/* Left Section: Image */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-t from-primary-300 to-background-50 items-center justify-center">
+      <div className="md:flex md:w-1/2 max-w-5xl   items-center justify-center">
         <img
-          src="/path-to-image.jpg"
+          src="/images/yarn.jpg"
           alt="Yarn and Knitting Needles"
-          className="object-cover h-full"
+          className="object-cover"
         />
       </div>
 
@@ -112,6 +114,8 @@ const Login: React.FC = () => {
           </p>
         </form>
       </div>
+      </div>
+
     </div>
   );
 };

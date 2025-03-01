@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import AllCharities, { Charity } from "../../utilities/AllCharities";
 
 const featuredCharities = AllCharities.filter((charity) =>
@@ -15,7 +15,7 @@ const FeaturedCharity: React.FC = () => {
   }, []);
 
   return (
-    <section className=" py-16 px-4 bg-gradient-to-r from-blue-100 via-green-100 to-white">
+    <section className=" py-16 px-4 bg-gradient-to-t from-background-50 via-secondary-100 to-primary-200">
       <div className="max-w-4xl mx-auto text-center m-auto">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">Featured Charities</h2>
         <p className="text-lg text-gray-600 mb-10">

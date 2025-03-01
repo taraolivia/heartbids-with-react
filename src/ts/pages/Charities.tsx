@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import AllCharities, { Charity } from "../utilities/AllCharities";
 import FeaturedCharity from "../components/layout/FeaturedCharity";
 import Hero from "../components/layout/Hero";
@@ -23,7 +23,7 @@ const Charities: React.FC = () => {
 
       <FeaturedCharity />
 
-      <section className="py-16 px-4 bg-gray-100 min-h-screen">
+      <section className="py-16 px-4 min-h-screen">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-gray-800 mb-6">All charities on HeartBids</h2>
           <p className="text-lg text-gray-600 mb-10">Discover the amazing organizations making a difference through HeartBids.</p>

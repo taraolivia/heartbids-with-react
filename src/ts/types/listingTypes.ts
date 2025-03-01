@@ -1,3 +1,5 @@
+import { Charity } from "../utilities/AllCharities";
+
 export type Bid = {
   id: string;
   amount: number;
@@ -78,6 +80,7 @@ export type LotCardProps = {
 
 
 
+
 export type UserProfile = {
   name: string;
   email: string;
@@ -86,7 +89,7 @@ export type UserProfile = {
   banner?: { url: string; alt?: string };
   credits: number;
   _count?: { listings?: number; wins?: number };
-  listings?: Listing[]; // ✅ Made optional to avoid issues before data loads
+  listings?: Listing[]; // ✅ Kept optional to avoid loading issues
+  selectedCharity?: Charity; // ✅ Added this field to store the selected charity
 };
-
 

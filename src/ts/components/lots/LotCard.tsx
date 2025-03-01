@@ -6,14 +6,14 @@ import AuctionCountdown from "../ui/AuctionCountdown";
 
 const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closingDate, userBid, description, tags, created, updated, showDescription, showTags, showCreatedUpdated, seller, showSeller, showControls, showClosingDate = true, onDelete }) => {
   return (
-    <div className="bg-secondary-50 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 mt-6 m-auto flex flex-col h-full w-full">
+    <div className="bg-secondary-50 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col h-full w-full">
       <Link to={`/listing/${id}`} className="block">
         <img
-          src={image || "/images/logo/HeartBids.png"}
+          src={image || "/HeartBids.png"}
           alt={title}
           className="w-full lg:h-72 md:h-62 sm:h-62 h-42 object-cover rounded-lg border border-gray-300"
           onError={(e) => {
-            e.currentTarget.src = "/images/logo/HeartBids.png";
+            e.currentTarget.src = "/HeartBids.png";
           }}
         />
 

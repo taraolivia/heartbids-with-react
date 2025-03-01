@@ -1,4 +1,3 @@
-import React from "react";
 import AllCharities from "../../utilities/AllCharities";
 import { Link } from "react-router-dom";
 

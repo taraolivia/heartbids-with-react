@@ -1,4 +1,3 @@
-import React from "react";
 
 const steps = [
   {
@@ -29,7 +28,7 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="bg-white py-16">
+    <section className=" py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-12">
@@ -41,14 +40,14 @@ const HowItWorks: React.FC = () => {
         </div>
 
         {/* Steps */}
-        <div className="flex flex-col md:flex-row justify-center gap-8">
+        <div className="flex flex-col md:flex-row justify-center flex-wrap items-center gap-8">
           {steps.map((step) => (
             <div
               key={step.number}
-              className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center max-w-sm"
+              className="bg-white shadow-md min-w-58 rounded-lg p-6 flex flex-col items-center text-center max-w-sm"
             >
               {/* Step Number */}
-              <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mb-4">
+              <div className="bg-secondary-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mb-4">
                 {step.number}
               </div>
               {/* Step Title */}

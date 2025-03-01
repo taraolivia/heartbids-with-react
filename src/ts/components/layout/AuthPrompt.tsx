@@ -16,7 +16,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ loginPath = "/auth/login", sign
   
 
   return (
-    <div className="flex flex-col items-center text-center py-8 bg-white shadow-md rounded-lg">
+    <div className="flex flex-col items-center text-center py-12 rounded-lg">
       {/* Heading */}
       <h2 className="text-xl font-bold text-gray-800">Log in or Sign up to HeartBids</h2>
 
@@ -27,10 +27,10 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ loginPath = "/auth/login", sign
 
       {/* Buttons */}
       <div className="flex space-x-4 mt-6">
-        <Link to={loginPath} className="px-6 py-3 rounded-lg bg-white text-blue-600 border border-blue-600 font-semibold shadow-md hover:bg-gray-100">
+        <Link to={loginPath} className="px-6 py-3 rounded-lg bg-white text-secondary-600 border border-secondary-600 font-semibold shadow-md hover:bg-gray-100">
           Log In
         </Link>
-        <Link to={signupPath} className="px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700">
+        <Link to={signupPath} className="px-6 py-3 rounded-lg bg-secondary-600 text-white font-semibold shadow-md hover:bg-secondary-700">
           Sign Up
         </Link>
       </div>

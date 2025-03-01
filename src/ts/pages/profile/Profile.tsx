@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import getUserProfile from "../../utilities/getUserProfile";
 import getUserBids from "../../utilities/getUserBids";
 import HandleLogout from "../../utilities/HandleLogout";
 import LotCard from "../../components/lots/LotCard";
-import { UserProfile, Bid, Listing } from "../../types/listingTypes";
+import { Bid, Listing } from "../../types/listingTypes";
 import { API_BASE } from "../../config/constants";
 import { getHeaders } from "../../config/headers";
 import SortDropdown from "../../components/ui/SortDropdown";
@@ -13,9 +13,12 @@ import EndedAuctionsFilter from "../../components/ui/EndedAuctionsFilter";
 import Footer from "../../components/layout/Footer";
 import SearchBar from "../../components/ui/SearchBar";
 import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
+import CharitySelector from "../../components/ui/CharitySelector";
+import { useUser } from "../../utilities/useUser";
+import { User } from "../../utilities/UserContext";
 
 const Profile: React.FC = () => {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const { user, setUser } = useUser();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
@@ -28,7 +31,7 @@ const Profile: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { showOnlyHeartBids } = useHeartBidsFilter();
-  const filteredWonListings = wonListings.filter((lot) => !showOnlyHeartBids || lot.tags?.includes("HeartBids")); // ✅ Apply HeartBids filtering
+  const filteredWonListings = wonListings.filter((lot) => !showOnlyHeartBids || lot.tags?.includes("HeartBids"));
 
   const availableTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -98,7 +101,12 @@ const Profile: React.FC = () => {
         const profile = await getUserProfile();
         if (!profile) throw new Error("Failed to fetch user profile");
 
-        setUser(profile);
+        const updatedUser: User = {
+          ...profile,
+          selectedCharity: user?.selectedCharity || profile.selectedCharity || null,
+        };
+
+        setUser(updatedUser); // ✅ Pass the final `User` object
 
         const userWins = await fetchUserWins(profile.name);
         setWonListings(userWins);
@@ -127,7 +135,7 @@ const Profile: React.FC = () => {
           }
 
           const detailedListings = await Promise.all(
-            (profile.listings as Listing[]).map(async (listing) => {
+            profile.listings.map(async (listing) => {
               const fullListing = await fetchFullListingDetails(listing.id);
               return fullListing || listing;
             })
@@ -176,7 +184,7 @@ const Profile: React.FC = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [setUser, user?.selectedCharity]); // ✅ Added `user?.selectedCharity`
 
   const handleDelete = (listingId: string) => {
     setListings((prevListings) => prevListings.filter((listing) => listing.id !== listingId));
@@ -193,27 +201,35 @@ const Profile: React.FC = () => {
         <div className="relative w-full lg:h-90 md:h-72 h-54  bg-gray-200">{user.banner?.url && <img src={user.banner.url} alt={user.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
 
         {/* ✅ Profile Header */}
-        <div className="relative -mt-15 flex  items-center py-6 bg-primary-200/50 backdrop-blur-sm text-black rounded-lg">
+        <div className="relative -mt-15 flex  items-center py-6 bg-primary-100/50 backdrop-blur-sm text-black rounded-lg">
           <div className="max-w-9/10 flex flex-wrap m-auto content-center justify-center gap-10">
-          <div className="flex-1">
-            <img src={user.avatar?.url || "/default-avatar.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 min-w-40 h-40 sm:w-32 sm:h-40 md:w-40 md:h-40 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md m-auto" onError={(e) => (e.currentTarget.src = "/default-avatar.png")} />
+            <div className="flex-1 relative">
+              <img src={user.avatar?.url || "/default-avatar.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 min-w-40 h-40 sm:w-32 sm:h-40 md:w-40 md:h-40 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md m-auto" onError={(e) => (e.currentTarget.src = "/default-avatar.png")} />
+            </div>
 
-          </div>
             <div className="lg:max-w-1/2 flex-2 w-fit min-w-60">
-              <h1 className="text-3xl font-bold">{user.name}</h1>
+              <div className="flex gap-3">
+                <h1 className="text-3xl font-bold">{user.name}</h1>
+                {user.selectedCharity && <img src={user.selectedCharity.logo} alt={`${user.selectedCharity.name} Logo`} className="w-10 h-10 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 " />}
+              </div>
+
               {user.bio && <p className="text-gray-600 pt-2">{user.bio}</p>}
+
               {/* ✅ Action Buttons */}
               <div className="mt-6 text-sm">
                 <div className="flex justify-start gap-5 flex-wrap">
-                  <Link to="/profile/editprofile" className="bg-secondary-300 text-black px-4 py-2 rounded-lg hover:bg-blue-200 transition">
-                    ✏️ Edit Profile
-                  </Link>
-                  <Link to="/listing/create" className="bg-primary-400 text-black px-4 py-2 rounded-lg hover:bg-green-200 transition">
+                  {" "}
+                  <Link to="/listing/create" className="bg-primary-300 text-black px-4 py-2 rounded-lg hover:bg-green-200 transition">
                     ➕ Create Post
                   </Link>
-                  <button onClick={logout} className="bg-accent-300 text-black px-4 py-2 rounded-lg hover:bg-red-200 transition">
+                  <Link to="/profile/editprofile" className="bg-secondary-200 text-black px-4 py-2 rounded-lg hover:bg-blue-200 transition">
+                    ✏️ Edit Profile
+                  </Link>
+                  <button onClick={logout} className="bg-accent-200 text-black px-4 py-2 rounded-lg hover:bg-red-200 transition">
                     🚪 Log Out
                   </button>
+                  {/* ✅ Charity Selection */}
+                  <CharitySelector />
                 </div>
               </div>
             </div>
@@ -244,7 +260,7 @@ const Profile: React.FC = () => {
           {filteredWonListings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {filteredWonListings.map((lot) => (
-                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt} showClosingDate={false} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
+                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt} showClosingDate={false} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
               ))}
             </div>
           ) : (
@@ -263,7 +279,7 @@ const Profile: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {listings.map((lot) => (
                 <div className="w-96" key={lot.id}>
-                  <LotCard id={lot.id} image={lot.media?.[0]?.url ?? "/images/HeartBids.png"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt} showClosingDate={true} tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} description={lot.description ?? ""} created={lot.created} updated={lot.updated} showDescription={true} showCreatedUpdated={true} onDelete={handleDelete} />
+                  <LotCard id={lot.id} image={lot.media?.[0]?.url ?? "/HeartBids.png"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt} showClosingDate={true} tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} description={lot.description ?? ""} created={lot.created} updated={lot.updated} showDescription={true} showCreatedUpdated={true} onDelete={handleDelete} />
                 </div>
               ))}
             </div>
@@ -313,7 +329,7 @@ const Profile: React.FC = () => {
           {filteredBids.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {sortedFilteredBids.map((lot) => (
-                <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/images/logo/HeartBids.png"} title={lot.title} price={lot.highestBid} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt ?? ""} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} userBid={lot.userBid} showClosingDate={true} />
+                <LotCard key={lot.id} id={lot.id} image={lot.media?.length > 0 ? lot.media[0].url : "/HeartBids.png"} title={lot.title} price={lot.highestBid} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt ?? ""} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} userBid={lot.userBid} showClosingDate={true} />
               ))}
             </div>
           ) : (
