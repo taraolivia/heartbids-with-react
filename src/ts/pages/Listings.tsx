@@ -1,6 +1,5 @@
 import { useListings } from "../../ts/utilities/UseListings";
 
-import Hero from "../components/layout/Hero";
 import GeneralInfo from "../components/layout/GeneralInfo";
 import Footer from "../components/layout/Footer";
 import LatestListings from "../components/lots/LatestListings";
@@ -11,8 +10,7 @@ const Listings = () => {
   const { listings, loading, error } = useListings(); // ✅ Now fetching from global context
 
   return (
-    <div>
-      <Hero />
+    <div className="mt-20">
       <LatestListings listings={listings} loading={loading} error={error} />
       <MostPopularListings />
       <AllLots listings={listings} />

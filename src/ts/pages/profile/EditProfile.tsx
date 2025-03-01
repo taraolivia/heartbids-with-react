@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import getUserProfile from "../../utilities/getUserProfile";
 import { API_PROFILE } from "../../config/constants";
 import { getHeaders } from "../../config/headers";
+import CharitySelector from "../../components/ui/CharitySelector";
+import { useUser } from "../../utilities/useUser";
+import { Charity } from "../../utilities/AllCharities";
+
 
 type ProfileData = {
   bio: string;
@@ -13,6 +17,7 @@ type ProfileData = {
 };
 
 const EditProfile: React.FC = () => {
+  const { user, updateCharity } = useUser(); // ✅ Get user context for charity
   const [formData, setFormData] = useState<ProfileData>({
     bio: "",
     avatarUrl: "",
@@ -29,12 +34,17 @@ const EditProfile: React.FC = () => {
     bannerAlt: "",
   });
 
+  const [selectedCharity, setSelectedCharity] = useState(user?.selectedCharity || null); // ✅ Store selected charity locally
+
+
   const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
-  const isFormChanged = JSON.stringify(formData) !== JSON.stringify(originalData);
+  const isFormChanged = 
+  JSON.stringify(formData) !== JSON.stringify(originalData) || selectedCharity !== user?.selectedCharity; // ✅ Track changes in charity too
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -59,6 +69,9 @@ const EditProfile: React.FC = () => {
           bannerUrl: profile.banner?.url || "",
           bannerAlt: profile.banner?.alt || "Profile Banner",
         });
+
+        setSelectedCharity(profile.selectedCharity || null); // ✅ Load stored charity
+
       } catch (error) {
         console.error("❌ Profile fetch error:", error);
         setError("Failed to load profile. Please try again.");
@@ -76,6 +89,11 @@ const EditProfile: React.FC = () => {
     }));
   };
 
+  const handleSelectCharity = (charity: Charity) => { // ✅ Explicitly define type
+    setSelectedCharity(charity);
+  };
+  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username) {
@@ -86,13 +104,21 @@ const EditProfile: React.FC = () => {
     setLoading(true);
     setError(null);
   
-    const updateData: Partial<{ bio: string; avatar: { url: string; alt: string }; banner: { url: string; alt: string } }> = {};
-    if (formData.bio !== originalData.bio) updateData.bio = formData.bio.trim();
+    const updateData: Partial<{ 
+      bio: string; 
+      avatar: { url: string; alt: string }; 
+      banner: { url: string; alt: string }; 
+      selectedCharity: Charity | null; // ✅ Add selectedCharity here
+    }> = {};
+        if (formData.bio !== originalData.bio) updateData.bio = formData.bio.trim();
     if (formData.avatarUrl !== originalData.avatarUrl) {
       updateData.avatar = { url: formData.avatarUrl.trim(), alt: formData.avatarAlt.trim() || "User Avatar" };
     }
     if (formData.bannerUrl !== originalData.bannerUrl) {
       updateData.banner = { url: formData.bannerUrl.trim(), alt: formData.bannerAlt.trim() || "Profile Banner" };
+    }
+    if (selectedCharity !== user?.selectedCharity) {
+      updateData.selectedCharity = selectedCharity; // ✅ Include updated charity
     }
   
     try {
@@ -107,6 +133,10 @@ const EditProfile: React.FC = () => {
   
       if (!response.ok) {
         throw new Error(result.message || "Failed to update profile.");
+      }
+
+      if (selectedCharity && updateCharity) {
+        updateCharity(selectedCharity); // ✅ Update user context
       }
   
       setSuccess(true);
@@ -158,6 +188,10 @@ const EditProfile: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">Banner Alt Text</label>
             <input type="text" name="bannerAlt" value={formData.bannerAlt} onChange={handleChange} placeholder="Describe your banner" className="w-full p-2 border rounded-lg" />
           </div>
+
+          {/* ✅ Charity Selection */}
+          <CharitySelector selectedCharity={selectedCharity} onSelectCharity={handleSelectCharity} />
+
 
           {/* Update Button */}
           <button

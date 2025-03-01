@@ -95,7 +95,7 @@ const Navbar = () => {
               {user ? (
                 <div className="relative">
                   <button id="user-dropdown" onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center space-x-2 focus:outline-none hover:cursor-pointer">
-                    <img src={user.avatar?.url || "/public/default-avatar.png"} alt={user.name} className="w-10 h-10 rounded-full" />
+                    <img src={user.avatar?.url || "/default-avatar.png"} alt={user.name} className="w-10 h-10 rounded-full aspect-square object-cover" />
                     <span className="font-medium hidden md:inline">{user.name}</span>
                     <svg className={`w-5 h-5 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

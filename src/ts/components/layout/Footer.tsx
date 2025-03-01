@@ -7,9 +7,11 @@ const getUserProfile = () => {
   return JSON.parse(storedUser);
 };
 
-const user = getUserProfile(); // ✅ Read user profile directly
+const user = getUserProfile(); 
 
 const Footer: React.FC = () => {
+  const logout = HandleLogout(); 
+
   return (
     <footer className=" ">
       {/* Top Section: Logo, Quote, CTA */}
@@ -41,27 +43,27 @@ const Footer: React.FC = () => {
             {/* About Section */}
             <div className="flex flex-col text-left lg:w-1/3 lg:min-w-96 ">
               <div className="flex flex-col self-center text-left">
-                <p className="text-base text-gray-600">HeartBids is an auction platform designed to facilitate meaningful contributions to charitable causes. By auctioning items, services, and craftsmanship, users support organizations that rely on community-driven funding.</p>
+                <p className="text-base text-gray-900 max-w-92">HeartBids is an auction platform designed to facilitate meaningful contributions to charitable causes. By auctioning items, services, and craftsmanship, users support organizations that rely on community-driven funding.</p>
               </div>
             </div>
 
             {/* Company Section */}
-            <div className="flex flex-col text-left  min-w-52">
-              <div className="flex flex-col self-center text-left">
-                <h3 className="text-lg font-semibold text-gray-900 text-left">Company</h3>
-                <ul className="mt-4 space-y-2 items-center self-center">
+            <div className="flex flex-col xl:text-left text-center  min-w-42">
+              <div className="flex flex-col self-center xl:text-left text-center">
+                <h3 className="text-lg font-semibold text-gray-900 xl:text-left text-center">Company</h3>
+                <ul className="mt-4 space-y-2 xl:items-center self-center">
                   <li>
-                    <Link to="/about" className="text-sm text-gray-600 hover:text-gray-900">
+                    <Link to="/about" className="text-sm text-gray-900 hover:text-gray-900">
                       About
                     </Link>
                   </li>
                   <li>
-                    <Link to="/charities" className="text-sm text-gray-600 hover:text-gray-900">
+                    <Link to="/charities" className="text-sm text-gray-900 hover:text-gray-900">
                       Charities
                     </Link>
                   </li>
                   <li>
-                    <Link to="/listings" className="text-sm text-gray-600 hover:text-gray-900">
+                    <Link to="/listings" className="text-sm text-gray-900 hover:text-gray-900">
                       Auction Listings
                     </Link>
                   </li>
@@ -70,22 +72,22 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Help Section */}
-            <div className="flex flex-col text-left  min-w-52">
-              <div className="flex flex-col self-center text-left">
+            <div className="flex flex-col xl:text-left text-center  min-w-42">
+              <div className="flex flex-col self-center xl:text-left text-center">
                 <h3 className="text-lg font-semibold text-gray-900">Help</h3>
                 <ul className="mt-4 space-y-2">
                   <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                    <a href="#" className="text-sm text-gray-900 hover:text-gray-900">
                       Customer Support
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                    <a href="#" className="text-sm text-gray-900 hover:text-gray-900">
                       Terms & Conditions
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+                    <a href="#" className="text-sm text-gray-900 hover:text-gray-900">
                       Privacy Policy
                     </a>
                   </li>
@@ -94,33 +96,32 @@ const Footer: React.FC = () => {
             </div>
 
             {/* ✅ Account Section (Profile or Log In/Register) */}
-            <div className="flex flex-col text-left  min-w-52">
+            <div className="flex flex-col xl:text-left text-center  min-w-42">
               <div className="flex flex-col self-center text-left">
-                {" "}
                 <h3 className="text-lg font-semibold text-gray-900">Account</h3>
                 <ul className="mt-4 space-y-2">
                   {user ? (
                     <div className="flex flex-col space-y-3">
-                      <div className="flex flex-wrap justify-center align-middle items-center gap-3">
-                      <img src={user.avatar?.url || "/public/default-avatar.png"} alt={user.name} className="w-12 h-12 rounded-full" />
+                      <div className="flex flex-wrap justify-center items-center gap-3">
+                      <img src={user.avatar?.url || "/default-avatar.png"} alt={user.name} className="w-12 h-12 rounded-full object-cover" />
                       <span className="text-sm text-gray-900 font-semibold">{user.name}</span>
                       </div>
                       <Link to="/profile" className="text-sm text-blue-600 hover:underline">
                         View Profile
                       </Link>
-                      <button onClick={HandleLogout} className="text-sm text-red-600 hover:underline text-left">
+                      <button onClick={logout} className="text-sm text-red-600 hover:underline text-left">
                       Logout
                     </button>
                     </div>
                   ) : (
                     <>
                       <li>
-                        <a href="/auth/login/" className="text-sm text-gray-600 hover:text-gray-900">
+                        <a href="/auth/login/" className="text-sm text-gray-900 hover:text-gray-900">
                           Log In
                         </a>
                       </li>
                       <li>
-                        <a href="/auth/register/" className="text-sm text-gray-600 hover:text-gray-900">
+                        <a href="/auth/register/" className="text-sm text-gray-900 hover:text-gray-900">
                           Register
                         </a>
                       </li>

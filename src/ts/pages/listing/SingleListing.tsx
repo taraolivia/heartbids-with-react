@@ -153,29 +153,42 @@ const SingleListing = () => {
             <span className="bg-gray-300 text-gray-800 text-sm font-semibold px-3 py-1 rounded-md mt-2">#</span>
           )}
 
-          {listing.seller && (
-            <div className="p-4 border rounded-lg shadow-sm bg-gray-100">
-              <p className="pt-1 pb-4">About the seller</p>
-              <div className="flex items-center space-x-4">
-                {/* ✅ Profile link wraps avatar + name */}
-                <Link to={`/profile/${listing.seller.name}`} className="flex items-center space-x-3 hover:underline">
-                  <img
-                    src={listing.seller.avatar?.url || "/default-avatar.png"}
-                    alt={listing.seller.avatar?.alt || `${listing.seller.name}'s avatar`}
-                    className="w-12 h-12 rounded-full object-cover"
-                    onError={(e) => {
-                      if (!e.currentTarget.src.includes("default-avatar.png")) {
-                        e.currentTarget.src = "/images/default-avatar.png"; // ✅ Ensures fallback only happens once
-                      }
-                    }}
-                  />
-                  <h3 className="text-lg font-semibold text-gray-800">{listing.seller.name}</h3>
-                </Link>
-              </div>
-              {/* ✅ Only show bio if it exists */}
-              {listing.seller.bio && <p className="mt-3 text-gray-600 border-t pt-3">{listing.seller.bio}</p>}
-            </div>
-          )}
+{listing.seller && (
+  <div className="p-4 border rounded-lg shadow-sm bg-gray-100">
+    <p className="pt-1 pb-4">About the seller</p>
+    <div className="flex items-center space-x-4">
+      {/* ✅ Profile link wraps avatar + name */}
+      <Link to={`/profile/${listing.seller.name}`} className="flex items-center space-x-3 hover:underline">
+        <img
+          src={listing.seller.avatar?.url || "/default-avatar.png"}
+          alt={listing.seller.avatar?.alt || `${listing.seller.name}'s avatar`}
+          className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+          onError={(e) => {
+            if (!e.currentTarget.src.includes("default-avatar.png")) {
+              e.currentTarget.src = "/images/default-avatar.png"; // ✅ Ensures fallback only happens once
+            }
+          }}
+        />
+        <div>
+          <p className="text-lg font-semibold text-gray-800">
+            {listing.seller.name}
+            {listing.seller.selectedCharity?.logo && (
+              <img
+                src={listing.seller.selectedCharity.logo}
+                alt={`${listing.seller.selectedCharity.name} Logo`}
+                className="w-6 h-6 inline ml-2 rounded-full"
+              />
+            )}
+          </p>
+        </div>
+      </Link>
+    </div>
+    {/* ✅ Only show bio if it exists */}
+    {listing.seller.bio && <p className="mt-3 text-gray-600 border-t pt-3">{listing.seller.bio}</p>}
+  </div>
+)}
+
+
 
           {/* ✅ Countdown */}
           <AuctionCountdown closingDate={listing.endsAt} />
@@ -217,8 +230,14 @@ const SingleListing = () => {
                 <li key={bid.id} className="flex items-center space-x-2 text-gray-600 text-sm p-2">
                   {/* ✅ Prevent navigation if not logged in */}
                   <Link to={`/profile/${bid.bidder.name}`} className="flex items-center space-x-2 hover:underline" onClick={handleUserClick}>
-                    <img src={bid.bidder.avatar?.url || "/default-avatar.png"} alt={bid.bidder.avatar?.alt || `${bid.bidder.name}'s avatar`} className="w-6 h-6 rounded-full object-cover" />
-                    <span className="font-semibold text-gray-800">{bid.bidder.name}</span>
+                  <img
+  src={bid.bidder?.avatar?.url?.trim() ? bid.bidder.avatar.url : "/default-avatar.png"}
+  alt={bid.bidder?.avatar?.alt?.trim() || `${bid.bidder?.name || "User"}'s avatar`}
+  className="w-6 h-6 rounded-full object-cover"
+  onError={(e) => (e.currentTarget.src = "/default-avatar.png")}
+/>
+
+               <span className="font-semibold text-gray-800">{bid.bidder.name}</span>
                   </Link>
                   <span>bid</span>
                   <span className="font-bold">€{bid.amount}</span>

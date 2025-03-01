@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Hero = () => {
   return (
 <section className="bg-gradient-to-b from-background-50 to-primary-200 pt-30  xl:h-screen">
-<div className=" h-full mx-auto sm:px-0 lg:px-0 flex flex-col lg:flex-wrap">
+<div className=" h-full mx-auto sm:px-0 lg:px-0 flex flex-col lg:flex-wrap max-w-[1900px]">
     
     {/* Left Text Section */}
     <div className="xl:w-1/3 max-h-3/4 flex flex-col md:px-10 text-center px-5 align-center items-center lg:items-start lg:text-left justify-evenly m-auto h-full lg:max-w-150">

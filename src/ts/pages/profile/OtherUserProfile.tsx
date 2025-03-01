@@ -68,44 +68,57 @@ const UserProfilePage = () => {
 
   return (
     <div className="min-h-screen w-full">
-      <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+      <div className="max-w-6xl mx-auto bg-primary-100 pb-12 shadow-xl rounded-lg overflow-hidden">
+  
         {/* ✅ Profile Banner */}
-        <div className="relative w-full h-80 md:h-72 bg-gray-200">
-          <img
-            src={userProfile.banner?.url || "/images/default-banner.jpg"}
-            alt={userProfile.banner?.alt || "User Banner"}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              if (e.currentTarget.src !== "/images/default-banner.jpg") {
-                e.currentTarget.src = "/images/default-banner.jpg"; // ✅ Prevents infinite loop
-              }
-            }}
-          />
-        </div>
-
-        {/* ✅ Profile Header (Avatar + Name + Bio) */}
-        <div className="relative -mt-15 flex items-center p-6 bg-green-100/50 backdrop-blur-sm text-black rounded-lg">
-          <div className="max-w-8/10 flex m-auto content-center justify-center gap-10">
-            <img
-              src={userProfile.avatar?.url ? userProfile.avatar.url : "/default-avatar.png"}
-              alt={userProfile.avatar?.alt || "User Avatar"}
-              className="w-30 h-30 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-50 lg:h-50 aspect-square rounded-full object-cover p-1 -mt-15 border-4 border-white shadow-md"
-              onError={(e) => {
-                if (e.currentTarget.src !== window.location.origin + "/default-avatar.png") {
-                  e.currentTarget.src = "/images/default-avatar.png"; // ✅ Prevents infinite loop & ensures fallback
-                }
-              }}
+        <div className="relative w-full lg:h-90 md:h-72 h-54 bg-gray-200">
+          {userProfile.banner?.url && (
+            <img 
+              src={userProfile.banner.url} 
+              alt={userProfile.banner.alt || "User Banner"} 
+              className="w-full h-full object-cover" 
             />
-
-            <div>
-              <h1 className="text-3xl font-bold">{userProfile.name}</h1>
-              <p className="text-gray-600">{userProfile.bio || ""}</p>
+          )}
+        </div>
+  
+        {/* ✅ Profile Header */}
+        <div className="relative -mt-15 flex items-center py-6 bg-primary-100/40 backdrop-blur-sm text-black rounded-lg">
+          <div className="flex flex-wrap m-auto content-evenly justify-evenly gap-10 w-full">
+            
+            {/* ✅ Avatar Section */}
+            <div className="flex-1 flex justify-center relative -mt-15">
+              <div className="relative w-40 h-40 sm:w-32 sm:h-40 md:w-40 md:h-40 lg:w-40 lg:h-40">
+                <img 
+                  src={userProfile.avatar?.url || "/default-avatar.png"} 
+                  alt={userProfile.avatar?.alt || "User Avatar"} 
+                  className="w-full h-full rounded-full object-cover border-4 border-white shadow-md"
+                  onError={(e) => (e.currentTarget.src = "/default-avatar.png")}
+                />
+  
+                {/* ✅ Charity Icon - Positioned Properly Inside */}
+                {userProfile.selectedCharity && (
+                  <img 
+                    src={userProfile.selectedCharity.logo} 
+                    alt={`${userProfile.selectedCharity.name} Logo`} 
+                    className="absolute bottom-1 right-1 w-10 h-10 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 
+                           rounded-full border-2 border-white bg-white p-1 shadow-md"
+                  />
+                )}
+              </div>
+            </div>
+  
+            {/* ✅ User Info */}
+            <div className="lg:max-w-1/2 flex-2 w-fit min-w-60">
+              <div className="flex gap-3">
+                <h1 className="text-3xl font-bold">{userProfile.name}</h1>
+              </div>
+              {userProfile.bio && <p className="text-gray-600 pt-2">{userProfile.bio}</p>}
             </div>
           </div>
         </div>
-
+  
         {/* ✅ Profile Stats */}
-        <div className="grid grid-cols-3 divide-x divide-gray-200 bg-gray-100 text-center p-4">
+        <div className="grid grid-cols-3 divide-x divide-gray-200 text-center p-4">
           <div>
             <span className="text-xl font-semibold text-gray-900">🏆 {userProfile._count?.wins || 0}</span>
             <p className="text-gray-500">Wins</p>
@@ -119,29 +132,28 @@ const UserProfilePage = () => {
             <p className="text-gray-500">Credits</p>
           </div>
         </div>
-
+  
         {/* ✅ User Listings */}
         <div className="px-6 my-10">
           <h2 className="text-2xl font-bold text-gray-900">{userProfile.name}'s Listings</h2>
-
+  
           {listings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
               {listings.map((listing) => (
-               <LotCard
-               key={listing.id}
-               id={listing.id}
-               image={listing.media?.[0]?.url ?? "/default-image.png"}
-               title={listing.title}
-               price={listing.bids && listing.bids.length > 0 ? Math.max(...listing.bids.map((b) => b.amount)) : 0}
-               bids={listing.bids ? listing.bids.length : 0}
-               closingDate={listing.endsAt ?? ""}
-               tags={listing.tags ?? []}
-               seller={userProfile}
-               showTags={true}
-               showSeller={false}
-               showControls={false} 
-             />
-             
+                <LotCard
+                  key={listing.id}
+                  id={listing.id}
+                  image={listing.media?.[0]?.url ?? "/default-image.png"}
+                  title={listing.title}
+                  price={listing.bids && listing.bids.length > 0 ? Math.max(...listing.bids.map((b) => b.amount)) : 0}
+                  bids={listing.bids ? listing.bids.length : 0}
+                  closingDate={listing.endsAt ?? ""}
+                  tags={listing.tags ?? []}
+                  seller={userProfile}
+                  showTags={true}
+                  showSeller={false}
+                  showControls={false} 
+                />
               ))}
             </div>
           ) : (
@@ -154,6 +166,7 @@ const UserProfilePage = () => {
       <Footer />
     </div>
   );
+  
 };
 
 export default UserProfilePage;

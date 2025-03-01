@@ -13,9 +13,12 @@ import EndedAuctionsFilter from "../../components/ui/EndedAuctionsFilter";
 import Footer from "../../components/layout/Footer";
 import SearchBar from "../../components/ui/SearchBar";
 import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
-import CharitySelector from "../../components/ui/CharitySelector";
 import { useUser } from "../../utilities/useUser";
 import { User } from "../../utilities/UserContext";
+
+type ExtendedListing = Listing & { userBid: number; highestBid: number };
+
+
 
 const Profile: React.FC = () => {
   const { user, setUser } = useUser();
@@ -23,9 +26,7 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
   const [bidListings, setBidListings] = useState<(Listing & { userBid: number; highestBid: number })[]>([]);
-  const logout = () => {
-    HandleLogout();
-  };
+  const logout = HandleLogout();
   const [wonListings, setWonListings] = useState<Listing[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("newest");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -135,11 +136,12 @@ const Profile: React.FC = () => {
           }
 
           const detailedListings = await Promise.all(
-            profile.listings.map(async (listing) => {
+            profile.listings.map(async (listing: Listing) => {
               const fullListing = await fetchFullListingDetails(listing.id);
               return fullListing || listing;
             })
           );
+          
 
           setListings(detailedListings);
         };
@@ -187,7 +189,7 @@ const Profile: React.FC = () => {
   }, [setUser, user?.selectedCharity]); // ✅ Added `user?.selectedCharity`
 
   const handleDelete = (listingId: string) => {
-    setListings((prevListings) => prevListings.filter((listing) => listing.id !== listingId));
+    setListings((prevListings) => prevListings.filter((listing: Listing) => listing.id !== listingId));
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading profile...</div>;
@@ -201,35 +203,44 @@ const Profile: React.FC = () => {
         <div className="relative w-full lg:h-90 md:h-72 h-54  bg-gray-200">{user.banner?.url && <img src={user.banner.url} alt={user.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
 
         {/* ✅ Profile Header */}
-        <div className="relative -mt-15 flex  items-center py-6 bg-primary-100/50 backdrop-blur-sm text-black rounded-lg">
-          <div className="max-w-9/10 flex flex-wrap m-auto content-center justify-center gap-10">
-            <div className="flex-1 relative">
-              <img src={user.avatar?.url || "/default-avatar.png"} alt={user.avatar?.alt || "User Avatar"} className="w-40 min-w-40 h-40 sm:w-32 sm:h-40 md:w-40 md:h-40 lg:w-40 lg:h-40 aspect-square rounded-full object-cover -mt-15 border-4 border-white shadow-md m-auto" onError={(e) => (e.currentTarget.src = "/default-avatar.png")} />
+        <div className="relative -mt-15 flex  items-center py-6 bg-primary-100/40 backdrop-blur-sm text-black rounded-lg">
+          <div className=" flex flex-wrap m-auto content-evenly justify-evenly gap-10 w-full">
+            <div className="flex-1 flex justify-center relative -mt-15">
+              <div className="relative w-40 h-40 sm:w-32 sm:h-40 md:w-40 md:h-40 lg:w-40 lg:h-40">
+                <img src={user.avatar?.url || "default-avatar.png"} alt={user.avatar?.alt || "User Avatar"} className="w-full h-full rounded-full object-cover border-4 border-white shadow-md" onError={(e) => (e.currentTarget.src = "/default-avatar.png")} />
+
+                {/* ✅ Charity Icon - Now Positioned Properly Inside */}
+                {user.selectedCharity && (
+                  <img
+                    src={user.selectedCharity.logo}
+                    alt={`${user.selectedCharity.name} Logo`}
+                    className="absolute bottom-1 right-1 w-10 h-10 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 
+                   rounded-full border-2 border-white bg-white p-1 shadow-md"
+                  />
+                )}
+              </div>
             </div>
 
+            {/* ✅ User Name (Remains Unchanged) */}
             <div className="lg:max-w-1/2 flex-2 w-fit min-w-60">
               <div className="flex gap-3">
                 <h1 className="text-3xl font-bold">{user.name}</h1>
-                {user.selectedCharity && <img src={user.selectedCharity.logo} alt={`${user.selectedCharity.name} Logo`} className="w-10 h-10 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 " />}
               </div>
 
-              {user.bio && <p className="text-gray-600 pt-2">{user.bio}</p>}
+              {user.bio && <p className="text-gray-600 pt-2 pr-6">{user.bio}</p>}
 
               {/* ✅ Action Buttons */}
               <div className="mt-6 text-sm">
-                <div className="flex justify-start gap-5 flex-wrap">
-                  {" "}
+                <div className="flex justify-start gap-4 flex-wrap">
                   <Link to="/listing/create" className="bg-primary-300 text-black px-4 py-2 rounded-lg hover:bg-green-200 transition">
-                    ➕ Create Post
+                    ➕ <span className="hidden sm:inline">Create </span> Post
                   </Link>
                   <Link to="/profile/editprofile" className="bg-secondary-200 text-black px-4 py-2 rounded-lg hover:bg-blue-200 transition">
-                    ✏️ Edit Profile
+                    ✏️ <span className="hidden sm:inline">Edit </span>Profile
                   </Link>
                   <button onClick={logout} className="bg-accent-200 text-black px-4 py-2 rounded-lg hover:bg-red-200 transition">
-                    🚪 Log Out
-                  </button>
-                  {/* ✅ Charity Selection */}
-                  <CharitySelector />
+  🚪 <span className="hidden sm:inline">Log out</span>
+</button>
                 </div>
               </div>
             </div>
@@ -302,15 +313,16 @@ const Profile: React.FC = () => {
               selectedSort={selectedSort}
               onSortChange={setSelectedSort}
               bidListings={bidListings}
-              setSortedListings={(sorted) =>
+              setSortedListings={(sorted: ExtendedListing[]) =>
                 setBidListings(
-                  sorted.map((listing) => ({
+                  sorted.map((listing: ExtendedListing) => ({
                     ...listing,
                     userBid: listing.userBid ?? 0,
                     highestBid: listing.highestBid ?? 0,
                   }))
                 )
               }
+              
             />
             <SearchBar onSearch={setSearchQuery} />
           </div>

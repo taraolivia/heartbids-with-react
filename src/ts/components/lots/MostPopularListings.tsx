@@ -50,7 +50,8 @@ const MostPopularListings: React.FC = () => {
   const sortedListings = filteredListings
     .sort((a, b) => (b._count?.bids || 0) - (a._count?.bids || 0))
     .slice(0, 10);
-
+    
+    
   return (
     <section className="py-5 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,22 +66,26 @@ const MostPopularListings: React.FC = () => {
         <div ref={scrollRef} className="flex overflow-x-auto gap-10 py-10 no-scrollbar scroll-smooth">
           {sortedListings.length === 0 && <div className="text-center text-gray-600 mt-8">No popular listings available.</div>}
 
-          {sortedListings.map((item) => (
-            <div key={item.id}>
-              <LotCard
-                id={item.id}
-                image={item.media?.[0]?.url || "fallback-image-url.png"}
-                title={item.title}
-                price={item.bids?.length ? Math.max(...item.bids.map((bid) => bid.amount)) : 0}
-                bids={item._count?.bids || 0}
-                closingDate={item.endsAt}
-                tags={item.tags ?? []}
-                showTags={true}
-                showSeller={true}
-                seller={item.seller}
-              />
-            </div>
-          ))}
+{sortedListings.map((item) => (
+  <div key={item.id}>
+    <LotCard
+      id={item.id}
+      image={item.media?.[0]?.url || "/images/HeartBids.png"}
+      title={item.title}
+      price={item.bids?.length ? Math.max(...item.bids.map((bid) => bid.amount)) : 0}
+      bids={item._count?.bids || 0}
+      closingDate={item.endsAt}
+      tags={item.tags ?? []}
+      showTags={true}
+      showSeller={true}
+      seller={{
+        ...item.seller,
+        selectedCharity: item.seller?.selectedCharity ?? undefined, 
+      }}
+    />
+  </div>
+))}
+
         </div>
 
         {canScrollRight && (

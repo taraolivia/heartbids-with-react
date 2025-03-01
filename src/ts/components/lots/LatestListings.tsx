@@ -95,8 +95,10 @@ const LatestListings: React.FC<LatestListingsProps> = ({ listings = [], loading,
                   tags={item.tags ?? []}
                   showTags={true}
                   showSeller={true}
-                  seller={item.seller}
-                />
+                  seller={{
+                    ...item.seller,
+                    selectedCharity: item.seller?.selectedCharity ?? undefined, 
+                  }}                />
               </div>
             ))}
         </div>

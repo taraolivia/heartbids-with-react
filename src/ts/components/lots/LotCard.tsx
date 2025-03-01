@@ -4,7 +4,11 @@ import EditButton from "../ui/EditButton";
 import DeleteButton from "../ui/DeleteButton";
 import AuctionCountdown from "../ui/AuctionCountdown";
 
+
+
 const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closingDate, userBid, description, tags, created, updated, showDescription, showTags, showCreatedUpdated, seller, showSeller, showControls, showClosingDate = true, onDelete }) => {
+  console.log("LotCard - Seller Data:", seller);
+
   return (
     <div className="bg-secondary-50 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col h-full w-full">
       <Link to={`/listing/${id}`} className="block">
@@ -20,12 +24,17 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         {/* ✅ Title Styling */}
         <h3 className="text-lg font-semibold text-gray-900 mt-4">{title}</h3>
 
+        
+
         {showSeller && seller && (
           <div className="mt-4 p-2 bg-blue-200 rounded-lg shadow-md w-fit">
             <Link to={`/profile/${seller.name}`} className="flex items-center gap-3 hover:underline">
               <img src={seller.avatar?.url} alt={seller.avatar?.alt || `${seller.name}'s avatar`} className="w-8 h-8 rounded-full object-cover" onError={(e) => (e.currentTarget.src = "/images/default-avatar.png")} />
               <div>
-                <p className="text-gray-900 font-medium">{seller.name}</p>
+                <p className="text-gray-900 font-medium">
+                  {seller.name}
+                  {seller.selectedCharity && <img src={seller.selectedCharity.logo} alt={`${seller.selectedCharity.name} Logo`} className="w-6 h-6 inline ml-2 rounded-full" />}
+                </p>
               </div>
             </Link>
           </div>

@@ -26,15 +26,9 @@ export type Listing = {
   tags: string[];
   _count: { bids: number };
   bids?: Bid[];
-  seller: {
-    name: string;
-    email: string;
-    bio?: string;
-    avatar?: { url: string; alt?: string };
-    banner?: { url: string; alt?: string };
-    wins?: string[]; // ✅ Ensuring seller's `wins` is an array of listing IDs
-  };
+  seller: Seller; // ✅ Now references updated `Seller` type with `selectedCharity`
 };
+
 
 
 export type LatestListingsProps = {
@@ -49,8 +43,12 @@ export type Seller = {
   bio?: string;
   avatar?: { url: string; alt?: string };
   banner?: { url: string; alt?: string };
-  wins?: string[]; // ✅ Added to match `Listing.seller`
-};
+  wins?: string[];
+  selectedCharity?: {
+    name: string;
+    logo: string;
+  };};
+
 
 
 export type LotCardProps = {
