@@ -10,8 +10,10 @@ export type Bid = {
     bio?: string;
     avatar?: { url: string; alt?: string };
     banner?: { url: string; alt?: string };
+    selectedCharity?: { name: string; logo: string }; // ✅ Add this line
   };
   listing?: Listing; // ✅ Use the full `Listing` type
+  
 };
 
 
