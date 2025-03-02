@@ -1,19 +1,13 @@
-
-
 module.exports = {
-    /** @type {import('tailwindcss').Config} */
+  /** @type {import('tailwindcss').Config} */
 
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}"
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-
     extend: {
-    fontFamily: {
-      sans: ["Inter", "Arial", "sans-serif"], 
-      serif: ["Spectral", "Georgia", "serif"],
-    },
+      fontFamily: {
+        sans: ["Inter", "Arial", "sans-serif"],
+        serif: ["Spectral", "Georgia", "serif"],
+      },
       colors: {
         text: {
           50: "#eae9fc",

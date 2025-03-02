@@ -10,12 +10,10 @@ export type Bid = {
     bio?: string;
     avatar?: { url: string; alt?: string };
     banner?: { url: string; alt?: string };
-    selectedCharity?: { name: string; logo: string }; // ✅ Add this line
+    selectedCharity?: { name: string; logo: string };
   };
-  listing?: Listing; // ✅ Use the full `Listing` type
-  
+  listing?: Listing;
 };
-
 
 export type Listing = {
   id: string;
@@ -28,10 +26,8 @@ export type Listing = {
   tags: string[];
   _count: { bids: number };
   bids?: Bid[];
-  seller: Seller; // ✅ Now references updated `Seller` type with `selectedCharity`
+  seller: Seller;
 };
-
-
 
 export type LatestListingsProps = {
   loading: boolean;
@@ -49,16 +45,15 @@ export type Seller = {
   selectedCharity?: {
     name: string;
     logo: string;
-  };};
-
-
+  };
+};
 
 export type LotCardProps = {
   id: string;
   image: string;
   title: string;
-  price: number; // ✅ Highest bid on the listing
-  userBid?: number; // ✅ Your highest bid
+  price: number;
+  userBid?: number;
   bids: number;
   closingDate?: string;
   description?: string;
@@ -76,11 +71,6 @@ export type LotCardProps = {
   showClosingDate?: boolean;
 };
 
-
-
-
-
-
 export type UserProfile = {
   name: string;
   email: string;
@@ -89,7 +79,6 @@ export type UserProfile = {
   banner?: { url: string; alt?: string };
   credits: number;
   _count?: { listings?: number; wins?: number };
-  listings?: Listing[]; // ✅ Kept optional to avoid loading issues
-  selectedCharity?: Charity; // ✅ Added this field to store the selected charity
+  listings?: Listing[];
+  selectedCharity?: Charity;
 };
-

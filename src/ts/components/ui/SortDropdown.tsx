@@ -3,15 +3,25 @@ import { Listing } from "../../types/listingTypes";
 interface SortDropdownProps {
   selectedSort: string;
   onSortChange: (sortType: string) => void;
-  bidListings: (Listing & { userBid?: number; highestBid?: number })[]; 
-  setSortedListings: (list: (Listing & { userBid?: number; highestBid?: number })[]) => void; 
+  bidListings: (Listing & { userBid?: number; highestBid?: number })[];
+  setSortedListings: (
+    list: (Listing & { userBid?: number; highestBid?: number })[],
+  ) => void;
 }
 
 const getHighestBid = (listing: Listing & { highestBid?: number }): number => {
-  return listing.highestBid ?? (listing.bids?.length ? Math.max(...listing.bids.map((b) => b.amount)) : 0);
+  return (
+    listing.highestBid ??
+    (listing.bids?.length ? Math.max(...listing.bids.map((b) => b.amount)) : 0)
+  );
 };
 
-const SortDropdown: React.FC<SortDropdownProps> = ({ selectedSort, onSortChange, bidListings, setSortedListings }) => {
+const SortDropdown: React.FC<SortDropdownProps> = ({
+  selectedSort,
+  onSortChange,
+  bidListings,
+  setSortedListings,
+}) => {
   const handleSortChange = (sortType: string) => {
     onSortChange(sortType);
 
@@ -36,16 +46,24 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ selectedSort, onSortChange,
     setSortedListings(
       sortedList.map((listing) => ({
         ...listing,
-        userBid: listing.userBid ?? 0, // ✅ Ensure userBid exists
-        highestBid: listing.highestBid ?? 0, // ✅ Ensure highestBid exists
-      }))
+        userBid: listing.userBid ?? 0,
+        highestBid: listing.highestBid ?? 0,
+      })),
     );
   };
 
   return (
     <div>
-      <label htmlFor="sort" className="block text-gray-800 font-semibold"></label>
-      <select id="sort" value={selectedSort} onChange={(e) => handleSortChange(e.target.value)} className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500  bg-white">
+      <label
+        htmlFor="sort"
+        className="block text-gray-800 font-semibold"
+      ></label>
+      <select
+        id="sort"
+        value={selectedSort}
+        onChange={(e) => handleSortChange(e.target.value)}
+        className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500  bg-white"
+      >
         <option value="newest">Newest</option>
         <option value="mostBids">Most Bids</option>
         <option value="highestPrice">Highest Price</option>

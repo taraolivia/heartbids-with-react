@@ -6,35 +6,37 @@ interface TagFilterProps {
   availableTags: string[];
 }
 
-// ✅ Function to capitalize only the first letter of a tag
-const capitalize = (tag: string) => tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase();
+const capitalize = (tag: string) =>
+  tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase();
 
-const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availableTags }) => {
+const TagFilter: React.FC<TagFilterProps> = ({
+  selectedTags,
+  onTagChange,
+  availableTags,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Normalize tags: Merge similar tags while preserving correct capitalization
-  const tagMap = new Map<string, string>(); // lowercase -> Capitalized version
+  const tagMap = new Map<string, string>();
   availableTags.forEach((tag) => {
     const lowerTag = tag.toLowerCase();
     const capitalizedTag = capitalize(lowerTag);
 
-    // ✅ Ensure we store all versions but always display the capitalized one
     if (!tagMap.has(lowerTag)) {
       tagMap.set(lowerTag, capitalizedTag);
     }
   });
 
-  // ✅ Convert to a sorted array
-  const normalizedTags = Array.from(tagMap.values()).sort((a, b) => a.localeCompare(b));
+  const normalizedTags = Array.from(tagMap.values()).sort((a, b) =>
+    a.localeCompare(b),
+  );
 
-  // ✅ Handle tag selection
   const handleTagChange = (tag: string) => {
     const lowerTag = tag.toLowerCase();
-    const capitalizedTag = tagMap.get(lowerTag) || tag; // Ensure correct capitalization
+    const capitalizedTag = tagMap.get(lowerTag) || tag;
 
     const updatedTags = selectedTags.includes(capitalizedTag)
-      ? selectedTags.filter((t) => t.toLowerCase() !== lowerTag) // Remove case-insensitively
+      ? selectedTags.filter((t) => t.toLowerCase() !== lowerTag)
       : [...selectedTags, capitalizedTag];
 
     onTagChange(updatedTags);
@@ -46,7 +48,10 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -65,29 +70,26 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
     <div className="relative mb-6">
       <label className="block text-gray-800 font-semibold mb-2"></label>
 
-<div className="flex gap-5 items-end flex-wrap">
-
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-1/3 min-w-fit p-2 border border-gray-300 rounded-md bg-white max-width-1/2 text-left focus:ring-2 focus:ring-pink-500 flex justify-between items-center"
-      >
-        <span>{formatToggleText()}</span>
-        <span className="ml-2">▼</span>
-      </button>
-      {selectedTags.length > 0 && (
-        <div className="mt-3 text-left">
-          <button
-            onClick={handleClearAll}
-            className="text-red-500 text-sm font-semibold hover:text-red-700"
-          >
-            Clear Tags
-          </button>
-        </div>
-      )}
-</div>
-
-
+      <div className="flex gap-5 items-end flex-wrap">
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-1/3 min-w-fit p-2 border border-gray-300 rounded-md bg-white max-width-1/2 text-left focus:ring-2 focus:ring-pink-500 flex justify-between items-center"
+        >
+          <span>{formatToggleText()}</span>
+          <span className="ml-2">▼</span>
+        </button>
+        {selectedTags.length > 0 && (
+          <div className="mt-3 text-left">
+            <button
+              onClick={handleClearAll}
+              className="text-red-500 text-sm font-semibold hover:text-red-700"
+            >
+              Clear Tags
+            </button>
+          </div>
+        )}
+      </div>
 
       {isOpen && (
         <div
@@ -102,7 +104,9 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
               >
                 <input
                   type="checkbox"
-                  checked={selectedTags.some((selected) => selected.toLowerCase() === tag.toLowerCase())}
+                  checked={selectedTags.some(
+                    (selected) => selected.toLowerCase() === tag.toLowerCase(),
+                  )}
                   onChange={() => handleTagChange(tag)}
                   className="form-checkbox text-pink-500"
                 />
@@ -112,8 +116,6 @@ const TagFilter: React.FC<TagFilterProps> = ({ selectedTags, onTagChange, availa
           </div>
         </div>
       )}
-
-
     </div>
   );
 };

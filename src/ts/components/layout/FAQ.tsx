@@ -37,27 +37,25 @@ const FAQ = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-      <h2 className="text-3xl font-serif text-gray-800 mb-8 text-left">Answers to our frequently asked questions</h2>
+      <h2 className="text-3xl font-serif text-gray-800 mb-8 text-left">
+        Answers to our frequently asked questions
+      </h2>
 
       <div className="divide-y divide-gray-300">
         {faqs.map((faq, index) => (
           <div key={index} className="py-4">
-            {/* ✅ Question with Separator Line */}
             <h3
               className="text-lg font-serif text-gray-800 cursor-pointer flex justify-between items-center py-3"
               onClick={() => toggleFAQ(index)}
             >
               {faq.question}
               <span
-                className={`transition-transform duration-300 ${
-                  openIndex === index ? "rotate-180" : "rotate-0"
-                }`}
+                className={`transition-transform duration-300 ${openIndex === index ? "rotate-180" : "rotate-0"}`}
               >
                 ↑
               </span>
             </h3>
 
-            {/* ✅ Answer with Colored Border (Matches Image) */}
             {openIndex === index && (
               <p className="text-gray-600 mt-2 border-t-2 border-accent-300 pt-3">
                 {faq.answer}

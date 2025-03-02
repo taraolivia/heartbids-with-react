@@ -7,4 +7,6 @@ interface ListingsContextType {
   error: string | null;
 }
 
-export const ListingsContext = createContext<ListingsContextType | undefined>(undefined); // ✅ Only context here
+export const ListingsContext = createContext<ListingsContextType | undefined>(
+  undefined,
+);

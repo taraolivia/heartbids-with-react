@@ -3,12 +3,15 @@ import { useUser } from "../../utilities/useUser";
 import AllCharities, { Charity } from "../../utilities/AllCharities";
 
 interface CharitySelectorProps {
-  selectedCharity?: Charity | null; // ✅ Optional for registration use
-  onSelectCharity?: (charity: Charity) => void; // ✅ Optional for registration use
+  selectedCharity?: Charity | null;
+  onSelectCharity?: (charity: Charity) => void;
 }
 
-const CharitySelector: React.FC<CharitySelectorProps> = ({ selectedCharity, onSelectCharity }) => {
-  const userContext = useUser(); // ✅ Get user context
+const CharitySelector: React.FC<CharitySelectorProps> = ({
+  selectedCharity,
+  onSelectCharity,
+}) => {
+  const userContext = useUser();
   const user = userContext?.user;
   const updateCharity = userContext?.updateCharity;
   const [isOpen, setIsOpen] = useState(false);
@@ -18,9 +21,9 @@ const CharitySelector: React.FC<CharitySelectorProps> = ({ selectedCharity, onSe
     if (!chosenCharity) return;
 
     if (onSelectCharity) {
-      onSelectCharity(chosenCharity); // ✅ Registration form updates state
+      onSelectCharity(chosenCharity);
     } else if (updateCharity) {
-      updateCharity(chosenCharity); // ✅ Logged-in users update Firestore
+      updateCharity(chosenCharity);
     }
 
     setIsOpen(false);
@@ -30,13 +33,12 @@ const CharitySelector: React.FC<CharitySelectorProps> = ({ selectedCharity, onSe
     <div className="relative overflow-visible w-full">
       <label className="text-sm">Select a Charity:</label>
 
-      {/* ✅ Button to open dropdown */}
       <button
         type="button"
         className="flex items-center justify-between w-fit mt-4 px-4 py-2 rounded shadow-md"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {(selectedCharity || user?.selectedCharity) ? (
+        {selectedCharity || user?.selectedCharity ? (
           <div className="flex items-center gap-3">
             <img
               src={(selectedCharity || user?.selectedCharity)?.logo}
@@ -51,7 +53,6 @@ const CharitySelector: React.FC<CharitySelectorProps> = ({ selectedCharity, onSe
         <span className="ml-4">▼</span>
       </button>
 
-      {/* ✅ Dropdown menu */}
       {isOpen && (
         <ul className="absolute z-[9999] max-h-52 overflow-y-auto left-0 w-fit px-4 py-2 mt-2 bg-white rounded shadow-lg">
           {AllCharities.map((charity) => (

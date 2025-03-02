@@ -16,7 +16,7 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
       const now = new Date().getTime();
       const difference = endTime - now;
 
-      let borderColor = "border-secondary-300"; // Default
+      let borderColor = "border-secondary-300";
       if (difference <= 0) {
         setTimeLeft("Auction ended");
         borderColor = "border-gray-300";
@@ -29,9 +29,15 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
 
       if (difference > 0) {
         const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
-        const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const days = Math.floor(
+          (difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
+        );
+        const hours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60),
+        );
 
         let formattedTime = "";
         if (months > 0) {
@@ -48,13 +54,15 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
       }
     };
 
-    calculateTimeLeft(); // ✅ Ensure it updates immediately
-    const interval = setInterval(calculateTimeLeft, 1000); // ✅ Updates every second for final minute
+    calculateTimeLeft();
+    const interval = setInterval(calculateTimeLeft, 1000);
     return () => clearInterval(interval);
   }, [closingDate]);
 
   return (
-    <div className={`mt-2 px-3 py-2 text-base border-t-2 border-b-2 ${borderClass}`}>
+    <div
+      className={`mt-2 px-3 py-2 text-base border-t-2 border-b-2 ${borderClass}`}
+    >
       {timeLeft === "Auction ended" ? timeLeft : `Closing in: ${timeLeft}`}
     </div>
   );

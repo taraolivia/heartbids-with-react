@@ -3,7 +3,6 @@
 @import "@fontsource/inter/index.css";
 @import "@fontsource/spectral/index.css";
 
-
 html {
   @apply bg-background-50 text-text-900;
 }
@@ -12,10 +11,10 @@ body {
   @apply text-text-900 font-sans;
 }
 
-h1, h2 {
+h1,
+h2 {
   @apply font-serif mt-2;
 }
-
 
 button,
 link,

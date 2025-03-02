@@ -9,14 +9,16 @@ export const useListings = () => {
 
   const { listings, loading, error } = context;
 
-  // ✅ Extract unique, normalized tags from listings
   const availableTags = useMemo(() => {
-    const tagMap = new Map<string, string>(); 
+    const tagMap = new Map<string, string>();
     listings.forEach((listing) => {
       listing.tags?.forEach((tag) => {
         const lowerTag = tag.toLowerCase();
         if (!tagMap.has(lowerTag)) {
-          tagMap.set(lowerTag, tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase());
+          tagMap.set(
+            lowerTag,
+            tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase(),
+          );
         }
       });
     });

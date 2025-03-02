@@ -1,17 +1,15 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"; 
+import { getFirestore } from "firebase/firestore";
 
-// ✅ Your Firebase configuration (same as your project)
 const firebaseConfig = {
-  apiKey: "AIzaSyCrKgoAKtqN-5WvjpEhuZSbzFhCxgP_E2c",
-  authDomain: "heartbidscharityauctions.firebaseapp.com",
-  projectId: "heartbidscharityauctions",
-  storageBucket: "heartbidscharityauctions.firebasestorage.app",
-  messagingSenderId: "563050529632",
-  appId: "1:563050529632:web:763c95115db9531e9d1405",
-  measurementId: "G-8XXD0L19X3"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app); 
+export const db = getFirestore(app);

@@ -40,7 +40,6 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Fetch existing listing data
   useEffect(() => {
     const fetchListing = async () => {
       setLoading(true);
@@ -52,13 +51,16 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
         if (!response.ok) throw new Error("Failed to fetch listing.");
 
         const responseData = await response.json();
-        const data = responseData.data; // ✅ Fix: Extract the correct data object
+        const data = responseData.data;
 
         setFormData({
           title: data.title || "",
           description: data.description || "",
-          tags: Array.isArray(data.tags) ? [...data.tags] : [], // ✅ Fix: Spread to avoid mutations
-          media: data.media && data.media.length > 0 ? data.media : [{ url: "", alt: "" }],
+          tags: Array.isArray(data.tags) ? [...data.tags] : [],
+          media:
+            data.media && data.media.length > 0
+              ? data.media
+              : [{ url: "", alt: "" }],
           endsAt: data.endsAt || "",
         });
       } catch (error) {
@@ -74,7 +76,9 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
 
   useEffect(() => {}, [formData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -83,7 +87,11 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
     setFormData({ ...formData, tags: userTags });
   };
 
-  const handleMediaChange = (index: number, field: "url" | "alt", value: string) => {
+  const handleMediaChange = (
+    index: number,
+    field: "url" | "alt",
+    value: string,
+  ) => {
     const updatedMedia = [...(formData.media || [{ url: "", alt: "" }])];
     updatedMedia[index] = { ...updatedMedia[index], [field]: value };
     setFormData({ ...formData, media: updatedMedia });
@@ -106,7 +114,9 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
     const newErrorFields: Record<string, boolean> = {};
     const errorMessages: string[] = [];
 
-    const cleanedTags = (formData.tags ?? []).map((tag) => tag.trim()).filter((tag) => tag.length > 0);
+    const cleanedTags = (formData.tags ?? [])
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
     if (!cleanedTags.includes("HeartBids")) {
       cleanedTags.push("HeartBids");
     }
@@ -155,16 +165,18 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); // ✅ Try to get API error details
-        console.error("❌ Update failed:", errorData); // ✅ Log detailed error
+        const errorData = await response.json();
+        console.error("❌ Update failed:", errorData);
 
         throw new Error(errorData.message || "Failed to update listing.");
       }
 
       setSuccess(true);
     } catch (error) {
-      console.error("❌ Error updating listing:", error); // ✅ Log the actual error
-      setError(error instanceof Error ? error.message : "Unknown error occurred.");
+      console.error("❌ Error updating listing:", error);
+      setError(
+        error instanceof Error ? error.message : "Unknown error occurred.",
+      );
     } finally {
       setLoading(false);
     }
@@ -174,41 +186,97 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
     <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
       <h1 className="text-3xl font-semibold mb-4 pt-22">Edit Listing</h1>
       <div>
-        <p>All fields are required to create a listing on HeartBids. This ensures that the buyers know what they are bidding on and creates a safe experience for everyone.</p>
+        <p>
+          All fields are required to create a listing on HeartBids. This ensures
+          that the buyers know what they are bidding on and creates a safe
+          experience for everyone.
+        </p>
       </div>
       {error && <ErrorMessage message={error} />}
-      {success && <p className="text-green-500">Listing edited successfully!</p>}
+      {success && (
+        <p className="text-green-500">Listing edited successfully!</p>
+      )}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block font-bold text-gray-800 mb-2">
             Title:
           </label>
-          <input id="title" ref={titleRef} type="text" name="title" value={formData.title} onChange={handleChange} required className={`w-full p-3 border rounded-md ${errorField.title ? "border-red-500" : "border-gray-300"}`} />
+          <input
+            id="title"
+            ref={titleRef}
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className={`w-full p-3 border rounded-md ${errorField.title ? "border-red-500" : "border-gray-300"}`}
+          />
         </div>
         <div>
-          <label htmlFor="description" className="block font-bold text-gray-800 mb-2">
+          <label
+            htmlFor="description"
+            className="block font-bold text-gray-800 mb-2"
+          >
             Description:
           </label>
-          <textarea id="description" ref={descriptionRef} name="description" value={formData.description} onChange={handleChange} rows={4} className={`w-full p-3 border rounded-md ${errorField.description ? "border-red-500" : "border-gray-300"}`} />
+          <textarea
+            id="description"
+            ref={descriptionRef}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            className={`w-full p-3 border rounded-md ${errorField.description ? "border-red-500" : "border-gray-300"}`}
+          />
         </div>
         <div>
           <label htmlFor="tags" className="block font-bold text-gray-800 mb-2">
             Tags (comma-separated):
           </label>
-          <input id="tags" ref={tagsRef} type="text" name="tags" onChange={handleTagChange} value={formData.tags ? formData.tags.join(", ") : ""} className={`w-full p-3 border rounded-md ${errorField.tags ? "border-red-500" : "border-gray-300"}`} />
+          <input
+            id="tags"
+            ref={tagsRef}
+            type="text"
+            name="tags"
+            onChange={handleTagChange}
+            value={formData.tags ? formData.tags.join(", ") : ""}
+            className={`w-full p-3 border rounded-md ${errorField.tags ? "border-red-500" : "border-gray-300"}`}
+          />
         </div>
         <div>
           <h3 className="text-lg font-bold mb-2">Media:</h3>
           {formData.media?.map((media, index) => (
             <div key={index} className="space-y-2">
-              <label htmlFor={`mediaUrl${index}`} className="block text-gray-800">
+              <label
+                htmlFor={`mediaUrl${index}`}
+                className="block text-gray-800"
+              >
                 Media URL:
               </label>
-              <input id={`mediaUrl${index}`} type="url" placeholder="Media URL" value={formData.media?.[0]?.url || ""} onChange={(e) => handleMediaChange(0, "url", e.target.value)} className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`} />
-              <label htmlFor={`mediaAlt${index}`} className="block text-gray-800">
+              <input
+                id={`mediaUrl${index}`}
+                type="url"
+                placeholder="Media URL"
+                value={formData.media?.[0]?.url || ""}
+                onChange={(e) => handleMediaChange(0, "url", e.target.value)}
+                className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`}
+              />
+              <label
+                htmlFor={`mediaAlt${index}`}
+                className="block text-gray-800"
+              >
                 Media Alt Text:
               </label>
-              <input id={`mediaAlt${index}`} type="text" placeholder="Alt Text" value={media.alt} onChange={(e) => handleMediaChange(index, "alt", e.target.value)} className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`} />
+              <input
+                id={`mediaAlt${index}`}
+                type="text"
+                placeholder="Alt Text"
+                value={media.alt}
+                onChange={(e) =>
+                  handleMediaChange(index, "alt", e.target.value)
+                }
+                className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`}
+              />
             </div>
           ))}
         </div>
@@ -218,17 +286,35 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
             Ends At <span className="text-red-500">*</span>
           </label>
           <div ref={endsAtRef}>
-            <DatePicker selected={formData.endsAt ? new Date(formData.endsAt) : null} onChange={handleDateChange} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" minDate={new Date()} timeIntervals={15} className={`w-full p-3 border rounded-md ${errorField.endsAt ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition`} wrapperClassName="w-full" />
+            <DatePicker
+              selected={formData.endsAt ? new Date(formData.endsAt) : null}
+              onChange={handleDateChange}
+              showTimeSelect
+              dateFormat="MMMM d, yyyy h:mm aa"
+              minDate={new Date()}
+              timeIntervals={15}
+              className={`w-full p-3 border rounded-md ${errorField.endsAt ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition`}
+              wrapperClassName="w-full"
+            />
           </div>
 
-          <p className="text-sm text-gray-500 mt-1">Select a date & time easily.</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Select a date & time easily.
+          </p>
         </div>
 
         <div className="flex justify-between items-center">
-          <a href="/profile" className="px-4 py-2 text-white bg-gray-800 rounded-md hover:bg-gray-900">
+          <a
+            href="/profile"
+            className="px-4 py-2 text-white bg-gray-800 rounded-md hover:bg-gray-900"
+          >
             Cancel
           </a>
-          <button type="submit" disabled={loading} className={`mt-4 p-3 rounded-md font-semibold text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-secondary-500 hover:bg-secondary-600 cursor-pointer"}`}>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`mt-4 p-3 rounded-md font-semibold text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-secondary-500 hover:bg-secondary-600 cursor-pointer"}`}
+          >
             {loading ? "Updating..." : "Update Listing"}
           </button>
         </div>

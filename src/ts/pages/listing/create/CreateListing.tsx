@@ -4,7 +4,7 @@ import { getHeaders } from "../../../config/headers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from "../../../components/ui/ErrorMessage";
-import { useLoading } from "../../../utilities/LoadingProvider"; // ✅ Import Global Loading Hook
+import { useLoading } from "../../../utilities/LoadingProvider";
 import LoadingOverlay from "../../../components/ui/LoadingOverlay";
 
 interface Listing {
@@ -27,8 +27,8 @@ const CreateListingForm: React.FC = () => {
   const titleRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const tagsRef = useRef<HTMLInputElement | null>(null);
-  const endsAtRef = useRef<HTMLDivElement | null>(null); // ✅ Use div, NOT DatePicker
-  const { setLoading } = useLoading(); // ✅ Use Global Loading Hook
+  const endsAtRef = useRef<HTMLDivElement | null>(null);
+  const { setLoading } = useLoading();
 
   const [formData, setFormData] = useState<Listing>({
     title: "",
@@ -45,7 +45,9 @@ const CreateListingForm: React.FC = () => {
   const stopLoading = useCallback(() => setLoading(false), [setLoading]);
 
   useEffect(() => {
-    const firstErrorKey = Object.keys(errorField).find((key) => errorField[key]); // ✅ Find first error field
+    const firstErrorKey = Object.keys(errorField).find(
+      (key) => errorField[key],
+    );
     if (firstErrorKey) {
       const field = document.getElementById(firstErrorKey);
       if (field && "scrollIntoView" in field && "focus" in field) {
@@ -55,7 +57,9 @@ const CreateListingForm: React.FC = () => {
     }
   }, [errorField]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -64,7 +68,11 @@ const CreateListingForm: React.FC = () => {
     setFormData({ ...formData, tags: userTags });
   };
 
-  const handleMediaChange = (index: number, field: "url" | "alt", value: string) => {
+  const handleMediaChange = (
+    index: number,
+    field: "url" | "alt",
+    value: string,
+  ) => {
     const updatedMedia = [...(formData.media || [{ url: "", alt: "" }])];
     updatedMedia[index] = { ...updatedMedia[index], [field]: value };
     setFormData({ ...formData, media: updatedMedia });
@@ -78,7 +86,7 @@ const CreateListingForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form...", formData); // ✅ Debugging step
+    console.log("Submitting form...", formData);
 
     setError(null);
     setErrorField({});
@@ -89,14 +97,14 @@ const CreateListingForm: React.FC = () => {
     const newErrorFields: Record<string, boolean> = {};
     const errorMessages: string[] = [];
 
-    // ✅ Trim and clean user input
-    const cleanedTags = (formData.tags ?? []).map((tag) => tag.trim()).filter((tag) => tag.length > 0);
+    const cleanedTags = (formData.tags ?? [])
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
 
     if (!cleanedTags.includes("HeartBids")) {
       cleanedTags.push("HeartBids");
     }
 
-    // ✅ Required fields validation (User-defined mandatory fields)
     if (!formData.title.trim()) {
       newErrorFields.title = true;
       errorMessages.push("A title is required to create a listing.");
@@ -104,7 +112,9 @@ const CreateListingForm: React.FC = () => {
     }
     if (!formData.description?.trim()) {
       newErrorFields.description = true;
-      errorMessages.push("A description is required so others know what you're selling.");
+      errorMessages.push(
+        "A description is required so others know what you're selling.",
+      );
       if (!firstErrorField) firstErrorField = descriptionRef.current;
     }
     if (!formData.endsAt) {
@@ -114,35 +124,38 @@ const CreateListingForm: React.FC = () => {
     }
     if (cleanedTags.length === 0) {
       newErrorFields.tags = true;
-      errorMessages.push("Please add at least one tag to categorize your listing.");
+      errorMessages.push(
+        "Please add at least one tag to categorize your listing.",
+      );
       if (!firstErrorField) firstErrorField = tagsRef.current;
     }
     if (!formData.media?.[0]?.url.trim()) {
       newErrorFields.media = true;
       errorMessages.push("An image URL is required to post a listing.");
-      if (!firstErrorField) firstErrorField = document.getElementById("mediaUrl0");
+      if (!firstErrorField)
+        firstErrorField = document.getElementById("mediaUrl0");
     }
     if (!formData.media?.[0]?.alt.trim()) {
       newErrorFields.media = true;
       errorMessages.push("Alt text is required for accessibility.");
-      if (!firstErrorField) firstErrorField = document.getElementById("mediaAlt0");
+      if (!firstErrorField)
+        firstErrorField = document.getElementById("mediaAlt0");
     }
 
-    // ✅ Add expected API validation errors manually BEFORE posting
     if (formData.description && formData.description.length > 280) {
       newErrorFields.description = true;
-      errorMessages.push("The description cannot be longer than 280 characters.");
+      errorMessages.push(
+        "The description cannot be longer than 280 characters.",
+      );
     }
     if (cleanedTags.length > 8) {
       newErrorFields.tags = true;
       errorMessages.push("You cannot have more than 8 tags.");
     }
 
-    // ✅ Show ALL expected errors immediately
     setErrorField(newErrorFields);
     setError(errorMessages.join("\n"));
 
-    // 🚨 STOP if required fields or expected API errors exist
     if (Object.keys(newErrorFields).length > 0) {
       setLoading(false);
 
@@ -150,17 +163,16 @@ const CreateListingForm: React.FC = () => {
         firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
         firstErrorField.focus();
       }
-      return; // 🚨 Prevents API request if there are expected errors
+      return;
     }
 
-    // ✅ Make API request (If it reaches here, manual validation has passed)
     try {
       const response = await fetch(API_LISTINGS, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({
           ...formData,
-          tags: cleanedTags, // ✅ Send cleaned tags
+          tags: cleanedTags,
         }),
       });
 
@@ -172,7 +184,7 @@ const CreateListingForm: React.FC = () => {
 
         if (responseData.errors && Array.isArray(responseData.errors)) {
           responseData.errors.forEach((err: { message: string }) => {
-            apiErrorMessages.push(err.message); // ✅ Store all API errors dynamically
+            apiErrorMessages.push(err.message);
 
             if (err.message.includes("more than 8 tags")) {
               newApiErrorFields.tags = true;
@@ -194,13 +206,14 @@ const CreateListingForm: React.FC = () => {
           console.warn("No errors array found in API response.");
         }
 
-        // ✅ Replace guessed API errors with real ones
         const finalErrorMessages = [...errorMessages, ...apiErrorMessages];
 
         setErrorField({ ...newErrorFields, ...newApiErrorFields });
-        setError(finalErrorMessages.join("\n")); // ✅ Show ALL errors together
+        setError(finalErrorMessages.join("\n"));
 
-        const firstErrorKey = Object.keys(newApiErrorFields).find((key) => newApiErrorFields[key]);
+        const firstErrorKey = Object.keys(newApiErrorFields).find(
+          (key) => newApiErrorFields[key],
+        );
         if (firstErrorKey) {
           const firstField = document.getElementById(firstErrorKey);
           if (firstField) {
@@ -213,7 +226,13 @@ const CreateListingForm: React.FC = () => {
       }
 
       setSuccess(true);
-      setFormData({ title: "", description: "", tags: [], media: [{ url: "", alt: "" }], endsAt: "" });
+      setFormData({
+        title: "",
+        description: "",
+        tags: [],
+        media: [{ url: "", alt: "" }],
+        endsAt: "",
+      });
     } catch (err: unknown) {
       console.error("❌ API request failed before reaching the server:", err);
       if (err instanceof Error) {
@@ -232,41 +251,96 @@ const CreateListingForm: React.FC = () => {
 
       <h1 className="text-3xl font-semibold mb-4 pt-22">Create Listing</h1>
       <div>
-        <p>All fields are required to create a listing on HeartBids. This ensures that the buyers know what they are bidding on and creates a safe experience for everyone.</p>
+        <p>
+          All fields are required to create a listing on HeartBids. This ensures
+          that the buyers know what they are bidding on and creates a safe
+          experience for everyone.
+        </p>
       </div>
       {error && <ErrorMessage message={error} />}
-      {success && <p className="text-primary-500">Listing created successfully!</p>}
+      {success && (
+        <p className="text-primary-500">Listing created successfully!</p>
+      )}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block font-bold text-gray-800 mb-2">
             Title:
           </label>
-          <input id="title" ref={titleRef} type="text" name="title" value={formData.title} onChange={handleChange} required className={`w-full p-3 border rounded-md ${errorField.title ? "border-red-500" : "border-gray-300"}`} />
+          <input
+            id="title"
+            ref={titleRef}
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className={`w-full p-3 border rounded-md ${errorField.title ? "border-red-500" : "border-gray-300"}`}
+          />
         </div>
         <div>
-          <label htmlFor="description" className="block font-bold text-gray-800 mb-2">
+          <label
+            htmlFor="description"
+            className="block font-bold text-gray-800 mb-2"
+          >
             Description:
           </label>
-          <textarea id="description" ref={descriptionRef} name="description" value={formData.description} onChange={handleChange} rows={4} className={`w-full p-3 border rounded-md ${errorField.description ? "border-red-500" : "border-gray-300"}`} />
+          <textarea
+            id="description"
+            ref={descriptionRef}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            className={`w-full p-3 border rounded-md ${errorField.description ? "border-red-500" : "border-gray-300"}`}
+          />
         </div>
         <div>
           <label htmlFor="tags" className="block font-bold text-gray-800 mb-2">
             Tags (comma-separated):
           </label>
-          <input id="tags" ref={tagsRef} type="text" name="tags" onChange={handleTagChange} className={`w-full p-3 border rounded-md ${errorField.tags ? "border-red-500" : "border-gray-300"}`} />
+          <input
+            id="tags"
+            ref={tagsRef}
+            type="text"
+            name="tags"
+            onChange={handleTagChange}
+            className={`w-full p-3 border rounded-md ${errorField.tags ? "border-red-500" : "border-gray-300"}`}
+          />
         </div>
         <div>
           <h3 className="text-lg font-bold mb-2">Media:</h3>
           {formData.media?.map((media, index) => (
             <div key={index} className="space-y-2">
-              <label htmlFor={`mediaUrl${index}`} className="block text-gray-800">
+              <label
+                htmlFor={`mediaUrl${index}`}
+                className="block text-gray-800"
+              >
                 Media URL:
               </label>
-              <input id={`mediaUrl${index}`} type="url" placeholder="Media URL" value={formData.media?.[0]?.url || ""} onChange={(e) => handleMediaChange(0, "url", e.target.value)} className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`} />
-              <label htmlFor={`mediaAlt${index}`} className="block text-gray-800">
+              <input
+                id={`mediaUrl${index}`}
+                type="url"
+                placeholder="Media URL"
+                value={formData.media?.[0]?.url || ""}
+                onChange={(e) => handleMediaChange(0, "url", e.target.value)}
+                className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`}
+              />
+              <label
+                htmlFor={`mediaAlt${index}`}
+                className="block text-gray-800"
+              >
                 Media Alt Text:
               </label>
-              <input id={`mediaAlt${index}`} type="text" placeholder="Alt Text" value={media.alt} onChange={(e) => handleMediaChange(index, "alt", e.target.value)} className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`} />
+              <input
+                id={`mediaAlt${index}`}
+                type="text"
+                placeholder="Alt Text"
+                value={media.alt}
+                onChange={(e) =>
+                  handleMediaChange(index, "alt", e.target.value)
+                }
+                className={`w-full p-3 border rounded-md ${errorField.media ? "border-red-500" : "border-gray-300"}`}
+              />
             </div>
           ))}
         </div>
@@ -276,17 +350,35 @@ const CreateListingForm: React.FC = () => {
             Ends At <span className="text-red-500">*</span>
           </label>
           <div ref={endsAtRef}>
-            <DatePicker selected={formData.endsAt ? new Date(formData.endsAt) : null} onChange={handleDateChange} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" minDate={new Date()} timeIntervals={15} className={`w-full p-3 border rounded-md ${errorField.endsAt ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition`} wrapperClassName="w-full" />
+            <DatePicker
+              selected={formData.endsAt ? new Date(formData.endsAt) : null}
+              onChange={handleDateChange}
+              showTimeSelect
+              dateFormat="MMMM d, yyyy h:mm aa"
+              minDate={new Date()}
+              timeIntervals={15}
+              className={`w-full p-3 border rounded-md ${errorField.endsAt ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition`}
+              wrapperClassName="w-full"
+            />
           </div>
 
-          <p className="text-sm text-gray-500 mt-1">Select a date & time easily.</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Select a date & time easily.
+          </p>
         </div>
 
         <div className="flex justify-between items-center">
-          <a href="/profile" className="px-4 py-2 text-white bg-gray-800 rounded-md hover:bg-gray-900">
+          <a
+            href="/profile"
+            className="px-4 py-2 text-white bg-gray-800 rounded-md hover:bg-gray-900"
+          >
             Cancel
           </a>
-          <button type="submit" disabled={isLoading} className={`mt-4 p-3 rounded-md font-semibold text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-secondary-500 hover:bg-secondary-600"}`}>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`mt-4 p-3 rounded-md font-semibold text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-secondary-500 hover:bg-secondary-600"}`}
+          >
             {isLoading ? "Creating..." : "Create Listing"}
           </button>
         </div>

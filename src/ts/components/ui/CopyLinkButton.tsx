@@ -2,7 +2,7 @@ import { useState } from "react";
 
 interface CopyLinkButtonProps {
   url: string;
-  className?: string; // ✅ Allow custom styling
+  className?: string;
 }
 
 const CopyLinkButton: React.FC<CopyLinkButtonProps> = ({ url, className }) => {
@@ -11,7 +11,7 @@ const CopyLinkButton: React.FC<CopyLinkButtonProps> = ({ url, className }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(url);
     setCopied(true);
-    setTimeout(() => setCopied(false), 4000); 
+    setTimeout(() => setCopied(false), 4000);
   };
 
   return (

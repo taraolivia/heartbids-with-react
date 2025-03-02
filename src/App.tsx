@@ -45,14 +45,16 @@ function App() {
   }, []);
 
   return (
-    <LoadingProvider> {/* Wrap the entire app with LoadingProvider */}
+    <LoadingProvider>
+      {" "}
+      {}
       <UserProvider>
         <HeartBidsFilterProvider>
           <ListingsProvider>
             <Router>
-              <LoadingOverlay /> {/* Loading Animation Component */}
+              <LoadingOverlay /> {}
               <Navbar />
-              {/* Dynamic Spacer to prevent overlap */}
+              {}
               <div style={{ height: `${navHeight}px` }}></div>
               <Routes>
                 {/* Home Page */}
@@ -97,13 +99,19 @@ function App() {
                 <Route path="/listing/create" element={<CreateListingPage />} />
 
                 {/* Edit Listing Page - Requires a listing ID */}
-                <Route path="/listing/edit/:id" element={<EditListingWrapper />} />
+                <Route
+                  path="/listing/edit/:id"
+                  element={<EditListingWrapper />}
+                />
 
                 {/* Single Listing Page */}
                 <Route path="/listing/:id" element={<SingleListing />} />
 
                 {/* Other Profile Page */}
-                <Route path="/profile/:username" element={<UserProfilePage />} />
+                <Route
+                  path="/profile/:username"
+                  element={<UserProfilePage />}
+                />
               </Routes>
             </Router>
           </ListingsProvider>

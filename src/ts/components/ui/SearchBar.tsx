@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   const handleClear = () => {
     setQuery("");
-    onSearch(""); // Reset search results
+    onSearch("");
   };
 
   return (
@@ -32,11 +32,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         placeholder="Search listings..."
         className="border border-gray-300 rounded-lg px-4 py-2 min-w-fit bg-white"
       />
-      <button onClick={handleSearch} className="bg-secondary-500 text-white px-4 py-2 rounded-lg hover:bg-secondary-600 cursor-pointer">
+      <button
+        onClick={handleSearch}
+        className="bg-secondary-500 text-white px-4 py-2 rounded-lg hover:bg-secondary-600 cursor-pointer"
+      >
         Search
       </button>{" "}
       {query && (
-        <button onClick={handleClear} className=" text-gray-700 hover:text-black text-sm cursor-pointer w-fit">
+        <button
+          onClick={handleClear}
+          className=" text-gray-700 hover:text-black text-sm cursor-pointer w-fit"
+        >
           ❌ Clear search
         </button>
       )}

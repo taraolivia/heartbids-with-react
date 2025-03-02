@@ -19,22 +19,31 @@ const HandleRegister = async (formData: {
       body: JSON.stringify({
         ...formData,
         avatar: formData.avatar?.url
-          ? { url: formData.avatar.url.trim(), alt: formData.avatar.alt.trim() || "User avatar" }
+          ? {
+              url: formData.avatar.url.trim(),
+              alt: formData.avatar.alt.trim() || "User avatar",
+            }
           : undefined,
         banner: formData.banner?.url
-          ? { url: formData.banner.url.trim(), alt: formData.banner.alt.trim() || "User banner" }
+          ? {
+              url: formData.banner.url.trim(),
+              alt: formData.banner.alt.trim() || "User banner",
+            }
           : undefined,
       }),
     });
 
     const result = await response.json();
-    console.log("Registration Response:", result); // ✅ Log response for debugging
+    console.log("Registration Response:", result);
 
     if (!response.ok) {
-      throw new Error(result.errors?.[0]?.message || "Registration failed. Please check your details.");
+      throw new Error(
+        result.errors?.[0]?.message ||
+          "Registration failed. Please check your details.",
+      );
     }
 
-    return result.data; // ✅ Return registered user data
+    return result.data;
   } catch (error) {
     console.error("Registration failed:", error);
     throw error;

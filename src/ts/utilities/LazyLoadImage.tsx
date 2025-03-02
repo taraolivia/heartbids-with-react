@@ -4,7 +4,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 interface LazyLoadImageProps {
   src: string;
   alt: string;
-  className?: string; // ✅ This allows styling from the parent component
+  className?: string;
 }
 
 const LazyLoadImage = ({ src, alt, className = "" }: LazyLoadImageProps) => {
@@ -13,7 +13,6 @@ const LazyLoadImage = ({ src, alt, className = "" }: LazyLoadImageProps) => {
 
   return (
     <div className="relative">
-      {/* ✅ Show Lottie animation while loading */}
       {!imageLoaded && !imageError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
           <DotLottieReact
@@ -25,7 +24,6 @@ const LazyLoadImage = ({ src, alt, className = "" }: LazyLoadImageProps) => {
         </div>
       )}
 
-      {/* ✅ Actual Image - Styling is applied from the parent component */}
       <img
         src={imageError ? "/HeartBids.png" : src}
         alt={alt}
@@ -35,7 +33,7 @@ const LazyLoadImage = ({ src, alt, className = "" }: LazyLoadImageProps) => {
         onLoad={() => setImageLoaded(true)}
         onError={() => {
           setImageError(true);
-          setImageLoaded(true); // Mark as loaded to remove Lottie animation
+          setImageLoaded(true);
         }}
       />
     </div>

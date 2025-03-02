@@ -14,7 +14,7 @@ const HandleLogout = () => {
   const { setUser } = userContext;
 
   const logout = () => {
-    localStorage.removeItem("user"); // ✅ Keep this
+    localStorage.removeItem("user");
 
     setUser(null);
     navigate("/");

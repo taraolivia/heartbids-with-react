@@ -13,7 +13,6 @@ const getUserProfile = async () => {
   try {
     const apiUrl = `${API_BASE}/auction/profiles/${name}?_listings=true&_wins=true&_bids=true`;
 
-
     const response = await fetch(apiUrl, {
       headers: getHeaders(),
     });
@@ -21,16 +20,14 @@ const getUserProfile = async () => {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("❌ API Error:", errorData);
-      throw new Error(errorData.errors?.[0]?.message || "Failed to fetch profile");
+      throw new Error(
+        errorData.errors?.[0]?.message || "Failed to fetch profile",
+      );
     }
 
     const profile = await response.json();
 
-
-
-
-    return profile.data; // ✅ Return ONLY `profile.data`
-    
+    return profile.data;
   } catch (error) {
     console.error("❌ Error fetching user profile:", error);
     return null;

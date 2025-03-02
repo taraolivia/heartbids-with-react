@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { API_LISTINGS, API_PROFILE, API_KEY  } from "../config/constants";
+import { API_LISTINGS, API_PROFILE, API_KEY } from "../config/constants";
 import { useUser } from "../utilities/useUser";
 import { Listing, Bid } from "../types/listingTypes";
-
-
 
 export const useBidding = (listingId: string) => {
   const { user, setUser } = useUser();
@@ -40,54 +38,47 @@ export const useBidding = (listingId: string) => {
       setBidMessage("❌ Please enter a valid bid amount.");
       return;
     }
-  
+
     const token = localStorage.getItem("accessToken");
     if (!token) {
       setBidMessage("❌ You must be logged in to place a bid.");
       return;
     }
-  
+
     setBidLoading(true);
     setBidMessage(null);
-  
-    try {
-      // ✅ Fetch latest bid history and ENSURE it updates before bidding
 
-      const listingResponse = await fetch(`${API_LISTINGS}/${listingId}?_bids=true`);
+    try {
+      const listingResponse = await fetch(
+        `${API_LISTINGS}/${listingId}?_bids=true`,
+      );
       const listingData: { data: Listing } = await listingResponse.json();
-  
+
       if (!listingResponse.ok || !listingData.data) {
         setBidMessage("❌ Error fetching latest bid data.");
         return;
       }
-  
 
-  
       const highestBid = listingData.data.bids?.length
         ? Math.max(...listingData.data.bids.map((bid: Bid) => bid.amount))
         : 0;
-  
-      // ✅ Ensure new bid is higher than the last bid
+
       if (amount <= highestBid) {
-        setBidMessage(`❌ Your bid must be higher than the current highest bid (€${highestBid}).`);
+        setBidMessage(
+          `❌ Your bid must be higher than the current highest bid (€${highestBid}).`,
+        );
         return;
       }
-  
-      // ✅ Prevent the same user from bidding twice in a row
+
       const lastBidder = listingData.data.bids?.length
         ? listingData.data.bids[listingData.data.bids.length - 1].bidder.name
         : null;
-  
 
-
-  
       if (lastBidder === user?.name) {
         setBidMessage("❌ You cannot place two bids in a row.");
         return;
       }
-  
 
-  
       const response = await fetch(`${API_LISTINGS}/${listingId}/bids`, {
         method: "POST",
         headers: {
@@ -97,17 +88,19 @@ export const useBidding = (listingId: string) => {
         },
         body: JSON.stringify({ amount }),
       });
-  
+
       const data = await response.json();
 
-  
       if (response.ok) {
         setBidMessage(`✅ Bid placed successfully! Your bid: €${amount}`);
-        await updateUserCredits(); // ✅ Update user credits after bidding
-  
-        return data; // ✅ Return bid data to update the UI
+        await updateUserCredits();
+
+        return data;
       } else {
-        const errorMessage = data.errors?.[0]?.message || data.message || "❌ An unknown error occurred.";
+        const errorMessage =
+          data.errors?.[0]?.message ||
+          data.message ||
+          "❌ An unknown error occurred.";
         setBidMessage(errorMessage);
       }
     } catch (error) {
@@ -117,7 +110,6 @@ export const useBidding = (listingId: string) => {
       setBidLoading(false);
     }
   };
-  
 
   return { placeBid, bidMessage, bidLoading };
 };

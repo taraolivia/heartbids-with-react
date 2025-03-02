@@ -8,8 +8,8 @@ const EditButton: React.FC<EditButtonProps> = ({ listingId }) => {
   const navigate = useNavigate();
 
   const handleEdit = (e: React.MouseEvent) => {
-    e.stopPropagation(); // ✅ Prevents card click from triggering
-    navigate(`/listing/edit/${listingId}`); // ✅ Redirects to edit page
+    e.stopPropagation();
+    navigate(`/listing/edit/${listingId}`);
   };
 
   return (
