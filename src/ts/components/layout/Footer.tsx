@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
           {/* Logo */}
           <div className="mb-6 md:mb-0">
-            <img src="/public/HeartBids.png" alt="HeartBids Logo" className="w-40 mx-auto md:mx-0" />
+            <img src="/HeartBids.png" alt="HeartBids Logo" className="w-40 mx-auto md:mx-0" />
           </div>
 
           {/* Quote */}
