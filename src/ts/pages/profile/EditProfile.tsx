@@ -72,7 +72,7 @@ const EditProfile: React.FC = () => {
 
         setSelectedCharity(profile.selectedCharity || null);
       } catch (error) {
-        console.error("❌ Profile fetch error:", error);
+
         setError("Failed to load profile. Please try again.");
       }
     };
@@ -147,7 +147,7 @@ const EditProfile: React.FC = () => {
       setSuccess(true);
       navigate("/profile");
     } catch (error) {
-      console.error("❌ Update error:", error);
+
       setError(
         error instanceof Error
           ? error.message

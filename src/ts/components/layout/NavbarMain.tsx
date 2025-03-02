@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import HandleLogout from "../../utilities/HandleLogout";
-import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 import { HeartBidsFilterToggle } from "../../utilities/HeartBidsFilterToggle";
 import getUserProfile from "../../utilities/getUserProfile";
 
@@ -19,8 +18,7 @@ const Navbar = () => {
   const location = useLocation();
   const logout = HandleLogout();
 
-  const { showOnlyHeartBids } = useHeartBidsFilter();
-  console.log("Filtering listings by HeartBids:", showOnlyHeartBids);
+
 
   useEffect(() => {
     const fetchUser = async () => {

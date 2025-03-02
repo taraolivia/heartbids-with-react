@@ -7,7 +7,7 @@ const HandleLogout = () => {
   const userContext = useContext(UserContext);
 
   if (!userContext) {
-    console.error("UserContext is not available");
+
     return;
   }
 

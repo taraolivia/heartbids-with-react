@@ -64,7 +64,7 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
           endsAt: data.endsAt || "",
         });
       } catch (error) {
-        console.error("❌ Error fetching listing:", error);
+
         setError("Failed to load listing data.");
       } finally {
         setLoading(false);
@@ -166,14 +166,14 @@ const EditListingForm: React.FC<{ listingId: string }> = ({ listingId }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("❌ Update failed:", errorData);
+
 
         throw new Error(errorData.message || "Failed to update listing.");
       }
 
       setSuccess(true);
     } catch (error) {
-      console.error("❌ Error updating listing:", error);
+
       setError(
         error instanceof Error ? error.message : "Unknown error occurred.",
       );

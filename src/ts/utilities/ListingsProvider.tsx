@@ -28,7 +28,7 @@ export const ListingsProvider: React.FC<{ children: React.ReactNode }> = ({
           return docSnap.data().selectedCharity || null;
         }
       } catch (error) {
-        console.error("Error fetching seller charity:", error);
+
       }
       return null;
     };
@@ -75,10 +75,10 @@ export const ListingsProvider: React.FC<{ children: React.ReactNode }> = ({
           }),
         );
 
-        console.log("🚀 Listings with Charity Data:", listingsWithCharity);
+
         setListings(listingsWithCharity);
       } catch (err) {
-        console.error("Fetch error:", err);
+
         setError(err instanceof Error ? err.message : "Unknown error occurred");
       } finally {
         stopGlobalLoading();

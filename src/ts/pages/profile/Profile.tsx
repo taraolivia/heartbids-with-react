@@ -109,7 +109,7 @@ const Profile: React.FC = () => {
       const result = await response.json();
       return result.data;
     } catch (error) {
-      console.error("Error fetching won auctions:", error);
+
       return [];
     }
   };
@@ -152,7 +152,7 @@ const Profile: React.FC = () => {
             const result = await response.json();
             return result.data;
           } catch (error) {
-            console.error(`Error fetching listing ${listingId}:`, error);
+
             return null;
           }
         };
@@ -204,13 +204,13 @@ const Profile: React.FC = () => {
               );
             }
           } catch (error) {
-            console.error(`Error fetching listing ${listingId}:`, error);
+
           }
         }
 
         setBidListings(Object.values(listingMap) as ExtendedListing[]);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+
         setError("Failed to load profile.");
       } finally {
         setLoading(false);

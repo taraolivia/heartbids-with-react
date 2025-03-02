@@ -51,8 +51,8 @@ const UserProfilePage = () => {
         setListings(detailedListings);
         stopLoading();
       })
-      .catch((err) => {
-        console.error("Error fetching user profile:", err);
+      .catch(() => {
+
         setError("Failed to load profile");
         stopLoading();
       });

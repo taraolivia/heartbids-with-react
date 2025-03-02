@@ -15,9 +15,7 @@ export function getHeaders({
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       headers.append("Authorization", `Bearer ${accessToken}`);
-    } else {
-      console.warn("No access token found. User might need to log in.");
-    }
+    } 
   }
 
   if (contentType) {

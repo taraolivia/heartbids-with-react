@@ -86,7 +86,7 @@ const CreateListingForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting form...", formData);
+
 
     setError(null);
     setErrorField({});
@@ -203,7 +203,7 @@ const CreateListingForm: React.FC = () => {
             }
           });
         } else {
-          console.warn("No errors array found in API response.");
+
         }
 
         const finalErrorMessages = [...errorMessages, ...apiErrorMessages];
@@ -234,7 +234,7 @@ const CreateListingForm: React.FC = () => {
         endsAt: "",
       });
     } catch (err: unknown) {
-      console.error("❌ API request failed before reaching the server:", err);
+
       if (err instanceof Error) {
         setError(err.message);
       } else {

@@ -107,11 +107,11 @@ const SingleListing = () => {
           bids: updatedBids,
         };
 
-        console.log("Final Listing with Bids:", formattedListing);
+
 
         setListing(formattedListing);
       } catch (err) {
-        console.error("Error fetching listing:", err);
+
         setError(
           err instanceof Error
             ? "Error fetching listing: " + err.message
@@ -167,9 +167,9 @@ const SingleListing = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!listing) return <div>No listing found</div>;
-  console.log(listing.seller.selectedCharity);
-  console.log("Seller Data:", listing.seller);
-  console.log("Selected Charity:", listing.seller?.selectedCharity);
+
+
+
 
   return (
     <div className="mx-auto py-6 space-y-4">

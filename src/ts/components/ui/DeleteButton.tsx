@@ -26,13 +26,13 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ listingId, onDelete }) => {
         setTimeout(() => setShowToast(false), 2000);
       } else {
         const errorData = await response.json();
-        console.error("Error deleting listing:", errorData);
+
         alert(
           `Failed to delete listing: ${errorData.message || "Unknown error"}`,
         );
       }
     } catch (error) {
-      console.error("Error deleting listing:", error);
+
       alert("An error occurred while deleting the listing.");
     }
   };

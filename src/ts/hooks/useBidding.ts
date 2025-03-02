@@ -29,7 +29,7 @@ export const useBidding = (listingId: string) => {
         window.dispatchEvent(new Event("storage"));
       }
     } catch (error) {
-      console.error("Error updating user credits:", error);
+
     }
   };
 
@@ -104,7 +104,7 @@ export const useBidding = (listingId: string) => {
         setBidMessage(errorMessage);
       }
     } catch (error) {
-      console.error("Bidding error:", error);
+
       setBidMessage("❌ A network error occurred. Please try again.");
     } finally {
       setBidLoading(false);

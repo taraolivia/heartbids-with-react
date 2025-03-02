@@ -34,7 +34,7 @@ const HandleRegister = async (formData: {
     });
 
     const result = await response.json();
-    console.log("Registration Response:", result);
+
 
     if (!response.ok) {
       throw new Error(
@@ -45,7 +45,7 @@ const HandleRegister = async (formData: {
 
     return result.data;
   } catch (error) {
-    console.error("Registration failed:", error);
+
     throw error;
   }
 };

@@ -66,7 +66,7 @@ const Register: React.FC = () => {
     setError(null);
 
     try {
-      const userData = await HandleRegister({
+      await HandleRegister({
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
         password: formData.password.trim(),
@@ -86,7 +86,7 @@ const Register: React.FC = () => {
         venueManager: formData.venueManager,
       });
 
-      console.log("Registered Successfully:", userData);
+
 
       const userRef = doc(db, "users", formData.email);
       await setDoc(

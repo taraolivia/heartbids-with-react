@@ -26,7 +26,7 @@ const LotCard: React.FC<LotCardProps> = ({
   showClosingDate = true,
   onDelete,
 }) => {
-  console.log("LotCard - Seller Data:", seller);
+
 
   return (
     <div className="font-serif bg-secondary-50 shadow-md rounded-xs p-3 pt-3 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col  h-full w-full">

@@ -4,7 +4,7 @@ import { getHeaders } from "../config/headers";
 const getUserProfile = async () => {
   const storedUser = localStorage.getItem("user");
   if (!storedUser) {
-    console.warn("❌ No user found in localStorage.");
+
     return null;
   }
 
@@ -19,7 +19,7 @@ const getUserProfile = async () => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("❌ API Error:", errorData);
+
       throw new Error(
         errorData.errors?.[0]?.message || "Failed to fetch profile",
       );
@@ -29,7 +29,7 @@ const getUserProfile = async () => {
 
     return profile.data;
   } catch (error) {
-    console.error("❌ Error fetching user profile:", error);
+
     return null;
   }
 };

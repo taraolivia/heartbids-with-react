@@ -9,17 +9,15 @@ const getUserBids = async (username: string) => {
       headers: getHeaders(),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("API Error (bids):", errorData);
       return null;
     }
 
-    const bids = await response.json();
-
-    return bids.data;
+    return data?.data ?? null; 
   } catch (error) {
-    console.error("Error fetching user bids:", error);
+    console.error("Fetch error:", error); // Optional: Log network errors
     return null;
   }
 };

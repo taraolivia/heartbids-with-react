@@ -5,7 +5,7 @@ import { db } from "../firebaseConfig";
 
 const getOtherUserProfile = async (username: string) => {
   if (!username) {
-    console.warn("Username is required to fetch a profile.");
+
     return null;
   }
 
@@ -18,8 +18,8 @@ const getOtherUserProfile = async (username: string) => {
     );
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("API Error:", errorData);
+      await response.json();
+
       return null;
     }
 
@@ -42,7 +42,7 @@ const getOtherUserProfile = async (username: string) => {
 
     return { ...userProfile, selectedCharity };
   } catch (error) {
-    console.error("Error fetching other user profile:", error);
+    console.error("Error fetching user profile:", error);
     return null;
   }
 };

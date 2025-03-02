@@ -16,7 +16,7 @@ const HandleLogin = async (email: string, password: string) => {
     });
 
     const loginResult = await response.json();
-    console.log("Login Response:", loginResult);
+
 
     if (!response.ok) {
       throw new Error(
@@ -45,7 +45,7 @@ const HandleLogin = async (email: string, password: string) => {
     );
 
     const profileResult = await profileResponse.json();
-    console.log("Full Profile Data:", profileResult);
+
 
     if (!profileResponse.ok) {
       throw new Error(
@@ -58,7 +58,7 @@ const HandleLogin = async (email: string, password: string) => {
 
     return profileResult.data;
   } catch (error) {
-    console.error("Login failed:", error);
+
     throw error;
   }
 };

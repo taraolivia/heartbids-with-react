@@ -19,7 +19,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const localUser: User | null = JSON.parse(storedUser);
     if (!localUser) {
-      console.warn("No stored user found, skipping fetch.");
+
       return;
     }
 
@@ -56,7 +56,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.removeItem("user");
       }
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+
       setUser(null);
     }
   };
@@ -70,7 +70,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       const userRef = doc(db, "users", user.email);
       await setDoc(userRef, { selectedCharity: charity }, { merge: true });
     } catch (error) {
-      console.error("Error saving selected charity to Firestore:", error);
+
     }
   };
 
