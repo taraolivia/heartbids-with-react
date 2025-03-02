@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { API_LISTINGS } from "../../../config/constants";
 import { getHeaders } from "../../../config/headers";
 import DatePicker from "react-datepicker";

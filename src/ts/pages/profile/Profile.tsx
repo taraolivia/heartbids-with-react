@@ -16,7 +16,11 @@ import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 import { useUser } from "../../utilities/useUser";
 import { User } from "../../utilities/UserContext";
 
-type ExtendedListing = Listing & { userBid: number; highestBid: number };
+type ExtendedListing = Listing & {
+  userBid: number;
+  highestBid: number;
+};
+
 
 
 
@@ -25,7 +29,7 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
-  const [bidListings, setBidListings] = useState<(Listing & { userBid: number; highestBid: number })[]>([]);
+  const [bidListings, setBidListings] = useState<ExtendedListing[]>([]);
   const logout = HandleLogout();
   const [wonListings, setWonListings] = useState<Listing[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("newest");
@@ -150,33 +154,39 @@ const Profile: React.FC = () => {
 
         const userBids: Bid[] = await getUserBids(profile.name);
         if (!userBids.length) return;
-
-        const listingMap: Record<string, Listing & { userBid: number; highestBid: number }> = {};
+        
+        const listingMap: Record<string, ExtendedListing> = {};
 
         for (const bid of userBids) {
           if (!bid.listing?.id) continue;
-
+        
           const listingId = bid.listing.id;
-
+        
           try {
             if (!listingMap[listingId]) {
               const fullListing = await fetchFullListingDetails(listingId);
               if (!fullListing) continue;
-
+        
               listingMap[listingId] = {
                 ...fullListing,
-                userBid: bid.amount,
-                highestBid: fullListing.bids?.length ? Math.max(...fullListing.bids.map((b: Bid) => b.amount)) : 0,
+                userBid: bid.amount ?? 0, // ✅ Always define `userBid`
+                highestBid: fullListing.bids?.length
+                  ? Math.max(...fullListing.bids.map((b: Bid) => b.amount))
+                  : 0, // ✅ Always define `highestBid`
               };
             } else {
-              listingMap[listingId].userBid = Math.max(listingMap[listingId].userBid, bid.amount);
+              listingMap[listingId].userBid = Math.max(listingMap[listingId].userBid, bid.amount ?? 0);
             }
           } catch (error) {
             console.error(`Error fetching listing ${listingId}:`, error);
           }
         }
-
-        setBidListings(Object.values(listingMap));
+        
+        // ✅ Ensure bid listings are stored as `ExtendedListing[]`
+        setBidListings(Object.values(listingMap) as ExtendedListing[]);
+        
+        
+        
       } catch (error) {
         console.error("Error fetching profile:", error);
         setError("Failed to load profile.");
@@ -309,21 +319,21 @@ const Profile: React.FC = () => {
           <p className="text-gray-600 mb-4">Auctions where you’ve placed bids.</p>
 
           <div className="flex  gap-4 items-end mb-4 flex-wrap">
-            <SortDropdown
-              selectedSort={selectedSort}
-              onSortChange={setSelectedSort}
-              bidListings={bidListings}
-              setSortedListings={(sorted: ExtendedListing[]) =>
-                setBidListings(
-                  sorted.map((listing: ExtendedListing) => ({
-                    ...listing,
-                    userBid: listing.userBid ?? 0,
-                    highestBid: listing.highestBid ?? 0,
-                  }))
-                )
-              }
-              
-            />
+          <SortDropdown
+  selectedSort={selectedSort}
+  onSortChange={setSelectedSort}
+  bidListings={bidListings}
+  setSortedListings={(sorted) =>
+    setBidListings(
+      sorted.map((listing) => ({
+        ...listing,
+        userBid: listing.userBid ?? 0, // Ensure no undefined values
+        highestBid: listing.highestBid ?? 0,
+      })) as ExtendedListing[]
+    )
+  }
+/>
+
             <SearchBar onSearch={setSearchQuery} />
           </div>
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import clsx from "clsx"; 
+import * as clsx from "clsx";
 
 const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
   const [timeLeft, setTimeLeft] = useState<string>("Calculating...");
