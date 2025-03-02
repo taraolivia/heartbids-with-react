@@ -1,7 +1,6 @@
-import  { useState } from "react";
+import { useState } from "react";
 import AllCharities, { Charity } from "../utilities/AllCharities";
 import FeaturedCharity from "../components/layout/FeaturedCharity";
-import Hero from "../components/layout/Hero";
 import Footer from "../components/layout/Footer";
 import GeneralInfo from "../components/layout/GeneralInfo";
 import MostPopularListings from "../components/lots/MostPopularListings";
@@ -18,10 +17,9 @@ const Charities: React.FC = () => {
 
   return (
     <div>
-      {/* Hero Section */}
-      <Hero />
-
-      <FeaturedCharity />
+      <div className="pt-2">
+        <FeaturedCharity />
+      </div>
 
       <section className="py-16 px-4 min-h-screen">
         <div className="max-w-4xl mx-auto text-center">

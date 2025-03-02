@@ -7,7 +7,7 @@ import MostPopularListings from "../components/lots/MostPopularListings";
 import AllLots from "../components/lots/AllLots";
 
 const Listings = () => {
-  const { listings, loading, error } = useListings(); // ✅ Now fetching from global context
+  const { listings, loading, error } = useListings();
 
   return (
     <div className="mt-20">

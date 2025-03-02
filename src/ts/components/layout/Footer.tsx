@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
       {/* Bottom Footer */}
       <div className="py-8 m-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 m-auto">
-          <div className="flex flex-row flex-wrap m-auto justify-evenly gap-10">
+          <div className="flex flex-row flex-wrap m-auto justify-evenly gap-5">
             {/* About Section */}
             <div className="flex flex-col text-left lg:w-1/3 lg:min-w-96 ">
               <div className="flex flex-col self-center text-left">

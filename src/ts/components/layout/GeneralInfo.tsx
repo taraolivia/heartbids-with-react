@@ -1,4 +1,6 @@
 
+
+
 const GeneralInfo = () => {
     return (
       <section className="bg-gradient-to-b from-background-50 to-primary-300 py-16">

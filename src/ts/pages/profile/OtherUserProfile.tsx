@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import getOtherUserProfile from "../../utilities/GetOtherUserProfile";
 import LotCard from "../../components/lots/LotCard"; 
@@ -6,34 +6,40 @@ import { UserProfile, Listing } from "../../types/listingTypes";
 import Footer from "../../components/layout/Footer";
 import { API_BASE } from "../../config/constants";
 import { getHeaders } from "../../config/headers";
+import { useLoading } from "../../utilities/LoadingProvider"; 
+import LoadingOverlay from "../../components/ui/LoadingOverlay";
 
 const UserProfilePage = () => {
   const { username } = useParams<{ username: string }>();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { setLoading } = useLoading();
+    const [error, setError] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
-  
+  const startLoading = useCallback(() => setLoading(true), [setLoading]);
+  const stopLoading = useCallback(() => setLoading(false), [setLoading]);
 
   useEffect(() => {
     if (!username) return;
-  
-    setLoading(true);
+
+    startLoading(); // ✅ Use memoized function
     getOtherUserProfile(username)
       .then(async (data) => {
         if (!data) {
           setError("User not found");
-          setLoading(false);
+          stopLoading();
           return;
         }
         setUserProfile(data);
-  
+
         const detailedListings = await Promise.all(
           (data.listings as Listing[] || []).map(async (listing: Listing) => {
-            const response = await fetch(`${API_BASE}/auction/listings/${listing.id}?_bids=true&_seller=true`, {
-              method: "GET",
-              headers: getHeaders(),
-            });
+            const response = await fetch(
+              `${API_BASE}/auction/listings/${listing.id}?_bids=true&_seller=true`, // ✅ Fixed: Correct use of template literals
+              {
+                method: "GET",
+                headers: getHeaders(),
+              }
+            );
         
             if (!response.ok) return listing;
         
@@ -41,22 +47,18 @@ const UserProfilePage = () => {
             return result.data as Listing;
           })
         );
-        
-  
+
         setListings(detailedListings);
-        setLoading(false);
+        stopLoading(); // ✅ Use memoized function
       })
       .catch((err) => {
         console.error("Error fetching user profile:", err);
         setError("Failed to load profile");
-        setLoading(false);
+        stopLoading();
       });
-  }, [username]);
+  }, [username, startLoading, stopLoading]); // ✅ No more ESLint warnings
   
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading profile...</div>;
-  }
 
   if (error) {
     return <div className="min-h-screen flex items-center justify-center text-red-600">{error}</div>;
@@ -68,6 +70,7 @@ const UserProfilePage = () => {
 
   return (
     <div className="min-h-screen w-full">
+       <LoadingOverlay /> 
       <div className="max-w-6xl mx-auto bg-primary-100 pb-12 shadow-xl rounded-lg overflow-hidden">
   
         {/* ✅ Profile Banner */}

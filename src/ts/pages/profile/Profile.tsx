@@ -15,6 +15,8 @@ import SearchBar from "../../components/ui/SearchBar";
 import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 import { useUser } from "../../utilities/useUser";
 import { User } from "../../utilities/UserContext";
+import { useLoading } from "../../utilities/LoadingProvider";
+import LoadingOverlay from "../../components/ui/LoadingOverlay";
 
 type ExtendedListing = Listing & {
   userBid: number;
@@ -26,7 +28,7 @@ type ExtendedListing = Listing & {
 
 const Profile: React.FC = () => {
   const { user, setUser } = useUser();
-  const [loading, setLoading] = useState(true);
+  const { setLoading } = useLoading();
   const [error, setError] = useState<string | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
   const [bidListings, setBidListings] = useState<ExtendedListing[]>([]);
@@ -103,6 +105,7 @@ const Profile: React.FC = () => {
 
     const fetchProfile = async () => {
       try {
+        setLoading(true);
         const profile = await getUserProfile();
         if (!profile) throw new Error("Failed to fetch user profile");
 
@@ -196,18 +199,18 @@ const Profile: React.FC = () => {
     };
 
     fetchProfile();
-  }, [setUser, user?.selectedCharity]); // ✅ Added `user?.selectedCharity`
+  }, [setUser, user?.selectedCharity, setLoading]);
 
   const handleDelete = (listingId: string) => {
     setListings((prevListings) => prevListings.filter((listing: Listing) => listing.id !== listingId));
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading profile...</div>;
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-600">{error}</div>;
   if (!user) return <div className="min-h-screen flex items-center justify-center text-gray-600">Failed to load profile.</div>;
 
   return (
     <div className="min-h-screen w-full">
+        <LoadingOverlay /> 
       <div className="max-w-6xl mx-auto bg-primary-100 pb-12 shadow-xl rounded-lg overflow-hidden">
         {/* ✅ Profile Banner */}
         <div className="relative w-full lg:h-90 md:h-72 h-54  bg-gray-200">{user.banner?.url && <img src={user.banner.url} alt={user.banner.alt || "User Banner"} className="w-full h-full object-cover" />}</div>
@@ -279,7 +282,7 @@ const Profile: React.FC = () => {
           <p className="text-gray-600 mb-4">These are the listings you've won.</p>
 
           {filteredWonListings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 m-auto">
               {filteredWonListings.map((lot) => (
                 <LotCard key={lot.id} id={lot.id} image={lot.media?.[0]?.url ?? "/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt} showClosingDate={false} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} />
               ))}
@@ -297,7 +300,7 @@ const Profile: React.FC = () => {
           <p className="text-gray-600 text-lg mb-6">These are the auctions you've created.</p>
 
           {listings.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 m-auto">
               {listings.map((lot) => (
                 <div className="w-96" key={lot.id}>
                   <LotCard id={lot.id} image={lot.media?.[0]?.url ?? "/HeartBids.png"} title={lot.title} price={lot.bids && lot.bids.length > 0 ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot.bids ? lot.bids.length : 0} closingDate={lot.endsAt} showClosingDate={true} tags={lot.tags ?? []} showTags={true} showSeller={false} showControls={true} description={lot.description ?? ""} created={lot.created} updated={lot.updated} showDescription={true} showCreatedUpdated={true} onDelete={handleDelete} />
@@ -349,7 +352,7 @@ const Profile: React.FC = () => {
 
           {/* ✅ Render Filtered Listings */}
           {filteredBids.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 m-auto">
               {sortedFilteredBids.map((lot) => (
                 <LotCard key={lot.id} id={lot.id} image={lot.media?.length > 0 ? lot.media[0].url : "/HeartBids.png"} title={lot.title} price={lot.highestBid} bids={lot.bids?.length ?? 0} closingDate={lot.endsAt ?? ""} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller ?? "Unknown Seller"} showControls={false} userBid={lot.userBid} showClosingDate={true} />
               ))}

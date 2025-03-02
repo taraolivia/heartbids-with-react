@@ -3,6 +3,7 @@ import { LotCardProps } from "../../types/listingTypes";
 import EditButton from "../ui/EditButton";
 import DeleteButton from "../ui/DeleteButton";
 import AuctionCountdown from "../ui/AuctionCountdown";
+import LazyLoadImage from "../../utilities/LazyLoadImage";
 
 
 
@@ -12,14 +13,13 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
   return (
     <div className="bg-secondary-50 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col h-full w-full">
       <Link to={`/listing/${id}`} className="block">
-        <img
-          src={image || "/HeartBids.png"}
-          alt={title}
-          className="w-full lg:h-72 md:h-62 sm:h-62 h-42 object-cover rounded-lg border border-gray-300"
-          onError={(e) => {
-            e.currentTarget.src = "/HeartBids.png";
-          }}
-        />
+      <LazyLoadImage
+  src={image || "/HeartBids.png"} 
+  alt={title}
+  className="w-full h-74 object-cover rounded-lg border border-gray-300"
+/>
+
+
 
         {/* ✅ Title Styling */}
         <h3 className="text-lg font-semibold text-gray-900 mt-4">{title}</h3>

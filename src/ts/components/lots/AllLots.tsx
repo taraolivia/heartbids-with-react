@@ -4,6 +4,9 @@ import SortDropdown from "../ui/SortDropdown";
 import { Listing } from "../../types/listingTypes";
 import { useHeartBidsFilter } from "../../utilities/useHeartBidsFilter";
 import SearchBar from "../ui/SearchBar";
+import TagFilter from "../ui/TagFilter";
+import EndedAuctionsFilter from "../ui/EndedAuctionsFilter";
+
 
 interface AllLotsProps {
   listings: Listing[];
@@ -14,31 +17,45 @@ const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
   const [sortType, setSortType] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 30;
-
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  
   const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
   const [searchQuery, setSearchQuery] = useState("");
 
   const { showOnlyHeartBids } = useHeartBidsFilter();
 
-  // ✅ Update filtered listings whenever filters or search change
   useEffect(() => {
     let updatedListings = includeEnded
-      ? listings // ✅ Show all listings if "Include Ended" is checked
-      : listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now()); // ✅ Only active listings
-
+      ? listings
+      : listings.filter((lot) => new Date(lot.endsAt).getTime() > Date.now());
+  
     // ✅ Apply HeartBids filter
     if (showOnlyHeartBids) {
       updatedListings = updatedListings.filter((listing) => listing.tags?.includes("HeartBids"));
     }
-
+  
     // ✅ Apply Search
     if (searchQuery.trim()) {
-      updatedListings = updatedListings.filter((listing) => listing.title.toLowerCase().includes(searchQuery.toLowerCase()) || (listing.description && listing.description.toLowerCase().includes(searchQuery.toLowerCase())));
+      updatedListings = updatedListings.filter(
+        (listing) =>
+          listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (listing.description && listing.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
     }
+  
+    // ✅ Apply Tag Filter
+    if (selectedTags.length > 0) {
+      updatedListings = updatedListings.filter((lot) =>
+        lot.tags?.some((tag) => selectedTags.map((t) => t.toLowerCase()).includes(tag.toLowerCase()))
+      );
+    }
+  
 
+  
     setFilteredListings(updatedListings);
-    setCurrentPage(1); // ✅ Reset pagination when filters or search change
-  }, [includeEnded, showOnlyHeartBids, searchQuery, listings]);
+    setCurrentPage(1);
+  }, [includeEnded, showOnlyHeartBids, searchQuery, listings, selectedTags ]);
+  
 
   // ✅ Search handler updates the searchQuery state
   const handleSearch = (query: string) => {
@@ -87,36 +104,37 @@ const AllLots: React.FC<AllLotsProps> = ({ listings }) => {
   const paginatedLots = sortedLots.slice(startIndex, startIndex + perPage);
 
   return (
-    <section className="px-6 mt-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">All Lots</h2>
+<section className="px-6 mt-6">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 className="text-3xl font-bold text-gray-800 mb-4">All Lots</h2>
 
-        {/* Sorting Dropdown */}
-        <SortDropdown selectedSort={sortType} onSortChange={setSortType} bidListings={listings} setSortedListings={() => {}} />
+    {/* ✅ Filtering Options */}
+    <div className="flex gap-4 items-end mb-4 flex-wrap">
+      <SortDropdown selectedSort={sortType} onSortChange={setSortType} bidListings={listings} setSortedListings={() => {}} />
+      <SearchBar onSearch={handleSearch} />
+    </div>
 
-        {/* Include Ended Checkbox */}
-        <div className="flex items-center gap-2 mb-6">
-          <input type="checkbox" id="includeEnded" checked={includeEnded} onChange={() => setIncludeEnded(!includeEnded)} className="w-5 h-5 accent-500 cursor-pointer" />
-          <label htmlFor="includeEnded" className="text-gray-800 cursor-pointer">
-            Include ended auctions
-          </label>
-        </div>
+    {/* ✅ Tag Filter */}
+    <TagFilter selectedTags={selectedTags} onTagChange={setSelectedTags} availableTags={[...new Set(listings.flatMap((lot) => lot.tags ?? []))]} />
 
-        {/* Search Component */}
-        <SearchBar onSearch={handleSearch} />
+    {/* ✅ Include Ended Auctions */}
+    <EndedAuctionsFilter includeEnded={includeEnded} onToggle={() => setIncludeEnded(!includeEnded)} />
 
-        {/* ✅ Results count */}
-        <p className="text-gray-600 text-sm mb-4">{filteredListings.length} results</p>
 
-        {paginatedLots.length === 0 ? (
-          <div className="text-center text-gray-600 mt-8">No lots available.</div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 m-auto">
-            {paginatedLots.map((lot) => (
-              <LotCard key={lot.id} id={lot.id} image={lot.media.length > 0 ? lot.media[0].url : "/HeartBids.png"} title={lot.title} price={Array.isArray(lot.bids) && lot.bids.length > 0 ? Math.max(...lot.bids.map((bid) => bid.amount)) : 0} bids={lot._count?.bids || 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller} />
-            ))}
-          </div>
-        )}
+
+    {/* ✅ Results count */}
+    <p className="text-gray-600 text-sm my-4">{filteredListings.length} results</p>
+
+    {/* ✅ Render Listings */}
+    {paginatedLots.length === 0 ? (
+      <div className="text-center text-gray-600 mt-8">No lots available.</div>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 m-auto">
+        {paginatedLots.map((lot) => (
+          <LotCard key={lot.id} id={lot.id} image={lot.media.length > 0 ? lot.media[0].url : "/HeartBids.png"} title={lot.title} price={lot.bids?.length ? Math.max(...lot.bids.map((b) => b.amount)) : 0} bids={lot._count?.bids || 0} closingDate={lot.endsAt} tags={lot.tags ?? []} showTags={true} showSeller={true} seller={lot.seller} />
+        ))}
+      </div>
+    )}
 
        {/* ✅ Hide pagination if only 1 page */}
 {totalPages > 1 && (

@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { API_LISTINGS } from "../../../config/constants";
 import { getHeaders } from "../../../config/headers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ErrorMessage from "../../../components/ui/ErrorMessage";
+import { useLoading } from "../../../utilities/LoadingProvider"; // ✅ Import Global Loading Hook
+import LoadingOverlay from "../../../components/ui/LoadingOverlay";
 
 interface Listing {
   title: string;
@@ -26,6 +28,7 @@ const CreateListingForm: React.FC = () => {
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const tagsRef = useRef<HTMLInputElement | null>(null);
   const endsAtRef = useRef<HTMLDivElement | null>(null); // ✅ Use div, NOT DatePicker
+  const { setLoading } = useLoading(); // ✅ Use Global Loading Hook
 
   const [formData, setFormData] = useState<Listing>({
     title: "",
@@ -36,9 +39,10 @@ const CreateListingForm: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [errorField, setErrorField] = useState<Record<string, boolean>>({});
-
+  const { isLoading } = useLoading();
   const [success, setSuccess] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const startLoading = useCallback(() => setLoading(true), [setLoading]);
+  const stopLoading = useCallback(() => setLoading(false), [setLoading]);
 
   useEffect(() => {
     const firstErrorKey = Object.keys(errorField).find((key) => errorField[key]); // ✅ Find first error field
@@ -79,7 +83,7 @@ const CreateListingForm: React.FC = () => {
     setError(null);
     setErrorField({});
     setSuccess(false);
-    setLoading(true);
+    startLoading();
 
     let firstErrorField: HTMLElement | null = null;
     const newErrorFields: Record<string, boolean> = {};
@@ -140,7 +144,6 @@ const CreateListingForm: React.FC = () => {
 
     // 🚨 STOP if required fields or expected API errors exist
     if (Object.keys(newErrorFields).length > 0) {
-
       setLoading(false);
 
       if (firstErrorField) {
@@ -149,8 +152,6 @@ const CreateListingForm: React.FC = () => {
       }
       return; // 🚨 Prevents API request if there are expected errors
     }
-
-
 
     // ✅ Make API request (If it reaches here, manual validation has passed)
     try {
@@ -163,12 +164,9 @@ const CreateListingForm: React.FC = () => {
         }),
       });
 
-
       const responseData = await response.json();
 
-
       if (!response.ok) {
-
         const newApiErrorFields: Record<string, boolean> = {};
         const apiErrorMessages: string[] = [];
 
@@ -202,8 +200,6 @@ const CreateListingForm: React.FC = () => {
         setErrorField({ ...newErrorFields, ...newApiErrorFields });
         setError(finalErrorMessages.join("\n")); // ✅ Show ALL errors together
 
-
-
         const firstErrorKey = Object.keys(newApiErrorFields).find((key) => newApiErrorFields[key]);
         if (firstErrorKey) {
           const firstField = document.getElementById(firstErrorKey);
@@ -216,7 +212,6 @@ const CreateListingForm: React.FC = () => {
         throw new Error(finalErrorMessages.join("\n"));
       }
 
-
       setSuccess(true);
       setFormData({ title: "", description: "", tags: [], media: [{ url: "", alt: "" }], endsAt: "" });
     } catch (err: unknown) {
@@ -227,18 +222,20 @@ const CreateListingForm: React.FC = () => {
         setError("An unexpected error occurred.");
       }
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   };
 
   return (
-    <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-lg">
+    <div className="w-full max-w-3xl p-6 rounded-lg shadow-lg">
+      <LoadingOverlay />
+
       <h1 className="text-3xl font-semibold mb-4 pt-22">Create Listing</h1>
       <div>
         <p>All fields are required to create a listing on HeartBids. This ensures that the buyers know what they are bidding on and creates a safe experience for everyone.</p>
       </div>
       {error && <ErrorMessage message={error} />}
-      {success && <p className="text-green-500">Listing created successfully!</p>}
+      {success && <p className="text-primary-500">Listing created successfully!</p>}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block font-bold text-gray-800 mb-2">
@@ -279,7 +276,7 @@ const CreateListingForm: React.FC = () => {
             Ends At <span className="text-red-500">*</span>
           </label>
           <div ref={endsAtRef}>
-            <DatePicker selected={formData.endsAt ? new Date(formData.endsAt) : null} onChange={handleDateChange} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" minDate={new Date()} timeIntervals={15} className={`w-full p-3 border rounded-md ${errorField.endsAt ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition`} wrapperClassName="w-full" />
+            <DatePicker selected={formData.endsAt ? new Date(formData.endsAt) : null} onChange={handleDateChange} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" minDate={new Date()} timeIntervals={15} className={`w-full p-3 border rounded-md ${errorField.endsAt ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition`} wrapperClassName="w-full" />
           </div>
 
           <p className="text-sm text-gray-500 mt-1">Select a date & time easily.</p>
@@ -289,8 +286,8 @@ const CreateListingForm: React.FC = () => {
           <a href="/profile" className="px-4 py-2 text-white bg-gray-800 rounded-md hover:bg-gray-900">
             Cancel
           </a>
-          <button type="submit" disabled={loading} className={`mt-4 p-3 rounded-md font-semibold text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}`}>
-            {loading ? "Creating..." : "Create Listing"}
+          <button type="submit" disabled={isLoading} className={`mt-4 p-3 rounded-md font-semibold text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-secondary-500 hover:bg-secondary-600"}`}>
+            {isLoading ? "Creating..." : "Create Listing"}
           </button>
         </div>
       </form>

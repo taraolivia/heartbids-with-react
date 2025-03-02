@@ -1,4 +1,3 @@
-import Hero from "../components/layout/Hero";
 import MostPopularListings from "../components/lots/MostPopularListings";
 import FAQ from "../components/layout/FAQ";
 import GeneralInfo from "../components/layout/GeneralInfo";
@@ -7,12 +6,9 @@ import Footer from "../components/layout/Footer";
 const About = () => {
   return (
     <div>
-      {/* Hero Section */}
-      <Hero />
-
 
       {/* Text Sections */}
-      <section className="py-16">
+      <section className="pt-20 pb-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-800">About HeartBids</h2>
           <p className="text-gray-600 mt-4">

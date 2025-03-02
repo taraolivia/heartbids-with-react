@@ -1,15 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { API_LISTINGS } from "../config/constants";
 import { getHeaders } from "../config/headers";
 import { ListingsContext } from "./ListingsContext"; 
 import { Listing } from "../types/listingTypes";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { useLoading } from "./LoadingProvider"; // Import global loading hook
 
 export const ListingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [listings, setListings] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoadingState] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { setLoading } = useLoading(); // Get global loading function
+
+  // ✅ Wrap setLoading inside useCallback to prevent unnecessary re-renders
+  const startGlobalLoading = useCallback(() => setLoading(true), [setLoading]);
+  const stopGlobalLoading = useCallback(() => setLoading(false), [setLoading]);
 
   useEffect(() => {
     const fetchSellerCharity = async (sellerEmail: string) => {
@@ -32,6 +38,9 @@ export const ListingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       let hasMore = true;
 
       try {
+        startGlobalLoading(); // ✅ Use the memoized function
+        setLoadingState(true);
+
         while (hasMore) {
           const response = await fetch(`${API_LISTINGS}?page=${page}&_bids=true&_seller=true`, {
             method: "GET",
@@ -63,12 +72,13 @@ export const ListingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         console.error("Fetch error:", err);
         setError(err instanceof Error ? err.message : "Unknown error occurred");
       } finally {
-        setLoading(false);
+        stopGlobalLoading(); // ✅ Use the memoized function
+        setLoadingState(false);
       }
     };
 
     fetchAllListings();
-  }, []); // ✅ Now safe without infinite re-renders
+  }, [startGlobalLoading, stopGlobalLoading]); // ✅ No more ESLint warnings
 
   return (
     <ListingsContext.Provider value={{ listings, loading, error }}>

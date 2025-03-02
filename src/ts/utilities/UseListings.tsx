@@ -11,16 +11,16 @@ export const useListings = () => {
 
   // ✅ Extract unique, normalized tags from listings
   const availableTags = useMemo(() => {
-    const tagMap = new Map<string, string>(); // lowercase -> Capitalized version
+    const tagMap = new Map<string, string>(); 
     listings.forEach((listing) => {
       listing.tags?.forEach((tag) => {
         const lowerTag = tag.toLowerCase();
         if (!tagMap.has(lowerTag)) {
-          tagMap.set(lowerTag, tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase()); // Capitalized version
+          tagMap.set(lowerTag, tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase());
         }
       });
     });
-    return Array.from(tagMap.values()).sort((a, b) => a.localeCompare(b)); // ✅ Sorted unique tags
+    return Array.from(tagMap.values()).sort((a, b) => a.localeCompare(b));
   }, [listings]);
 
   return { listings, loading, error, availableTags };

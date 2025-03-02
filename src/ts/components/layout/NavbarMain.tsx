@@ -150,7 +150,7 @@ const Navbar = () => {
         )}
 
         {/* ✅ HeartBids Filter (Hidden on md and below) */}
-        <div className="pb-4 pt-8 absolute w-full top-24 left-0 bg-background-50/20 backdrop-blur-xs transition duration-300 group-hover:bg-background-50 z-0 hidden md:flex">
+        <div className="pb-4 pt-6 absolute w-full top-24 left-0 bg-background-50/20 backdrop-blur-xs transition duration-300 group-hover:bg-background-50 z-0 hidden md:flex">
           <div className="max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex justify-start">
             <HeartBidsFilterToggle />
           </div>

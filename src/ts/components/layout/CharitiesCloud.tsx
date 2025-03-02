@@ -9,7 +9,7 @@ const CharitiesCloud: React.FC = () => {
         <h2 className="text-3xl font-bold text-white mb-12">Charities we collaborate with</h2>
 
         {/* Fluid Logo Layout */}
-        <div className="flex flex-wrap justify-center gap-x-16 gap-y-15 mb-12">
+        <div className="flex flex-wrap justify-center gap-x-16 gap-y-15 mb-18">
           {AllCharities.map((charity, index) => (
             <div key={charity.name} className={`flex items-center space-x-3 ${index % 2 === 0 ? "translate-y-2" : "-translate-y-2"}`}>
               <img src={charity.logo} alt={charity.name} className="h-10 md:h-12 object-contain" />
@@ -19,7 +19,7 @@ const CharitiesCloud: React.FC = () => {
         </div>
       </div>
       <Link to="/charities" className="p-3 bg-secondary-600 rounded-2xl text-white text-lg hover:bg-secondary-700">
-        Read more about these charities
+        Read more about the charities
       </Link>
     </section>
   );

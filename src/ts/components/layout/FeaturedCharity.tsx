@@ -15,9 +15,9 @@ const FeaturedCharity: React.FC = () => {
   }, []);
 
   return (
-    <section className=" py-16 px-4 bg-gradient-to-t from-background-50 via-secondary-100 to-primary-200">
+    <section className=" py-20 px-4 bg-gradient-to-t from-background-50 via-secondary-100 to-primary-200">
       <div className="max-w-4xl mx-auto text-center m-auto">
-        <h2 className="text-4xl font-bold text-gray-800 mb-6">Featured Charities</h2>
+        <h2 className="text-4xl font-bold text-gray-800 my-6">Featured Charities</h2>
         <p className="text-lg text-gray-600 mb-10">
           Discover some of our most impactful organizations.
         </p>

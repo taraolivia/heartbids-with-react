@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import * as clsx from "clsx";
 
 const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
   const [timeLeft, setTimeLeft] = useState<string>("Calculating...");
@@ -17,7 +16,7 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
       const now = new Date().getTime();
       const difference = endTime - now;
 
-      let status = "";
+      let status = "bg-blue-200";
       if (difference <= 0) {
         setTimeLeft("Auction ended");
         status = "bg-gray-300";
@@ -25,8 +24,6 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
         status = "bg-red-100";
       } else if (difference < 1000 * 60 * 60 * 24 * 30) {
         status = "bg-green-100";
-      } else {
-        status = "bg-blue-200";
       }
       setStatusClass(status);
 
@@ -57,7 +54,7 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
   }, [closingDate]);
 
   return (
-    <div className={clsx("mt-2 px-3 py-2 rounded-lg text-sm font-semibold", statusClass)}>
+    <div className={`mt-2 px-3 py-2 rounded-lg text-sm font-semibold ${statusClass}`}>
       {timeLeft === "Auction ended" ? timeLeft : `Closing in: ${timeLeft}`}
     </div>
   );
