@@ -216,7 +216,7 @@ const SingleListing = () => {
           </div>
 
           <div className="flex-1 space-y-4 min-w-82">
-            <p className="text-text-900 text-lg">{listing.description}</p>
+            <p className="text-text-900 text-xl font-serif">{listing.description}</p>
             {Array.isArray(listing.tags) && listing.tags.length > 0 ? (
               <div className="flex flex-wrap gap-2 mt-2">
                 {listing.tags.map((tag) => (
