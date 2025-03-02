@@ -9,12 +9,12 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
   console.log("LotCard - Seller Data:", seller);
 
   return (
-    <div className="font-serif bg-secondary-50 shadow-md rounded-xs px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col  h-full w-full">
+    <div className="font-serif bg-secondary-50 shadow-md rounded-xs p-3 pt-3 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col  h-full w-full">
       <Link to={`/listing/${id}`} className="block">
         <LazyLoadImage src={image || "/HeartBids.png"} alt={title} className="w-full h-74 object-cover rounded-sm border border-gray-300" />
 
         {/* ✅ Title Styling */}
-        <h3 className="text-xl font-semibold font-serif text-gray-900 mt-6">{title}</h3>
+        <h3 className="text-xl font-serif text-gray-900 mt-6">{title}</h3>
 
         {showSeller && seller && (
           <div className="mt-4 p-2 bg-blue-200 rounded-lg shadow-md w-fit">

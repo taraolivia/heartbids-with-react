@@ -1,50 +1,126 @@
-# React + TypeScript + Vite + Tailwind
+# 🏆 HeartBids – Auction for a Cause
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![HeartBids Banner](https://heartbids.netlify.app/assets/banner.png)
 
-Currently, two official plugins are available:
+**HeartBids** is an auction platform built with **React**, where users can donate, bid, and win items to support charitable causes. Earn credits by listing auctions, use them to bid on exciting items, and make a difference with every transaction.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🌍 **Built to empower giving.** **Designed for seamless bidding.**
 
-## Expanding the ESLint configuration
+[🚀 Live Demo](https://heartbids.netlify.app/) | [📂 Repository](https://github.com/taraolivia/heartbids-with-react)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 📌 Features
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+✅ **User Authentication** – Secure login and registration with `stud.noroff.no` emails.  
+✅ **Auctions & Bidding** – Create, browse, and bid on listings with real-time updates.  
+✅ **Credit System** – Users start with 1000 credits and earn more by selling items.  
+✅ **Profile Customization** – Upload avatars and track bidding history.  
+✅ **Filtering & Search** – Find relevant auctions quickly using dynamic filters.  
+✅ **Charity Integration** – Select a charity, and its logo appears on your profile.  
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React (Vite) + TypeScript  
+- **Styling:** Tailwind CSS  
+- **State Management:** React Context (User & Filter Contexts)  
+- **API Integration:** Noroff Auction API  
+- **Hosting:** Netlify  
+
+---
+
+## 📂 Project Structure
+
+```plaintext
+📦 heartbids
+ ┣ 📂 src
+ ┃ ┣ 📂 components  # Reusable UI components
+ ┃ ┣ 📂 contexts    # React Contexts for global state
+ ┃ ┣ 📂 hooks       # Custom hooks for API fetching
+ ┃ ┣ 📂 pages       # Main application pages
+ ┃ ┣ 📂 utils       # Helper functions and utilities
+ ┃ ┣ 📂 assets      # Static assets (logos, images)
+ ┣ 📜 README.md     # You're here! 📌
+ ┣ 📜 package.json  # Dependencies & scripts
+ ┣ 📜 vite.config.js # Vite configuration
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+---
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## 🚀 Installation & Setup
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+1️⃣ **Clone the repository**  
+```bash
+git clone https://github.com/taraolivia/heartbids-with-react.git
+cd heartbids-with-react
 ```
+
+2️⃣ **Install dependencies**  
+```bash
+npm install
+```
+
+3️⃣ **Run the development server**  
+```bash
+npm run dev
+```
+🔗 The app will be available at `http://localhost:5173/`
+
+---
+
+## 🎯 User Stories
+
+- A user with a `stud.noroff.no` email **can register**.
+- A registered user **can log in, log out, and update their avatar**.
+- A registered user **can create an auction listing**.
+- A registered user **can bid on items** and **view bid history**.
+- An unregistered user **can browse and search listings**.
+
+---
+
+## 🎨 Design & Planning Resources
+
+📌 [Design Prototype](https://www.figma.com/design/IIqUTiScQluvKABlIR0kWT/HeartBids?node-id=1-2)  
+📌 [Style Guide](https://www.figma.com/design/IIqUTiScQluvKABlIR0kWT/HeartBids?node-id=11-2663)  
+📌 [Gantt Chart](https://www.notion.so/18f7168bd4d680c785c2eef835a7c903?v=18f7168bd4d680299075000c10cf2492&pvs=4)  
+📌 [Kanban Board](https://www.notion.so/18f7168bd4d680c785c2eef835a7c903?v=1aa7168bd4d6807e9466000cff27441f&pvs=4)  
+
+---
+
+## 📋 Exam Notes & Special Instructions
+
+⚠️ **For exam submission:** Ensure the filter in the navbar is set to **"All Listings"**.  
+🔎 Listings without the **HeartBids** tag will be removed post-exam.  
+
+---
+
+## 🏁 Final Thoughts
+
+HeartBids was built to **combine auction excitement with meaningful giving**. Whether you're looking to donate, bid, or win, every action supports a cause. 💙  
+
+Enjoy the platform, and **happy bidding!** 🎉  
+
+---
+
+### 🔗 Connect  
+👩‍💻 **Developer:** [Tara Olivia](https://github.com/taraolivia)  
+📧 **Contact:** tara@example.com *(replace with your actual email if needed)*  
+
+---
+
+🔥 **Star** this repo if you like it! 🌟  
+🚀 **Contributions & feedback welcome!**  
+```
+
+---
+
+### 🔥 Why This is a "Banger" README:
+1. **Engaging Header & Description** – Captures interest while clearly stating the project's purpose.  
+2. **Organized Sections** – Easy to navigate with headings, bullet points, and code blocks.  
+3. **Professional Formatting** – Uses GitHub Markdown syntax properly.  
+4. **Direct Setup Instructions** – Quick steps for installation & running locally.  
+5. **Developer-Friendly** – Structure breakdown, tech stack, and external links.  
+
+Let me know if you need any final tweaks! 🚀

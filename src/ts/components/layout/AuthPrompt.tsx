@@ -16,7 +16,7 @@ const AuthPrompt: React.FC<AuthPromptProps> = ({ loginPath = "/auth/login", sign
   
 
   return (
-    <div className="flex flex-col items-center text-center py-12 rounded-lg">
+    <div className="flex flex-col items-center text-center py-12 rounded-lg font-serif">
       {/* Heading */}
       <h2 className="text-xl font-bold text-gray-800">Log in or Sign up to HeartBids</h2>
 

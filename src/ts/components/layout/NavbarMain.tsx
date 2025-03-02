@@ -61,7 +61,7 @@ const Navbar = () => {
   const getLinkClass = (path: string) => (location.pathname === path ? "text-blue-600 font-semibold" : "text-black hover:text-blue-600");
 
   return (
-    <div className="group w-full fixed z-50 ">
+    <div className="group w-full fixed z-50 font-serif">
       <nav className="navbar font-serif bg-background-50  w-full fixed z-40 text-lg transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 z-50">
           <div className="flex items-center justify-between h-25 relative z-50">
