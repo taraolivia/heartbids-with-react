@@ -46,8 +46,6 @@ function App() {
 
   return (
     <LoadingProvider>
-      {" "}
-      {}
       <UserProvider>
         <HeartBidsFilterProvider>
           <ListingsProvider>
