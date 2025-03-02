@@ -5,26 +5,16 @@ import DeleteButton from "../ui/DeleteButton";
 import AuctionCountdown from "../ui/AuctionCountdown";
 import LazyLoadImage from "../../utilities/LazyLoadImage";
 
-
-
 const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closingDate, userBid, description, tags, created, updated, showDescription, showTags, showCreatedUpdated, seller, showSeller, showControls, showClosingDate = true, onDelete }) => {
   console.log("LotCard - Seller Data:", seller);
 
   return (
-    <div className="bg-secondary-50 shadow-lg rounded-sm px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col h-full w-full">
+    <div className="font-serif bg-secondary-50 shadow-md rounded-xs px-5 pt-5 hover:shadow-2xl transition-transform transform hover:scale-101 min-w-62 md:min-w-72 lg:min-w-74 max-w-90 mt-6 m-auto flex flex-col  h-full w-full">
       <Link to={`/listing/${id}`} className="block">
-      <LazyLoadImage
-  src={image || "/HeartBids.png"} 
-  alt={title}
-  className="w-full h-74 object-cover rounded-lg border border-gray-300"
-/>
-
-
+        <LazyLoadImage src={image || "/HeartBids.png"} alt={title} className="w-full h-74 object-cover rounded-sm border border-gray-300" />
 
         {/* ✅ Title Styling */}
-        <h3 className="text-lg font-semibold text-gray-900 mt-4">{title}</h3>
-
-        
+        <h3 className="text-xl font-semibold font-serif text-gray-900 mt-6">{title}</h3>
 
         {showSeller && seller && (
           <div className="mt-4 p-2 bg-blue-200 rounded-lg shadow-md w-fit">
@@ -40,10 +30,10 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
           </div>
         )}
 
-        {showDescription && description && <p className="text-gray-700 mt-2">{description}</p>}
+        {showDescription && description && <p className="text-gray-700 mt-4">{description}</p>}
 
         {showTags && Array.isArray(tags) && (
-          <div className="flex flex-wrap gap-2 my-4">
+          <div className="flex flex-wrap gap-2 my-6 font-serif">
             {tags.length > 0 ? (
               <>
                 {tags
@@ -67,10 +57,9 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         {showClosingDate && closingDate && <AuctionCountdown closingDate={closingDate} />}
 
         {/* ✅ Bidding Details - More Readable & Aligned */}
-        <p className="text-lg font-bold mt-2">
-          Highest Bid: <span className="text-pink-600">€{price}</span>
-          <span className="text-gray-600 text-base">
-            {" "}
+        <p className="text-lg font-semibold font-serif mt-4 ml-1">
+          <span className="text-pink-600  text-2xl">€ {price}</span>
+          <span className="text-gray-600 ml-3">
             ({bids} {bids === 1 ? "bid" : "bids"})
           </span>
         </p>
@@ -83,7 +72,7 @@ const LotCard: React.FC<LotCardProps> = ({ id, image, title, price, bids, closin
         )}
 
         {showCreatedUpdated && (
-          <div className="text-gray-700 text-base mt-2">
+          <div className="text-gray-700 text-base mt-4">
             {created && <p>Created: {new Date(created).toLocaleDateString()}</p>}
             {updated && <p>Updated: {new Date(updated).toLocaleDateString()}</p>}
           </div>

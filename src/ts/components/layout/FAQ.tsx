@@ -22,6 +22,11 @@ const FAQ = () => {
       answer:
         "Users place bids on active listings. When the auction ends, the highest bidder wins the item and the transaction is completed according to the listing terms.",
     },
+    {
+      question: "What can be auctioned on HeartBids?",
+      answer:
+        "You can auction physical goods, digital products, services, and experiences, as long as they comply with our guidelines. Items must align with HeartBids' mission and be appropriate for charitable auctions.",
+    },
   ];
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -31,19 +36,33 @@ const FAQ = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Answers to our frequently asked questions</h2>
-      <div className="space-y-4">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      <h2 className="text-3xl font-serif text-gray-800 mb-8 text-left">Answers to our frequently asked questions</h2>
+
+      <div className="divide-y divide-gray-300">
         {faqs.map((faq, index) => (
-          <div key={index} className="border-b border-gray-300 pb-4">
+          <div key={index} className="py-4">
+            {/* ✅ Question with Separator Line */}
             <h3
-              className="text-lg font-bold text-gray-800 cursor-pointer flex justify-between items-center"
+              className="text-lg font-serif text-gray-800 cursor-pointer flex justify-between items-center py-3"
               onClick={() => toggleFAQ(index)}
             >
               {faq.question}
-              <span>{openIndex === index ? "↑" : "↓"}</span>
+              <span
+                className={`transition-transform duration-300 ${
+                  openIndex === index ? "rotate-180" : "rotate-0"
+                }`}
+              >
+                ↑
+              </span>
             </h3>
-            {openIndex === index && <p className="text-gray-600 mt-2">{faq.answer}</p>}
+
+            {/* ✅ Answer with Colored Border (Matches Image) */}
+            {openIndex === index && (
+              <p className="text-gray-600 mt-2 border-t-2 border-accent-300 pt-3">
+                {faq.answer}
+              </p>
+            )}
           </div>
         ))}
       </div>

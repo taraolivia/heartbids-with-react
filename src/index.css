@@ -12,8 +12,8 @@ body {
   @apply text-text-900 font-sans;
 }
 
-h1 {
-  @apply font-serif;
+h1, h2 {
+  @apply font-serif mt-2;
 }
 
 

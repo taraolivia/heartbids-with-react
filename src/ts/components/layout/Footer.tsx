@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
   const logout = HandleLogout(); 
 
   return (
-    <footer className=" ">
+    <footer className="font-serif ">
       {/* Top Section: Logo, Quote, CTA */}
       <div className="py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">

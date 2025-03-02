@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const CharitiesCloud: React.FC = () => {
   return (
-    <section className="py-16 bg-gradient-to-b from-secondary-400 via-accent-200 to-background-50 text-center">
+    <section className="py-16 font-serif bg-gradient-to-b from-secondary-400 via-accent-200 to-background-50 text-center">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         {/* Heading */}
         <h2 className="text-3xl font-bold text-white mb-12">Charities we collaborate with</h2>

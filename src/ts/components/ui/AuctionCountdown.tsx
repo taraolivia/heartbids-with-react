@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 
 const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
   const [timeLeft, setTimeLeft] = useState<string>("Calculating...");
-  const [statusClass, setStatusClass] = useState<string>("");
+  const [borderClass, setBorderClass] = useState<string>("");
 
   useEffect(() => {
     const calculateTimeLeft = () => {
       if (!closingDate) {
         setTimeLeft("Invalid date");
-        setStatusClass("bg-gray-300");
+        setBorderClass("border-gray-300");
         return;
       }
 
@@ -16,16 +16,16 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
       const now = new Date().getTime();
       const difference = endTime - now;
 
-      let status = "bg-blue-200";
+      let borderColor = "border-secondary-300"; // Default
       if (difference <= 0) {
         setTimeLeft("Auction ended");
-        status = "bg-gray-300";
+        borderColor = "border-gray-300";
       } else if (difference < 1000 * 60 * 60 * 24 * 3) {
-        status = "bg-red-100";
+        borderColor = "border-accent-300";
       } else if (difference < 1000 * 60 * 60 * 24 * 30) {
-        status = "bg-green-100";
+        borderColor = "border-primary-300";
       }
-      setStatusClass(status);
+      setBorderClass(borderColor);
 
       if (difference > 0) {
         const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
@@ -54,7 +54,7 @@ const AuctionCountdown = ({ closingDate }: { closingDate: string }) => {
   }, [closingDate]);
 
   return (
-    <div className={`mt-2 px-3 py-2 rounded-lg text-sm font-semibold ${statusClass}`}>
+    <div className={`mt-2 px-3 py-2 text-base border-t-2 border-b-2 ${borderClass}`}>
       {timeLeft === "Auction ended" ? timeLeft : `Closing in: ${timeLeft}`}
     </div>
   );
