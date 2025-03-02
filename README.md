@@ -1,12 +1,12 @@
-# 🏆 HeartBids – Auction for a Cause
+# 💚 HeartBids – Auctions for a Cause
 
-![HeartBids Banner](https://heartbids.netlify.app/assets/banner.png)
+![HeartBids Banner](https://github.com/user-attachments/assets/05522289-f876-4235-af27-0bca3377ca0d)
 
 **HeartBids** is an auction platform built with **React**, where users can donate, bid, and win items to support charitable causes. Earn credits by listing auctions, use them to bid on exciting items, and make a difference with every transaction.
 
 🌍 **Built to empower giving.** **Designed for seamless bidding.**
 
-[🚀 Live Demo](https://heartbids.netlify.app/) | [📂 Repository](https://github.com/taraolivia/heartbids-with-react)
+[💚 Live Demo](https://heartbids.netlify.app/) | [📂 Repository](https://github.com/taraolivia/heartbids-with-react)
 
 ---
 
@@ -26,28 +26,55 @@
 - **Frontend:** React (Vite) + TypeScript
 - **Styling:** Tailwind CSS
 - **State Management:** React Context (User & Filter Contexts)
-- **API Integration:** Noroff Auction API
+- **API Integration:**
+  - **Noroff Auction API** – Manages auction-related data (listings, bids, profiles).  
+  - **HeartBids Firebase API** – Stores additional user data, charity integrations, and custom features.  
 - **Hosting:** Netlify
 
 ---
 
+## 🔥 HeartBids API (Firebase-based)
+
+In addition to integrating with the **Noroff Auction API**, HeartBids includes a **custom Firebase API** to enhance the user experience.
+
+### **🔹 Features of the HeartBids API**
+- **Stores additional user profile data** (beyond what the Noroff API provides).  
+- **Handles charity integrations** (e.g., linking users to selected charities).  
+- **Manages custom app features** that extend the Noroff API, such as:
+  - Charity logos displayed on profiles.  
+  - Additional auction metadata.
+ 
+ ---
+
 ## 📂 Project Structure
 
 ```plaintext
-📦 heartbids
- ┣ 📂 src
- ┃ ┣ 📂 components  # Reusable UI components
- ┃ ┣ 📂 contexts    # React Contexts for global state
- ┃ ┣ 📂 hooks       # Custom hooks for API fetching
- ┃ ┣ 📂 pages       # Main application pages
- ┃ ┣ 📂 utils       # Helper functions and utilities
- ┃ ┣ 📂 assets      # Static assets (logos, images)
- ┣ 📜 README.md     # You're here! 📌
- ┣ 📜 package.json  # Dependencies & scripts
- ┣ 📜 vite.config.js # Vite configuration
+📦 heartbids-with-react
+ ┣ 📂 public               # Static assets (favicons, images, etc.)
+ ┃ ┣ 📜 favicon.ico
+ ┃ ┗ 📜 index.html
+ ┣ 📂 src                  # Main source code
+ ┃ ┣ 📂 components         # Reusable UI components
+ ┃ ┃ ┣ 📂 layout          # Page layout components (Navbar, Footer, etc.)
+ ┃ ┃ ┣ 📂 lots            # Components related to auction lots
+ ┃ ┃ ┗ 📂 ui              # Generic UI components (buttons, modals, etc.)
+ ┃ ┣ 📂 pages             # Page components (Login, Register, Profile, Listings, etc.)
+ ┃ ┣ 📂 utilities         # Helper functions and API integrations
+ ┃ ┣ 📂 hooks             # Custom React hooks
+ ┃ ┣ 📂 config            # Configuration files (API, constants, headers, etc.)
+ ┃ ┣ 📜 App.tsx           # Main app entry point
+ ┃ ┣ 📜 main.tsx          # React app bootstrap
+ ┃ ┗ 📜 firebaseConfig.ts # Firebase configuration
+ ┣ 📂 styles              # Global styles and Tailwind configuration
+ ┣ 📜 .gitignore          # Ignored files for Git
+ ┣ 📜 README.md           # Project documentation
+ ┣ 📜 package.json        # Dependencies and scripts
+ ┣ 📜 tsconfig.json       # TypeScript configuration
+ ┣ 📜 tailwind.config.js  # Tailwind CSS configuration
+ ┗ 📜 vite.config.ts      # Vite configuration
 ```
 
----
+
 
 ## 🚀 Installation & Setup
 
@@ -76,11 +103,45 @@ npm run dev
 
 ## 🎯 User Stories
 
-- A user with a `stud.noroff.no` email **can register**.
-- A registered user **can log in, log out, and update their avatar**.
-- A registered user **can create an auction listing**.
-- A registered user **can bid on items** and **view bid history**.
-- An unregistered user **can browse and search listings**.
+🔹 General User Actions
+
+    A user with a stud.noroff.no email can register.
+    A registered user can log in and log out.
+    A registered user can update their avatar.
+
+🔹 Auction Listings
+
+    A registered user can create an auction listing with:
+        Title, description, media gallery (images), and deadline date.
+    A registered user can edit and delete their own listings.
+    A registered user can view all active listings.
+    A registered user can filter, sort, and search for listings.
+
+🔹 Bidding System
+
+    A registered user can place a bid on another user's listing.
+    A registered user can see all bids placed on their listings.
+    A registered user can view the highest bid on any listing.
+    A registered user can track their bid history (past and active bids).
+
+🔹 Profile & Account Features
+
+    A registered user can view their profile and total credits.
+    A registered user can see all listings they have created.
+    A registered user can view listings they have bid on.
+    A registered user can update their selected charity (custom HeartBids feature).
+
+🔹 HeartBids Exclusive Features (Firebase API)
+
+    A registered user can select a charity to support, and its logo appears on their profile.
+    A registered user can browse and discover charities available on the platform.
+    A registered user can see popular and featured listings (Firebase-powered filtering).
+    A registered user can get a personalized dashboard with auction insights.
+
+🔹 Guest Users (No Account Required)
+
+    An unregistered user can browse and search for listings.
+    An unregistered user can view listing details but cannot place bids.
 
 ---
 
@@ -102,7 +163,7 @@ npm run dev
 
 ## 🏁 Final Thoughts
 
-HeartBids was built to **combine auction excitement with meaningful giving**. Whether you're looking to donate, bid, or win, every action supports a cause. 💙
+HeartBids was built to **combine auction excitement with meaningful giving**. Whether you're looking to donate, bid, or win, every action supports a cause. 💚
 
 Enjoy the platform, and **happy bidding!** 🎉
 
@@ -111,23 +172,7 @@ Enjoy the platform, and **happy bidding!** 🎉
 ### 🔗 Connect
 
 👩‍💻 **Developer:** [Tara Olivia](https://github.com/taraolivia)  
-📧 **Contact:** tara@example.com _(replace with your actual email if needed)_
+📧 **Contact:** tara.bjorheim@outlook.com
 
 ---
 
-🔥 **Star** this repo if you like it! 🌟  
-🚀 **Contributions & feedback welcome!**
-
-```
-
----
-
-### 🔥 Why This is a "Banger" README:
-1. **Engaging Header & Description** – Captures interest while clearly stating the project's purpose.
-2. **Organized Sections** – Easy to navigate with headings, bullet points, and code blocks.
-3. **Professional Formatting** – Uses GitHub Markdown syntax properly.
-4. **Direct Setup Instructions** – Quick steps for installation & running locally.
-5. **Developer-Friendly** – Structure breakdown, tech stack, and external links.
-
-Let me know if you need any final tweaks! 🚀
-```
